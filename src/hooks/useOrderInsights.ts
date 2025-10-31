@@ -156,10 +156,15 @@ export const useOrderInsights = (
   options: ComputeOptions = {},
 ): OrderInsightsPayload => {
   const orders = useOrderHistory((state) => state.orders);
+  const { recentLimit, sparklineWindow } = options;
 
   const insights = useMemo(
-    () => computeOrderInsights(orders, options),
-    [orders, options.recentLimit, options.sparklineWindow],
+    () =>
+      computeOrderInsights(orders, {
+        recentLimit,
+        sparklineWindow,
+      }),
+    [orders, recentLimit, sparklineWindow],
   );
 
   return insights;
