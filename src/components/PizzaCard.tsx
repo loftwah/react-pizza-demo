@@ -82,34 +82,34 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
               </button>
             ))}
           </fieldset>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-lg font-semibold text-slate-900 dark:text-white">
               {formatCurrency(priceForSize(pizza, selectedSize))}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
               {cartItem && (
                 <>
                   <button
                     type="button"
                     onClick={() => decrementItem(cartItem.id)}
-                    className="h-10 w-10 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25"
+                    className="h-11 w-11 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950"
                   >
                     −
                   </button>
-                  <span className="w-8 text-center text-sm font-semibold tracking-[0.2em] text-slate-600 dark:text-white/85">
+                  <span className="w-9 text-center text-sm font-semibold tracking-[0.2em] text-slate-600 dark:text-white/85">
                     {cartItem.quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => addItem(pizza.id, selectedSize)}
-                    className="border-brand-500/80 bg-brand-500 hover:bg-brand-400 h-10 w-10 rounded-full border text-lg text-white transition dark:border-white/30"
+                    className="h-11 w-11 rounded-full border border-brand-500/80 bg-brand-500 text-lg text-white transition hover:scale-[1.05] hover:bg-brand-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/40 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950"
                   >
                     +
                   </button>
                   <button
                     type="button"
                     onClick={() => removeItem(cartItem.id)}
-                    className="ml-2 text-xs tracking-[0.3em] text-slate-500 uppercase transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
+                    className="ml-2 text-xs tracking-[0.28em] uppercase text-slate-500 transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
                   >
                     Clear
                   </button>
@@ -119,10 +119,14 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                 <button
                   type="button"
                   onClick={handleAdd}
-                  className="from-brand-500 via-brand-500 to-brand-600 shadow-brand-500/30 hover:from-brand-600 hover:to-brand-500 focus-visible:ring-brand-300 dark:focus-visible:ring-brand-400 flex items-center gap-2 rounded-full bg-gradient-to-r px-6 py-2.5 text-sm font-semibold tracking-[0.22em] text-white uppercase shadow-lg transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-950"
+                  aria-label={`Add ${pizza.displayName} pizza to your order`}
+                  className="group/cta relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-brand-500 px-7 py-3 text-base font-semibold text-white shadow-xl shadow-brand-500/40 transition hover:scale-[1.02] hover:bg-brand-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950 sm:w-auto"
                 >
-                  <ShoppingCart className="h-4 w-4" aria-hidden="true" />
-                  <span>Add To Order</span>
+                  <ShoppingCart
+                    className="h-5 w-5 transition-transform duration-200 group-hover/cta:-translate-y-0.5"
+                    aria-hidden="true"
+                  />
+                  <span>Add Pizza to Order</span>
                 </button>
               )}
             </div>

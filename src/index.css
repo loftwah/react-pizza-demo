@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light;
-  background-color: #f9f5f1;
+  background-color: #f4f4fa;
 }
 
 html.dark {
@@ -16,14 +16,10 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: theme('fontFamily.sans');
-  background-color: #fdf7f2;
+  background-color: #f7f6ff;
   background-image:
     radial-gradient(circle at top, rgba(255, 61, 61, 0.12), transparent 55%),
-    radial-gradient(
-      circle at bottom,
-      rgba(255, 156, 153, 0.08),
-      transparent 45%
-    );
+    radial-gradient(circle at bottom, rgba(88, 130, 255, 0.06), transparent 45%);
   transition:
     background-color 0.3s ease,
     background-image 0.3s ease;
