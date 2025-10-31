@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { BadgeCheck, Clock, Flame, Leaf, Pizza } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
+import { Link } from 'react-router-dom';
 import { useMenu } from '../hooks/useMenu';
 import type { PizzaFilter } from '../domain/pizza';
 import { hasFilterMatch } from '../domain/pizza';
@@ -23,11 +24,46 @@ const activeFilterStyles: Record<PizzaFilter, string> = {
     'border-orange-500 bg-orange-500 text-white shadow-orange-500/25 dark:border-orange-200 dark:bg-orange-200 dark:text-orange-950 dark:shadow-orange-200/30',
 };
 
+const PizzaCardSkeleton = () => (
+  <article className="relative flex h-full animate-pulse flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 shadow-sm dark:border-white/15 dark:bg-white/10 dark:text-white">
+    <div className="h-56 w-full bg-slate-200/80 dark:bg-white/10" />
+    <div className="flex flex-1 flex-col gap-6 px-6 pt-5">
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <span className="h-6 w-20 rounded-full bg-slate-200/70 dark:bg-white/15" />
+          <span className="h-6 w-16 rounded-full bg-slate-200/70 dark:bg-white/15" />
+        </div>
+        <div className="space-y-3">
+          <div className="h-6 w-3/4 rounded-full bg-slate-200/80 dark:bg-white/20" />
+          <div className="h-3 w-full rounded-full bg-slate-200/70 dark:bg-white/15" />
+          <div className="h-3 w-4/5 rounded-full bg-slate-200/70 dark:bg-white/15" />
+        </div>
+      </div>
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <span className="h-11 flex-1 rounded-full bg-slate-200/70 dark:bg-white/15" />
+          <span className="h-11 flex-1 rounded-full bg-slate-200/70 dark:bg-white/15" />
+          <span className="h-11 flex-1 rounded-full bg-slate-200/70 dark:bg-white/15" />
+        </div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <span className="h-6 w-24 rounded-full bg-slate-200/80 dark:bg-white/20" />
+          <div className="flex w-full items-center justify-end gap-3 sm:w-auto">
+            <span className="h-11 w-11 rounded-full bg-slate-200/80 dark:bg-white/20" />
+            <span className="h-5 w-12 rounded-full bg-slate-200/70 dark:bg-white/15" />
+            <span className="h-11 w-11 rounded-full bg-slate-200/80 dark:bg-white/20" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+);
+
 export const MenuPage = () => {
   const [filter, setFilter] = useState<PizzaFilter>('all');
   const [isShopOpen, setIsShopOpen] = useState(false);
   const { data: pizzas, isLoading, error } = useMenu();
   const totalPrice = useCartStore((state) => state.totalPrice());
+  const totalItems = useCartStore((state) => state.totalItems());
 
   useEffect(() => {
     const evaluateOpenStatus = () => {
@@ -114,10 +150,7 @@ export const MenuPage = () => {
       {isLoading && (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-[420px] animate-pulse rounded-3xl border border-stone-200/70 bg-white/60 dark:border-white/15 dark:bg-white/10"
-            />
+            <PizzaCardSkeleton key={index} />
           ))}
         </div>
       )}
@@ -138,8 +171,20 @@ export const MenuPage = () => {
         </div>
       )}
 
-      <aside className="self-center rounded-3xl border border-stone-200/70 bg-white/70 px-6 py-5 text-center text-xs tracking-[0.3em] text-slate-600 uppercase sm:self-end sm:text-right dark:border-white/20 dark:bg-white/10 dark:text-white/70">
-        Your running total: {formatCurrency(totalPrice)}
+      <aside className="flex flex-col items-center gap-3 self-center rounded-3xl border border-stone-200/70 bg-white/70 px-6 py-5 text-center text-xs tracking-[0.3em] text-slate-600 uppercase sm:items-end sm:self-end sm:text-right dark:border-white/20 dark:bg-white/10 dark:text-white/70">
+        <span>Your running total: {formatCurrency(totalPrice)}</span>
+        {totalItems > 0 ? (
+          <Link
+            to="/checkout"
+            className="border-brand-500/40 bg-brand-500/10 text-brand-600 hover:bg-brand-500/20 focus-visible:ring-brand-300 dark:border-brand-200/30 dark:bg-brand-500/15 dark:text-brand-100 dark:hover:bg-brand-500/20 dark:focus-visible:ring-brand-400 inline-flex items-center justify-center rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.35em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
+          >
+            Proceed to checkout
+          </Link>
+        ) : (
+          <span className="text-[11px] tracking-[0.35em] text-slate-400 dark:text-white/40">
+            Add pizzas to unlock checkout
+          </span>
+        )}
       </aside>
     </section>
   );

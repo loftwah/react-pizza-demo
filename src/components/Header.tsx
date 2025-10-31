@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Moon, ShoppingCart, SunMedium } from 'lucide-react';
 import clsx from 'clsx';
 import { useCartStore } from '../stores/cart';
@@ -21,6 +21,8 @@ export const Header = () => {
           <img
             src={`${import.meta.env.BASE_URL}loftwahs-pizza.jpg`}
             alt="Loftwah Pizza logo"
+            width={40}
+            height={40}
             className="h-10 w-auto rounded-full border border-stone-200/70 bg-white p-1 transition-colors dark:border-white/20 dark:bg-white/15"
           />
           <span className="font-display text-lg font-semibold tracking-[0.35em] text-slate-900 uppercase transition-colors dark:text-white">
@@ -54,6 +56,22 @@ export const Header = () => {
           >
             About
           </NavLink>
+          <NavLink
+            to="/checkout"
+            className={({ isActive }) =>
+              clsx(
+                'flex items-center gap-2 rounded-full px-4 py-2 transition-colors',
+                isActive
+                  ? 'bg-brand-500/15 text-brand-700 shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-100'
+                  : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
+              )
+            }
+          >
+            Checkout
+            <span className="rounded-full border border-current/20 px-2 py-0.5 text-[10px] font-semibold tracking-[0.3em] uppercase">
+              {totalItems.toString().padStart(2, '0')}
+            </span>
+          </NavLink>
         </nav>
         <div className="order-3 flex w-full flex-col items-center gap-3 md:order-3 md:flex-row md:justify-end md:justify-self-end">
           <button
@@ -71,7 +89,11 @@ export const Header = () => {
             </span>
             <span>{isDark ? 'Dark' : 'Light'}</span>
           </button>
-          <div className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-slate-700 uppercase transition-colors md:w-auto md:justify-end dark:border-white/20 dark:bg-white/10 dark:text-white/85">
+          <Link
+            to="/checkout"
+            aria-label="View your cart and proceed to checkout"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-slate-700 uppercase transition hover:bg-white md:w-auto md:justify-end dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15"
+          >
             <ShoppingCart className="h-4 w-4" aria-hidden="true" />
             <span>{`${totalItems.toString().padStart(2, '0')} ${pizzaLabel}`}</span>
             <span className="text-stone-400 transition-colors dark:text-white/40">
@@ -80,7 +102,7 @@ export const Header = () => {
             <span className="text-slate-500 dark:text-white/80">
               {totalPrice ? `$${totalPrice.toFixed(2)}` : 'Empty'}
             </span>
-          </div>
+          </Link>
         </div>
       </div>
     </header>

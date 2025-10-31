@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { useCartStore } from '../stores/cart';
 import type { Pizza, PizzaSize } from '../domain/pizza';
 import { formatCurrency, priceForSize, sizeLabels } from '../domain/pizza';
+import { useToast } from '../providers/toast-context';
 
 type PizzaCardProps = {
   pizza: Pizza;
@@ -17,6 +18,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
   const decrementItem = useCartStore((state) => state.decrementItem);
   const removeItem = useCartStore((state) => state.removeItem);
   const cartItems = useCartStore((state) => state.items);
+  const { showToast } = useToast();
 
   const cartItem = useMemo(
     () => cartItems.find((item) => item.id === `${pizza.id}-${selectedSize}`),
@@ -25,6 +27,36 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
 
   const handleAdd = () => {
     addItem(pizza.id, selectedSize);
+    showToast({
+      message: `Added ${sizeLabels[selectedSize]} ${pizza.displayName} to your order`,
+      tone: 'success',
+    });
+  };
+
+  const handleIncrement = () => {
+    addItem(pizza.id, selectedSize);
+    showToast({
+      message: `Added another ${sizeLabels[selectedSize]} ${pizza.displayName}`,
+      tone: 'success',
+    });
+  };
+
+  const handleDecrement = () => {
+    if (!cartItem) return;
+    decrementItem(cartItem.id);
+    showToast({
+      message: `Removed one ${sizeLabels[cartItem.size]} ${pizza.displayName}`,
+      tone: 'info',
+    });
+  };
+
+  const handleClear = () => {
+    if (!cartItem) return;
+    removeItem(cartItem.id);
+    showToast({
+      message: `Cleared ${sizeLabels[cartItem.size]} ${pizza.displayName} from cart`,
+      tone: 'info',
+    });
   };
 
   return (
@@ -33,6 +65,8 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
         alt={pizza.displayName}
         src={pizza.image}
         loading="lazy"
+        width={400}
+        height={224}
         className="h-56 w-full object-cover transition group-hover:scale-105"
       />
       <div className="flex flex-1 flex-col gap-6 px-6 pt-5">
@@ -96,7 +130,8 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                 <>
                   <button
                     type="button"
-                    onClick={() => decrementItem(cartItem.id)}
+                    onClick={handleDecrement}
+                    aria-label={`Remove one ${pizza.displayName} (${sizeLabels[cartItem.size]}) from cart`}
                     className="focus-visible:ring-brand-300 dark:focus-visible:ring-brand-400 h-11 w-11 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25 dark:focus-visible:ring-offset-neutral-950"
                   >
                     −
@@ -106,14 +141,15 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   </span>
                   <button
                     type="button"
-                    onClick={() => addItem(pizza.id, selectedSize)}
+                    onClick={handleIncrement}
+                    aria-label={`Add one ${pizza.displayName} (${sizeLabels[selectedSize]}) to cart`}
                     className="border-brand-500/80 bg-brand-500 hover:bg-brand-400 focus-visible:ring-brand-300 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 h-11 w-11 rounded-full border text-lg text-white transition hover:scale-[1.05] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/40 dark:focus-visible:ring-offset-neutral-950"
                   >
                     +
                   </button>
                   <button
                     type="button"
-                    onClick={() => removeItem(cartItem.id)}
+                    onClick={handleClear}
                     className="ml-2 text-xs tracking-[0.28em] text-slate-500 uppercase transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
                   >
                     Clear
