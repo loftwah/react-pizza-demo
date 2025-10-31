@@ -12,7 +12,7 @@ export const menu: Pizza[] = [
     toppings: ['Tomato', 'Mozzarella', 'Pepperoni'],
     vegetarian: false,
     spicy: false,
-    image: withBasePath('pepperoni-classic.png'),
+    image: withBasePath('pepperoni-classic.jpg'),
   },
   {
     id: 'smoky-bbq',
@@ -23,7 +23,7 @@ export const menu: Pizza[] = [
     toppings: ['BBQ Sauce', 'Chicken', 'Corn', 'Parsley'],
     vegetarian: false,
     spicy: false,
-    image: withBasePath('smokey-bbq-chicken.png'),
+    image: withBasePath('smokey-bbq-chicken.jpg'),
   },
   {
     id: 'firecracker',
@@ -34,7 +34,7 @@ export const menu: Pizza[] = [
     toppings: ['Scorpion Oil', 'Salami', 'Jalapeño', 'Hot Honey'],
     vegetarian: false,
     spicy: true,
-    image: withBasePath('firecracker.png'),
+    image: withBasePath('firecracker.jpg'),
   },
   {
     id: 'green-garden',
@@ -45,7 +45,7 @@ export const menu: Pizza[] = [
     toppings: ['Pesto', 'Tomato', 'Zucchini', 'Ricotta'],
     vegetarian: true,
     spicy: false,
-    image: withBasePath('green-garden.png'),
+    image: withBasePath('green-garden.jpg'),
   },
   {
     id: 'wild-mushroom',
@@ -55,7 +55,7 @@ export const menu: Pizza[] = [
     toppings: ['Garlic Cream', 'Mushroom', 'Truffle Salt'],
     vegetarian: true,
     spicy: false,
-    image: withBasePath('wild-mushroom.png'),
+    image: withBasePath('wild-mushroom.jpg'),
   },
   {
     id: 'pineapple-party',
@@ -66,7 +66,7 @@ export const menu: Pizza[] = [
     toppings: ['Tomato', 'Ham', 'Pineapple', 'Chilli'],
     vegetarian: false,
     spicy: true,
-    image: withBasePath('pineapple-party.png'),
+    image: withBasePath('pineapple-party.jpg'),
   },
 ];
 

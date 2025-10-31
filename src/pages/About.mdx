@@ -1,21 +1,219 @@
-# About Loftwah Pizza
+import {
+  ChefHat,
+  Flame,
+  Leaf,
+  Pizza,
+  Rocket,
+  Sparkles,
+  Timer,
+  Users,
+} from 'lucide-react';
 
-We ferment our dough for **72 hours**, use stone-ground flour, and finish every pie
-with a custom infused oil. This demo project mirrors how our real kitchen operates:
-everything is modular, and ingredients are composed into experiences.
+<div className="space-y-16">
+  <section className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-gradient-to-br from-brand-600 via-brand-500 to-amber-400 text-white shadow-[0_40px_120px_-40px_rgba(255,61,61,0.65)] dark:border-white/10">
+    <div className="absolute inset-0">
+      <div className="absolute -top-16 right-[-12%] h-72 w-72 rounded-full bg-white/25 blur-3xl" />
+      <div className="absolute bottom-[-25%] left-[-18%] h-80 w-80 rounded-full bg-white/15 blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.4),transparent_60%)]" />
+    </div>
+    <div className="relative grid gap-12 p-12 sm:p-16 md:grid-cols-[1.2fr,0.8fr] md:items-center">
+      <div className="space-y-6">
+        <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/80">
+          <Sparkles className="h-4 w-4" />
+          Pizza lab energy
+        </span>
+        <h1 className="font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
+          Loftwah Pizza is what happens when craft bakers befriend front-end
+          engineers.
+        </h1>
+        <p className="max-w-xl text-base text-white/80 sm:text-lg">
+          We ferment every dough for <strong className="text-white">72 hours</strong>, use stone-ground flour, and finish each pie with a custom infused oil that changes nightly. That same obsession fuels this demo: it&apos;s a playground for testing how modular ingredients become joyful experiences.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
+            <Timer className="h-4 w-4" />
+            Cold-proofed dough program
+          </div>
+          <div className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
+            <Leaf className="h-4 w-4" />
+            Stone-ground &amp; regenerative grains
+          </div>
+          <div className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
+            <Flame className="h-4 w-4" />
+            Finishing oil alchemy
+          </div>
+        </div>
+      </div>
+      <div className="grid gap-4 text-sm">
+        <div className="rounded-3xl bg-white/10 p-8 backdrop-blur-md">
+          <h2 className="font-display text-xl text-white">House stats</h2>
+          <dl className="mt-6 grid grid-cols-1 gap-5">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
+                <Timer className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <dd className="font-display text-3xl text-white">72 hrs</dd>
+                <dt className="text-[0.75rem] uppercase tracking-[0.35em] text-white/70">
+                  Cold fermentation
+                </dt>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
+                <Pizza className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <dd className="font-display text-3xl text-white">12</dd>
+                <dt className="text-[0.75rem] uppercase tracking-[0.35em] text-white/70">
+                  Rotating specials
+                </dt>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
+                <Flame className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <dd className="font-display text-3xl text-white">4</dd>
+                <dt className="text-[0.75rem] uppercase tracking-[0.35em] text-white/70">
+                  Ovens firing nightly
+                </dt>
+              </div>
+            </div>
+          </dl>
+        </div>
+        <div className="overflow-hidden rounded-3xl border border-white/15 bg-white/10 p-8 backdrop-blur-lg">
+          <h3 className="font-display text-lg text-white">Tonight&apos;s tasting notes</h3>
+          <ul className="mt-4 space-y-3 text-white/80">
+            <li className="flex items-start gap-3">
+              <ChefHat className="mt-0.5 h-5 w-5 text-white" />
+              Charred cornicione, yuzu chile drizzle, and late-night vinyl.
+            </li>
+            <li className="flex items-start gap-3">
+              <Leaf className="mt-0.5 h-5 w-5 text-white" />
+              Basil harvested 12 minutes before service for max aromatics.
+            </li>
+            <li className="flex items-start gap-3">
+              <Sparkles className="mt-0.5 h-5 w-5 text-white" />
+              Service soundtrack toggled by our lighting automation.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
-## What Makes The App Interesting
+  <section className="space-y-8">
+    <div className="mx-auto max-w-3xl text-center">
+      <h2 className="font-display text-3xl text-slate-900 dark:text-white sm:text-4xl">
+        What Makes The App Interesting
+      </h2>
+      <p className="mt-4 text-base text-slate-600 dark:text-slate-200/80">
+        We build the interface like we run the ovens—fast, consistent, and worth lingering in.
+      </p>
+    </div>
+    <div className="grid gap-6 md:grid-cols-3">
+      <article className="relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg shadow-brand-500/10 transition hover:-translate-y-1 hover:shadow-brand-500/25 dark:border-white/10 dark:bg-white/5">
+        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-100 dark:bg-brand-500/20">
+          <Rocket className="h-6 w-6 text-brand-600 dark:text-brand-300" />
+        </div>
+        <h3 className="font-display text-xl text-slate-900 dark:text-white">React Router flow</h3>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
+          Glide between the menu and this page with zero reloads. The route transitions feel like a smooth handoff from bar to table.
+        </p>
+      </article>
+      <article className="relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg shadow-brand-500/10 transition hover:-translate-y-1 hover:shadow-brand-500/25 dark:border-white/10 dark:bg-white/5">
+        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-100 dark:bg-brand-500/20">
+          <Sparkles className="h-6 w-6 text-brand-600 dark:text-brand-300" />
+        </div>
+        <h3 className="font-display text-xl text-slate-900 dark:text-white">MDX storytelling</h3>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
+          Markdown readability meets React interactivity, so mixing prose with components is as easy as layering toppings.
+        </p>
+      </article>
+      <article className="relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg shadow-brand-500/10 transition hover:-translate-y-1 hover:shadow-brand-500/25 dark:border-white/10 dark:bg-white/5">
+        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-100 dark:bg-brand-500/20">
+          <Users className="h-6 w-6 text-brand-600 dark:text-brand-300" />
+        </div>
+        <h3 className="font-display text-xl text-slate-900 dark:text-white">TypeScript guardrails</h3>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
+          If a pizza forgets its price, the build fails. Data safety is our mise en place for a delightful service.
+        </p>
+      </article>
+    </div>
+  </section>
 
-- **React Router** keeps the experience snappy – no page reloads when you bounce between the menu and this page.
-- **MDX** lets us ship rich content like this with Markdown readability _and_ React interactivity.
-- **TypeScript** makes the menu data trustworthy. If someone forgets to add a price, the build fails before a customer ever sees it.
+  <section className="relative overflow-hidden rounded-[2.5rem] border border-slate-900/10 bg-slate-900 text-slate-100 shadow-[0_30px_100px_-50px_rgba(15,23,42,0.9)] dark:border-white/10">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,61,61,0.35),transparent_65%)]" />
+    <div className="relative grid gap-10 p-12 sm:p-16 md:grid-cols-[1.1fr,0.9fr] md:items-center">
+      <div className="space-y-6">
+        <h2 className="font-display text-3xl sm:text-4xl">Team Values</h2>
+        <p className="max-w-xl text-base text-slate-200/80">
+          Hospitality, iteration, and transparency run both the kitchen and the codebase.
+        </p>
+        <ol className="space-y-4 text-slate-100/90">
+          <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
+            <span className="font-display text-2xl text-white/80">01</span>
+            <div>
+              <h3 className="font-display text-lg text-white">Transparency</h3>
+              <p className="text-sm text-slate-200/80">
+                The entire recipe lives in the repository—no secret sauce, just clean commits.
+              </p>
+            </div>
+          </li>
+          <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
+            <span className="font-display text-2xl text-white/80">02</span>
+            <div>
+              <h3 className="font-display text-lg text-white">Iteration</h3>
+              <p className="text-sm text-slate-200/80">
+                We ship, taste, and adjust. Every improvement starts from the CDN build and climbs.
+              </p>
+            </div>
+          </li>
+          <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
+            <span className="font-display text-2xl text-white/80">03</span>
+            <div>
+              <h3 className="font-display text-lg text-white">Hospitality</h3>
+              <p className="text-sm text-slate-200/80">
+                Ambience matters, so the app ships in permanent golden-hour mode—light mode is banned.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <div className="flex flex-col gap-6">
+        <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-md">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/25">
+              <Rocket className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h3 className="font-display text-2xl text-white">Real-time pizza math</h3>
+              <p className="mt-3 text-sm text-slate-200/80">
+                Toggle menu filters and watch the cart respond instantly. Zustand handles the state orchestration while React Query keeps deliveries hot in cache.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-md">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/25">
+              <Users className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h3 className="font-display text-2xl text-white">Crew-first tooling</h3>
+              <p className="mt-3 text-sm text-slate-200/80">
+                Components are cleanly named for painless debugging, and every deploy links back to the kitchen timeline.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-> Hot tip: Try toggling filters on the menu. The cart total updates immediately thanks to Zustand state and a sprinkle of React Query caching.
-
-## Team Values
-
-1. Transparency – the full recipe is in the repository.
-2. Iteration – every improvement builds from the CDN version upward.
-3. Hospitality – light mode is banned, because ambience matters.
-
-Need more nerdery? Pop back to the menu and inspect the developer console; each component is cleanly named to make debugging painless.
+  <p className="text-sm text-slate-600 dark:text-slate-300">
+    Need more nerdery? Pop back to the menu and inspect the developer console—the components are labeled like stations on the line, so debugging feels like service.
+  </p>
+</div>
