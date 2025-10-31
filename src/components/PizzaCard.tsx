@@ -92,7 +92,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   <button
                     type="button"
                     onClick={() => decrementItem(cartItem.id)}
-                    className="h-11 w-11 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950"
+                    className="focus-visible:ring-brand-300 dark:focus-visible:ring-brand-400 h-11 w-11 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25 dark:focus-visible:ring-offset-neutral-950"
                   >
                     −
                   </button>
@@ -102,14 +102,14 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   <button
                     type="button"
                     onClick={() => addItem(pizza.id, selectedSize)}
-                    className="h-11 w-11 rounded-full border border-brand-500/80 bg-brand-500 text-lg text-white transition hover:scale-[1.05] hover:bg-brand-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-white/40 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950"
+                    className="border-brand-500/80 bg-brand-500 hover:bg-brand-400 focus-visible:ring-brand-300 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 h-11 w-11 rounded-full border text-lg text-white transition hover:scale-[1.05] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/40 dark:focus-visible:ring-offset-neutral-950"
                   >
                     +
                   </button>
                   <button
                     type="button"
                     onClick={() => removeItem(cartItem.id)}
-                    className="ml-2 text-xs tracking-[0.28em] uppercase text-slate-500 transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
+                    className="ml-2 text-xs tracking-[0.28em] text-slate-500 uppercase transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
                   >
                     Clear
                   </button>
@@ -120,7 +120,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   type="button"
                   onClick={handleAdd}
                   aria-label={`Add ${pizza.displayName} pizza to your order`}
-                  className="group/cta relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-brand-500 px-7 py-3 text-base font-semibold text-white shadow-xl shadow-brand-500/40 transition hover:scale-[1.02] hover:bg-brand-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-200 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950 sm:w-auto"
+                  className="group/cta bg-brand-500 shadow-brand-500/40 hover:bg-brand-400 focus-visible:ring-brand-200 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3 text-base font-semibold text-white shadow-xl transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none sm:w-auto dark:focus-visible:ring-offset-neutral-950"
                 >
                   <ShoppingCart
                     className="h-5 w-5 transition-transform duration-200 group-hover/cta:-translate-y-0.5"

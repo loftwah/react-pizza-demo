@@ -104,114 +104,135 @@ import {
     </div>
   </section>
 
-  <section className="space-y-8">
-    <div className="mx-auto max-w-3xl text-center">
-      <h2 className="font-display text-3xl text-slate-900 dark:text-white sm:text-4xl">
-        What Makes The App Interesting
-      </h2>
-      <p className="mt-4 text-base text-slate-600 dark:text-slate-200/80">
-        We build the interface like we run the ovens—fast, consistent, and worth lingering in.
+<section className="space-y-8">
+  <div className="mx-auto max-w-3xl text-center">
+    <h2 className="font-display text-3xl text-slate-900 sm:text-4xl dark:text-white">
+      What Makes The App Interesting
+    </h2>
+    <p className="mt-4 text-base text-slate-600 dark:text-slate-200/80">
+      We build the interface like we run the ovens—fast, consistent, and worth
+      lingering in.
+    </p>
+  </div>
+  <div className="grid gap-6 md:grid-cols-3">
+    <article className="shadow-brand-500/10 hover:shadow-brand-500/25 relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg transition hover:-translate-y-1 dark:border-white/10 dark:bg-white/5">
+      <div className="bg-brand-500/15 text-brand-100 dark:bg-brand-500/20 mb-5 flex h-12 w-12 items-center justify-center rounded-2xl">
+        <Rocket className="text-brand-600 dark:text-brand-300 h-6 w-6" />
+      </div>
+      <h3 className="font-display text-xl text-slate-900 dark:text-white">
+        React Router flow
+      </h3>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
+        Glide between the menu and this page with zero reloads. The route
+        transitions feel like a smooth handoff from bar to table.
       </p>
-    </div>
-    <div className="grid gap-6 md:grid-cols-3">
-      <article className="relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg shadow-brand-500/10 transition hover:-translate-y-1 hover:shadow-brand-500/25 dark:border-white/10 dark:bg-white/5">
-        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-100 dark:bg-brand-500/20">
-          <Rocket className="h-6 w-6 text-brand-600 dark:text-brand-300" />
-        </div>
-        <h3 className="font-display text-xl text-slate-900 dark:text-white">React Router flow</h3>
-        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
-          Glide between the menu and this page with zero reloads. The route transitions feel like a smooth handoff from bar to table.
-        </p>
-      </article>
-      <article className="relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg shadow-brand-500/10 transition hover:-translate-y-1 hover:shadow-brand-500/25 dark:border-white/10 dark:bg-white/5">
-        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-100 dark:bg-brand-500/20">
-          <Sparkles className="h-6 w-6 text-brand-600 dark:text-brand-300" />
-        </div>
-        <h3 className="font-display text-xl text-slate-900 dark:text-white">MDX storytelling</h3>
-        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
-          Markdown readability meets React interactivity, so mixing prose with components is as easy as layering toppings.
-        </p>
-      </article>
-      <article className="relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg shadow-brand-500/10 transition hover:-translate-y-1 hover:shadow-brand-500/25 dark:border-white/10 dark:bg-white/5">
-        <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/15 text-brand-100 dark:bg-brand-500/20">
-          <Users className="h-6 w-6 text-brand-600 dark:text-brand-300" />
-        </div>
-        <h3 className="font-display text-xl text-slate-900 dark:text-white">TypeScript guardrails</h3>
-        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
-          If a pizza forgets its price, the build fails. Data safety is our mise en place for a delightful service.
-        </p>
-      </article>
-    </div>
-  </section>
+    </article>
+    <article className="shadow-brand-500/10 hover:shadow-brand-500/25 relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg transition hover:-translate-y-1 dark:border-white/10 dark:bg-white/5">
+      <div className="bg-brand-500/15 text-brand-100 dark:bg-brand-500/20 mb-5 flex h-12 w-12 items-center justify-center rounded-2xl">
+        <Sparkles className="text-brand-600 dark:text-brand-300 h-6 w-6" />
+      </div>
+      <h3 className="font-display text-xl text-slate-900 dark:text-white">
+        MDX storytelling
+      </h3>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
+        Markdown readability meets React interactivity, so mixing prose with
+        components is as easy as layering toppings.
+      </p>
+    </article>
+    <article className="shadow-brand-500/10 hover:shadow-brand-500/25 relative overflow-hidden rounded-2xl border border-slate-900/5 bg-white p-6 shadow-lg transition hover:-translate-y-1 dark:border-white/10 dark:bg-white/5">
+      <div className="bg-brand-500/15 text-brand-100 dark:bg-brand-500/20 mb-5 flex h-12 w-12 items-center justify-center rounded-2xl">
+        <Users className="text-brand-600 dark:text-brand-300 h-6 w-6" />
+      </div>
+      <h3 className="font-display text-xl text-slate-900 dark:text-white">
+        TypeScript guardrails
+      </h3>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-200/80">
+        If a pizza forgets its price, the build fails. Data safety is our mise
+        en place for a delightful service.
+      </p>
+    </article>
+  </div>
+</section>
 
-  <section className="relative overflow-hidden rounded-[2.5rem] border border-slate-900/10 bg-slate-900 text-slate-100 shadow-[0_30px_100px_-50px_rgba(15,23,42,0.9)] dark:border-white/10">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,61,61,0.35),transparent_65%)]" />
-    <div className="relative grid gap-10 p-12 sm:p-16 md:grid-cols-[1.1fr,0.9fr] md:items-center">
-      <div className="space-y-6">
-        <h2 className="font-display text-3xl sm:text-4xl">Team Values</h2>
-        <p className="max-w-xl text-base text-slate-200/80">
-          Hospitality, iteration, and transparency run both the kitchen and the codebase.
-        </p>
-        <ol className="space-y-4 text-slate-100/90">
-          <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
-            <span className="font-display text-2xl text-white/80">01</span>
-            <div>
-              <h3 className="font-display text-lg text-white">Transparency</h3>
-              <p className="text-sm text-slate-200/80">
-                The entire recipe lives in the repository—no secret sauce, just clean commits.
-              </p>
-            </div>
-          </li>
-          <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
-            <span className="font-display text-2xl text-white/80">02</span>
-            <div>
-              <h3 className="font-display text-lg text-white">Iteration</h3>
-              <p className="text-sm text-slate-200/80">
-                We ship, taste, and adjust. Every improvement starts from the CDN build and climbs.
-              </p>
-            </div>
-          </li>
-          <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
-            <span className="font-display text-2xl text-white/80">03</span>
-            <div>
-              <h3 className="font-display text-lg text-white">Hospitality</h3>
-              <p className="text-sm text-slate-200/80">
-                Ambience matters, so the app ships in permanent golden-hour mode—light mode is banned.
-              </p>
-            </div>
-          </li>
-        </ol>
-      </div>
-      <div className="flex flex-col gap-6">
-        <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-md">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/25">
-              <Rocket className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-display text-2xl text-white">Real-time pizza math</h3>
-              <p className="mt-3 text-sm text-slate-200/80">
-                Toggle menu filters and watch the cart respond instantly. Zustand handles the state orchestration while React Query keeps deliveries hot in cache.
-              </p>
-            </div>
+<section className="relative overflow-hidden rounded-[2.5rem] border border-slate-900/10 bg-slate-900 text-slate-100 shadow-[0_30px_100px_-50px_rgba(15,23,42,0.9)] dark:border-white/10">
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,61,61,0.35),transparent_65%)]" />
+  <div className="relative grid gap-10 p-12 sm:p-16 md:grid-cols-[1.1fr,0.9fr] md:items-center">
+    <div className="space-y-6">
+      <h2 className="font-display text-3xl sm:text-4xl">Team Values</h2>
+      <p className="max-w-xl text-base text-slate-200/80">
+        Hospitality, iteration, and transparency run both the kitchen and the
+        codebase.
+      </p>
+      <ol className="space-y-4 text-slate-100/90">
+        <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
+          <span className="font-display text-2xl text-white/80">01</span>
+          <div>
+            <h3 className="font-display text-lg text-white">Transparency</h3>
+            <p className="text-sm text-slate-200/80">
+              The entire recipe lives in the repository—no secret sauce, just
+              clean commits.
+            </p>
+          </div>
+        </li>
+        <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
+          <span className="font-display text-2xl text-white/80">02</span>
+          <div>
+            <h3 className="font-display text-lg text-white">Iteration</h3>
+            <p className="text-sm text-slate-200/80">
+              We ship, taste, and adjust. Every improvement starts from the CDN
+              build and climbs.
+            </p>
+          </div>
+        </li>
+        <li className="flex gap-4 rounded-2xl bg-white/5 p-4">
+          <span className="font-display text-2xl text-white/80">03</span>
+          <div>
+            <h3 className="font-display text-lg text-white">Hospitality</h3>
+            <p className="text-sm text-slate-200/80">
+              Ambience matters, so the app ships in permanent golden-hour
+              mode—light mode is banned.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+    <div className="flex flex-col gap-6">
+      <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-md">
+        <div className="flex items-start gap-4">
+          <div className="bg-brand-500/25 flex h-12 w-12 items-center justify-center rounded-2xl">
+            <Rocket className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h3 className="font-display text-2xl text-white">
+              Real-time pizza math
+            </h3>
+            <p className="mt-3 text-sm text-slate-200/80">
+              Toggle menu filters and watch the cart respond instantly. Zustand
+              handles the state orchestration while React Query keeps deliveries
+              hot in cache.
+            </p>
           </div>
         </div>
-        <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-md">
-          <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500/25">
-              <Users className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h3 className="font-display text-2xl text-white">Crew-first tooling</h3>
-              <p className="mt-3 text-sm text-slate-200/80">
-                Components are cleanly named for painless debugging, and every deploy links back to the kitchen timeline.
-              </p>
-            </div>
+      </div>
+      <div className="rounded-3xl border border-white/10 bg-white/10 p-8 backdrop-blur-md">
+        <div className="flex items-start gap-4">
+          <div className="bg-brand-500/25 flex h-12 w-12 items-center justify-center rounded-2xl">
+            <Users className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h3 className="font-display text-2xl text-white">
+              Crew-first tooling
+            </h3>
+            <p className="mt-3 text-sm text-slate-200/80">
+              Components are cleanly named for painless debugging, and every
+              deploy links back to the kitchen timeline.
+            </p>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <p className="text-sm text-slate-600 dark:text-slate-300">
     Need more nerdery? Pop back to the menu and inspect the developer console—the components are labeled like stations on the line, so debugging feels like service.
