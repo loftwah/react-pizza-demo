@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -50,6 +50,7 @@ export const CheckoutPage = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceRate, setVoiceRate] = useState(1.05);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
+  const voiceStopRequestedRef = useRef(false);
 
   const cartDetails = useMemo<OrderLineItem[]>(() => {
     const detail = items
@@ -119,6 +120,7 @@ export const CheckoutPage = () => {
 
   const handleResetSubmittedOrder = useCallback(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      voiceStopRequestedRef.current = true;
       window.speechSynthesis.cancel();
     }
     setIsSpeaking(false);
@@ -420,10 +422,12 @@ export const CheckoutPage = () => {
     }
     const { speechSynthesis } = window;
     if (isSpeaking) {
+      voiceStopRequestedRef.current = true;
       speechSynthesis.cancel();
       setIsSpeaking(false);
       return;
     }
+    voiceStopRequestedRef.current = false;
     const itemSummary =
       submittedOrder.items.length > 0
         ? submittedOrder.items
@@ -443,9 +447,20 @@ export const CheckoutPage = () => {
     const utterance = new SpeechSynthesisUtterance(spokenSummary);
     utterance.rate = voiceRate;
     utterance.pitch = 1.05;
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => {
+    utterance.onend = () => {
+      voiceStopRequestedRef.current = false;
       setIsSpeaking(false);
+    };
+    utterance.onerror = (event: SpeechSynthesisErrorEvent) => {
+      setIsSpeaking(false);
+      if (
+        voiceStopRequestedRef.current ||
+        event.error === 'interrupted' ||
+        event.error === 'canceled'
+      ) {
+        voiceStopRequestedRef.current = false;
+        return;
+      }
       showToast({
         message: 'Voice playback hit a snag.',
         tone: 'error',
