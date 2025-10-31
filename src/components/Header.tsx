@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Moon, ShoppingCart, SunMedium } from 'lucide-react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Menu, Moon, ShoppingCart, SunMedium, X } from 'lucide-react';
 import clsx from 'clsx';
 import { useCartStore } from '../stores/cart';
 import { useTheme } from '../providers/theme-context';
@@ -19,6 +19,8 @@ export const Header = () => {
   const isFirstRender = useRef(true);
   const announcementTimer = useRef<number | null>(null);
   const analyticsEnabled = isFeatureEnabled('analyticsDashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -65,6 +67,10 @@ export const Header = () => {
     };
   }, [pizzaLabel, totalItems, totalPrice]);
 
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <header className="print-hidden sticky top-0 z-20 border-b border-stone-200/70 bg-white/80 backdrop-blur transition-colors duration-300 dark:border-white/15 dark:bg-neutral-900/80">
       {cartAnnouncement && (
@@ -88,12 +94,33 @@ export const Header = () => {
             Loftwah Pizza
           </span>
         </NavLink>
-        <nav className="order-2 flex w-full justify-center gap-3 text-sm font-medium text-slate-600 transition-colors md:order-2 md:w-auto dark:text-white/85">
+        <button
+          type="button"
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="primary-navigation"
+          className="order-2 flex w-full items-center justify-between rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-slate-700 transition hover:bg-white focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none sm:hidden dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+        >
+          <span>Navigation</span>
+          {isMobileMenuOpen ? (
+            <X className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Menu className="h-4 w-4" aria-hidden="true" />
+          )}
+        </button>
+        <nav
+          id="primary-navigation"
+          aria-label="Primary"
+          className={clsx(
+            'order-3 w-full flex-col gap-3 text-sm font-medium text-slate-600 transition-colors sm:order-2 sm:w-auto sm:flex-row sm:items-center sm:justify-center sm:gap-3 dark:text-white/85',
+            isMobileMenuOpen ? 'mt-4 flex' : 'hidden sm:flex',
+          )}
+        >
           <NavLink
             to="/"
             className={({ isActive }) =>
               clsx(
-                'rounded-full px-4 py-2 transition-colors',
+                'rounded-full px-4 py-2 text-center transition-colors',
                 isActive
                   ? 'bg-brand-500 shadow-brand-500/25 text-white shadow-lg'
                   : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
@@ -106,7 +133,7 @@ export const Header = () => {
             to="/about"
             className={({ isActive }) =>
               clsx(
-                'rounded-full px-4 py-2 transition-colors',
+                'rounded-full px-4 py-2 text-center transition-colors',
                 isActive
                   ? 'bg-slate-900 text-white shadow shadow-slate-900/10 dark:bg-white dark:text-black'
                   : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
@@ -120,7 +147,7 @@ export const Header = () => {
               to="/analytics"
               className={({ isActive }) =>
                 clsx(
-                  'rounded-full px-4 py-2 transition-colors',
+                  'rounded-full px-4 py-2 text-center transition-colors',
                   isActive
                     ? 'bg-brand-500/20 text-brand-700 shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-100'
                     : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
@@ -153,7 +180,7 @@ export const Header = () => {
             </span>
           </NavLink>
         </nav>
-        <div className="order-3 flex w-full flex-col items-center gap-3 md:order-3 md:flex-row md:justify-end md:justify-self-end">
+        <div className="order-4 flex w-full flex-col items-center gap-3 sm:order-3 sm:flex-row sm:justify-end sm:justify-self-end">
           <button
             type="button"
             onClick={toggleTheme}

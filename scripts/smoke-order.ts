@@ -55,14 +55,19 @@ const main = async () => {
 
   await setupNodeEnv();
 
-  const [{ fetchMenu }, { priceForSize, sizeLabels }, { OrderService }, { useCartStore }, { useOrderHistory }] =
-    await Promise.all([
-      import('../src/domain/menu'),
-      import('../src/domain/pizza'),
-      import('../src/services/order-service'),
-      import('../src/stores/cart'),
-      import('../src/stores/orders'),
-    ]);
+  const [
+    { fetchMenu },
+    { priceForSize, sizeLabels },
+    { OrderService },
+    { useCartStore },
+    { useOrderHistory },
+  ] = await Promise.all([
+    import('../src/domain/menu'),
+    import('../src/domain/pizza'),
+    import('../src/services/order-service'),
+    import('../src/stores/cart'),
+    import('../src/stores/orders'),
+  ]);
 
   const menu = await fetchMenu();
   const selections = menu.slice(0, 2);
@@ -78,7 +83,10 @@ const main = async () => {
 
   const cartDetails = buildCartDetails(selections, priceForSize, sizeLabels);
 
-  const cartTotal = cartDetails.reduce((sum, detail) => sum + detail.lineTotal, 0);
+  const cartTotal = cartDetails.reduce(
+    (sum, detail) => sum + detail.lineTotal,
+    0,
+  );
 
   const service = new OrderService();
   const result = await service.run({

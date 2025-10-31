@@ -1,6 +1,7 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   Activity,
+  Download,
   Loader2,
   RefreshCw,
   TrendingDown,
@@ -11,6 +12,7 @@ import clsx from 'clsx';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useOrderInsights } from '../hooks/useOrderInsights';
 import type { AnalyticsMetric } from '../domain/analytics';
+import type { AnalyticsSnapshot } from '../domain/analytics';
 import { formatCurrency } from '../domain/pizza';
 import {
   formatMetricChange,
@@ -38,6 +40,98 @@ const TrendIcon = ({ trend }: { trend: AnalyticsMetric['trend'] }) => {
     return <TrendingDown className="h-4 w-4" aria-hidden="true" />;
   }
   return <Minus className="h-4 w-4" aria-hidden="true" />;
+};
+
+const escapeCsvCell = (value: unknown) => {
+  if (value === null || typeof value === 'undefined') return '';
+  const stringValue =
+    typeof value === 'string' ? value : JSON.stringify(value);
+  if (/[",\n]/.test(stringValue)) {
+    return `"${stringValue.replace(/"/g, '""')}"`;
+  }
+  return stringValue;
+};
+
+const buildAnalyticsCsv = (
+  snapshot: AnalyticsSnapshot,
+): string => {
+  const rows: string[] = [];
+  rows.push('Section,Id,Label,Value,Unit,Change,Trend');
+  snapshot.metrics.forEach((metric) => {
+    rows.push(
+      [
+        escapeCsvCell('metrics'),
+        escapeCsvCell(metric.id),
+        escapeCsvCell(metric.label),
+        escapeCsvCell(metric.value),
+        escapeCsvCell(metric.unit),
+        escapeCsvCell(metric.change),
+        escapeCsvCell(metric.trend),
+      ].join(','),
+    );
+  });
+
+  rows.push('', 'Section,Pizza Id,Name,Orders,Share,Trend');
+  snapshot.topPizzas.forEach((pizza) => {
+    rows.push(
+      [
+        escapeCsvCell('topPizzas'),
+        escapeCsvCell(pizza.pizzaId),
+        escapeCsvCell(pizza.name),
+        escapeCsvCell(pizza.orders),
+        escapeCsvCell(pizza.share),
+        escapeCsvCell(pizza.trend),
+      ].join(','),
+    );
+  });
+
+  rows.push('', 'Section,Hour,Orders');
+  snapshot.hourlyOrders.forEach((entry) => {
+    rows.push(
+      [
+        escapeCsvCell('hourlyOrders'),
+        escapeCsvCell(entry.hour),
+        escapeCsvCell(entry.orders),
+      ].join(','),
+    );
+  });
+
+  rows.push('', 'Section,Channel,Orders,Share');
+  snapshot.channelBreakdown.forEach((entry) => {
+    rows.push(
+      [
+        escapeCsvCell('channelBreakdown'),
+        escapeCsvCell(entry.channel),
+        escapeCsvCell(entry.orders),
+        escapeCsvCell(entry.share),
+      ].join(','),
+    );
+  });
+
+  rows.push('', 'Section,Index,Insight');
+  snapshot.insights.forEach((insight, index) => {
+    rows.push(
+      [
+        escapeCsvCell('insights'),
+        escapeCsvCell(index + 1),
+        escapeCsvCell(insight),
+      ].join(','),
+    );
+  });
+
+  rows.push('', 'Section,Timestamp,Label,Details');
+  snapshot.recentEvents.forEach((event) => {
+    rows.push(
+      [
+        escapeCsvCell('recentEvents'),
+        escapeCsvCell(event.timestamp),
+        escapeCsvCell(event.label),
+        escapeCsvCell(event.details),
+      ].join(','),
+    );
+  });
+
+  return rows.join('\n');
 };
 
 export const AnalyticsPage = () => {
@@ -75,6 +169,21 @@ export const AnalyticsPage = () => {
     return `${timeFormatter.format(parsed)} • ${dateFormatter.format(parsed)}`;
   };
 
+  const handleExportCsv = useCallback(() => {
+    if (!data) return;
+    const csv = buildAnalyticsCsv(data);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    const timestamp = data.generatedAt
+      ? new Date(data.generatedAt).toISOString().slice(0, 10)
+      : 'snapshot';
+    anchor.download = `loftwah-analytics-${timestamp}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }, [data]);
+
   return (
     <section className="flex flex-col gap-10">
       <header className="flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
@@ -91,24 +200,35 @@ export const AnalyticsPage = () => {
             </p>
           )}
         </div>
-        <button
-          type="button"
-          onClick={() => void refetch()}
-          disabled={isFetching}
-          className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white px-5 py-2 text-sm font-semibold tracking-[0.25em] text-slate-700 uppercase transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:border-white/15 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/15 dark:disabled:border-white/10 dark:disabled:bg-white/5 dark:disabled:text-white/30"
-        >
-          {isFetching ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              Refreshing
-            </>
-          ) : (
-            <>
-              <RefreshCw className="h-4 w-4" aria-hidden="true" />
-              Refresh data
-            </>
-          )}
-        </button>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+          <button
+            type="button"
+            onClick={handleExportCsv}
+            disabled={!data}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200/70 bg-white px-5 py-2 text-sm font-semibold tracking-[0.25em] uppercase text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:border-white/15 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/15 dark:disabled:border-white/10 dark:disabled:bg-white/5 dark:disabled:text-white/30"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Export CSV
+          </button>
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            disabled={isFetching}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200/70 bg-white px-5 py-2 text-sm font-semibold tracking-[0.25em] uppercase text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 dark:border-white/15 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/15 dark:disabled:border-white/10 dark:disabled:bg-white/5 dark:disabled:text-white/30"
+          >
+            {isFetching ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Refreshing
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                Refresh data
+              </>
+            )}
+          </button>
+        </div>
       </header>
 
       <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">

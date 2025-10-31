@@ -1,4 +1,12 @@
-import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import {
+  beforeAll,
+  beforeEach,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import { getPizzaById } from '../../domain/menu';
 import { priceForSize, sizeLabels } from '../../domain/pizza';
 import { setupNodeEnv } from '../../../scripts/setup-node-env';
@@ -12,9 +20,9 @@ vi.mock('../mock-backend', () => ({
 }));
 
 vi.mock('../../shared-utils/telemetry', async () => {
-  const actual = await vi.importActual<typeof import('../../shared-utils/telemetry')>(
-    '../../shared-utils/telemetry',
-  );
+  const actual = await vi.importActual<
+    typeof import('../../shared-utils/telemetry')
+  >('../../shared-utils/telemetry');
   return {
     ...actual,
     emitEvent: vi.fn(),
@@ -58,7 +66,8 @@ const buildInput = (): OrderRunInput => {
 };
 
 beforeAll(async () => {
-  process.env.PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL ?? 'http://localhost/';
+  process.env.PUBLIC_BASE_URL =
+    process.env.PUBLIC_BASE_URL ?? 'http://localhost/';
   await setupNodeEnv();
 });
 
@@ -94,7 +103,9 @@ describe('OrderService.run', () => {
     const result = await service.run(input);
 
     if (!result.ok) {
-      throw new Error(`Pipeline failed unexpectedly: ${result.error?.message ?? 'unknown'}`);
+      throw new Error(
+        `Pipeline failed unexpectedly: ${result.error?.message ?? 'unknown'}`,
+      );
     }
 
     expect(result.degraded).toHaveLength(0);
@@ -130,7 +141,9 @@ describe('OrderService.run', () => {
     const result = await runPromise;
 
     if (!result.ok) {
-      throw new Error(`Pipeline failed unexpectedly: ${result.error?.message ?? 'unknown'}`);
+      throw new Error(
+        `Pipeline failed unexpectedly: ${result.error?.message ?? 'unknown'}`,
+      );
     }
     const degradedSteps = result.degraded.map((entry) => entry.step);
     expect(degradedSteps).toContain('persistOrder');

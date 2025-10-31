@@ -85,10 +85,9 @@ const runStep = async (
     ...overrides,
   };
 
-  const result = await (handler as (ctx: Record<string, unknown>) => unknown).call(
-    service,
-    context,
-  );
+  const result = await (
+    handler as (ctx: Record<string, unknown>) => unknown
+  ).call(service, context);
 
   console.log(JSON.stringify({ ok: true, step, result }, null, 2));
 

@@ -657,14 +657,26 @@ export const CheckoutPage = () => {
                   alt={`QR code for order ${submittedOrder?.id ?? ''}`}
                   className="mx-auto h-28 w-28 rounded-2xl border border-stone-200/70 bg-white/90 p-2 sm:mx-0 dark:border-white/15 dark:bg-white/10"
                 />
-                <div className="flex flex-col gap-1 text-sm text-slate-600 dark:text-white/70">
-                  <span className="text-[11px] font-semibold tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
-                    Demo quick share
-                  </span>
-                  <p>
-                    Scan this QR code on another device to recreate the order
-                    instantly.
-                  </p>
+                <div className="flex flex-1 flex-col gap-3 text-sm text-slate-600 dark:text-white/70">
+                  <div className="space-y-1">
+                    <span className="text-[11px] font-semibold tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
+                      Demo quick share
+                    </span>
+                    <p>
+                      Scan this QR code on another device to recreate the order
+                      instantly, or copy the link for later.
+                    </p>
+                  </div>
+                  {shareLink && (
+                    <button
+                      type="button"
+                      onClick={() => void copyToClipboard(shareLink)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200/70 bg-white px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase text-slate-600 transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+                    >
+                      <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+                      Copy link
+                    </button>
+                  )}
                 </div>
               </div>
             )}
