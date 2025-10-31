@@ -79,7 +79,12 @@ export const CheckoutPage = () => {
   const hasCart = cartDetails.length > 0;
   const formattedTotal = formatCurrency(cartTotal);
   const formattedCount = cartCount.toString().padStart(2, '0');
-  const mockReadyEta = useMemo(() => getMockReadyEta(), [cartCount, hasCart]);
+  const mockReadyEta = useMemo(() => {
+    if (!hasCart || cartCount <= 0) {
+      return '—';
+    }
+    return getMockReadyEta();
+  }, [hasCart, cartCount]);
   const historyPreview = orderHistory.slice(0, 3);
   const shareLink = useMemo(() => {
     if (!submittedOrder || typeof window === 'undefined') return null;
@@ -836,7 +841,7 @@ export const CheckoutPage = () => {
             <div className="flex flex-col gap-1">
               <span>Ready by</span>
               <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                {hasCart ? mockReadyEta : '—'}
+                {mockReadyEta}
               </span>
             </div>
           </div>

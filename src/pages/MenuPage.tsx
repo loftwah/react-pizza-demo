@@ -91,7 +91,13 @@ const PizzaCardSkeleton = () => (
 export const MenuPage = () => {
   const [filter, setFilter] = useState<PizzaFilter>('all');
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const { data: pizzas, isLoading, error } = useMenu();
+  const {
+    data: pizzas,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useMenu();
   const totalPrice = useCartStore((state) => state.totalPrice());
   const totalItems = useCartStore((state) => state.totalItems());
   const addItemToCart = useCartStore((state) => state.addItem);
@@ -102,6 +108,7 @@ export const MenuPage = () => {
   const sharedOrderId = searchParams.get('order');
   const ordersHydrated =
     (useOrderHistory as PersistedOrderStore).persist?.hasHydrated?.() ?? true;
+  const [isHydratingSharedOrder, setIsHydratingSharedOrder] = useState(false);
 
   useEffect(() => {
     const evaluateOpenStatus = () => {
@@ -123,25 +130,31 @@ export const MenuPage = () => {
 
   useEffect(() => {
     if (!sharedOrderId || !ordersHydrated) return;
-    const matchingOrder = orderHistory.find(
-      (order) => order.id === sharedOrderId,
-    );
-    if (matchingOrder) {
-      hydrateFromOrder(matchingOrder);
-      showToast({
-        message: `Recreated order ${matchingOrder.id} in your cart.`,
-        tone: 'success',
-      });
-    } else {
-      showToast({
-        message:
-          'Shared order not found on this device. Create it once to sync locally.',
-        tone: 'info',
-      });
+
+    setIsHydratingSharedOrder(true);
+    try {
+      const matchingOrder = orderHistory.find(
+        (order) => order.id === sharedOrderId,
+      );
+      if (matchingOrder) {
+        hydrateFromOrder(matchingOrder);
+        showToast({
+          message: `Recreated order ${matchingOrder.id} in your cart.`,
+          tone: 'success',
+        });
+      } else {
+        showToast({
+          message:
+            'Shared order not found on this device. Create it once to sync locally.',
+          tone: 'info',
+        });
+      }
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('order');
+      setSearchParams(nextParams, { replace: true });
+    } finally {
+      setIsHydratingSharedOrder(false);
     }
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete('order');
-    setSearchParams(nextParams, { replace: true });
   }, [
     hydrateFromOrder,
     orderHistory,
@@ -275,7 +288,23 @@ export const MenuPage = () => {
         </div>
       </header>
 
-      {isLoading && (
+      <AnimatePresence>
+        {isHydratingSharedOrder && (
+          <motion.div
+            key="shared-order-hydration"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:border-emerald-300/40 dark:bg-emerald-500/20 dark:text-emerald-100 flex items-center justify-center gap-3 rounded-2xl border px-5 py-3 text-xs font-semibold tracking-[0.3em] uppercase"
+            role="status"
+            aria-live="polite"
+          >
+            Hydrating shared order…
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {(isLoading || (isFetching && !pizzas)) && (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <PizzaCardSkeleton key={index} />
@@ -284,14 +313,23 @@ export const MenuPage = () => {
       )}
 
       {error && (
-        <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:text-brand-100 rounded-2xl border p-6 text-sm">
-          {error instanceof Error
-            ? error.message
-            : 'We burned this batch. Try again shortly!'}
+        <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:text-brand-100 flex flex-col gap-4 rounded-2xl border p-6 text-sm">
+          <span>
+            {error instanceof Error
+              ? error.message
+              : 'We burned this batch. Try again shortly!'}
+          </span>
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="self-start rounded-full border border-brand-500/40 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-700 transition hover:bg-white focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-brand-200/50 dark:bg-white/10 dark:text-brand-100 dark:hover:bg-white/15 dark:focus-visible:ring-brand-300/80 dark:focus-visible:ring-offset-slate-950"
+          >
+            Retry loading menu
+          </button>
         </div>
       )}
 
-      {!isLoading && !error && (
+      {!isLoading && !error && filteredPizzas.length > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           <AnimatePresence mode="sync">
             {filteredPizzas.map((pizza, index) => (

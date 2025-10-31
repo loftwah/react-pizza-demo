@@ -69,6 +69,8 @@ const ToastViewport = ({
 }) => (
   <div
     aria-live="polite"
+    aria-atomic="true"
+    aria-relevant="additions text"
     className="pointer-events-none fixed right-6 bottom-6 z-50 flex max-w-sm flex-col gap-3 sm:right-8 sm:bottom-8"
   >
     {toasts.map((toast) => (
@@ -139,6 +141,7 @@ export const ToastProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {

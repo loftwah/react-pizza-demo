@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Moon, ShoppingCart, SunMedium } from 'lucide-react';
 import clsx from 'clsx';
 import { useCartStore } from '../stores/cart';
 import { useTheme } from '../providers/theme-context';
+import { formatCurrency } from '../domain/pizza';
 
 export const Header = () => {
   const totalItems = useCartStore((state) => state.totalItems());
@@ -12,6 +13,9 @@ export const Header = () => {
   const isDark = theme === 'dark';
   const pizzaLabel = totalItems === 1 ? 'pizza' : 'pizzas';
   const [badgePulse, setBadgePulse] = useState(false);
+  const [cartAnnouncement, setCartAnnouncement] = useState('');
+  const isFirstRender = useRef(true);
+  const announcementTimer = useRef<number>();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -25,8 +29,45 @@ export const Header = () => {
     return () => window.clearTimeout(timeout);
   }, [totalItems]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const totalMessage =
+      totalItems > 0
+        ? `Cart updated. ${totalItems} ${pizzaLabel} in cart. Total ${formatCurrency(
+            totalPrice,
+          )}.`
+        : 'Cart cleared.';
+
+    setCartAnnouncement(totalMessage);
+
+    if (announcementTimer.current) {
+      window.clearTimeout(announcementTimer.current);
+    }
+    announcementTimer.current = window.setTimeout(() => {
+      setCartAnnouncement('');
+      announcementTimer.current = undefined;
+    }, 2000);
+
+    return () => {
+      if (announcementTimer.current) {
+        window.clearTimeout(announcementTimer.current);
+        announcementTimer.current = undefined;
+      }
+    };
+  }, [pizzaLabel, totalItems, totalPrice]);
+
   return (
     <header className="print-hidden sticky top-0 z-20 border-b border-stone-200/70 bg-white/80 backdrop-blur transition-colors duration-300 dark:border-white/15 dark:bg-neutral-900/80">
+      {cartAnnouncement && (
+        <span className="sr-only" aria-live="polite" role="status">
+          {cartAnnouncement}
+        </span>
+      )}
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 px-6 py-4 sm:gap-6 md:grid-cols-[auto_1fr_auto]">
         <NavLink
           to="/"
