@@ -1,5 +1,7 @@
 import type { Pizza } from './pizza'
 
+const withBasePath = (file: string) => `${import.meta.env.BASE_URL}${file}`
+
 export const menu: Pizza[] = [
   {
     id: 'pepperoni-classic',
@@ -9,7 +11,7 @@ export const menu: Pizza[] = [
     toppings: ['Tomato', 'Mozzarella', 'Pepperoni'],
     vegetarian: false,
     spicy: false,
-    image: '/pepperoni-classic.png',
+    image: withBasePath('pepperoni-classic.png'),
   },
   {
     id: 'smoky-bbq',
@@ -19,7 +21,7 @@ export const menu: Pizza[] = [
     toppings: ['BBQ Sauce', 'Chicken', 'Corn', 'Parsley'],
     vegetarian: false,
     spicy: false,
-    image: '/smokey-bbq-chicken.png',
+    image: withBasePath('smokey-bbq-chicken.png'),
   },
   {
     id: 'firecracker',
@@ -29,7 +31,7 @@ export const menu: Pizza[] = [
     toppings: ['Scorpion Oil', 'Salami', 'Jalapeño', 'Hot Honey'],
     vegetarian: false,
     spicy: true,
-    image: '/firecracker.png',
+    image: withBasePath('firecracker.png'),
   },
   {
     id: 'green-garden',
@@ -39,7 +41,7 @@ export const menu: Pizza[] = [
     toppings: ['Pesto', 'Tomato', 'Zucchini', 'Ricotta'],
     vegetarian: true,
     spicy: false,
-    image: '/green-garden.png',
+    image: withBasePath('green-garden.png'),
   },
   {
     id: 'wild-mushroom',
@@ -49,7 +51,7 @@ export const menu: Pizza[] = [
     toppings: ['Garlic Cream', 'Mushroom', 'Truffle Salt'],
     vegetarian: true,
     spicy: false,
-    image: '/wild-mushroom.png',
+    image: withBasePath('wild-mushroom.png'),
   },
   {
     id: 'pineapple-party',
@@ -59,7 +61,7 @@ export const menu: Pizza[] = [
     toppings: ['Tomato', 'Ham', 'Pineapple', 'Chilli'],
     vegetarian: false,
     spicy: true,
-    image: '/pineapple-party.png',
+    image: withBasePath('pineapple-party.png'),
   },
 ]
 

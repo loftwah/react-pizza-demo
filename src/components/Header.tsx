@@ -18,7 +18,7 @@ export const Header = () => {
           className="order-1 flex items-center gap-3 justify-self-center md:justify-self-start"
         >
           <img
-            src="/loftwahs-pizza.png"
+            src={`${import.meta.env.BASE_URL}loftwahs-pizza.png`}
             alt="Loftwah Pizza logo"
             className="h-10 w-auto rounded-full border border-stone-200/70 bg-white p-1 transition-colors dark:border-white/20 dark:bg-white/15"
           />
