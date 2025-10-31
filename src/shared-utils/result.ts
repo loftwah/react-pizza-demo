@@ -37,4 +37,5 @@ export type PipelineResult<TValue, TError = StepError> = Result<
 > & {
   timeline: StepLog[];
   degraded: StepLog[];
+  correlationId: string;
 };

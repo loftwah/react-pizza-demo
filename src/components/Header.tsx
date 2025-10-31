@@ -6,6 +6,7 @@ import { useCartStore } from '../stores/cart';
 import { useTheme } from '../providers/theme-context';
 import { formatCurrency } from '../domain/pizza';
 import { isFeatureEnabled } from '../config/features';
+import { getBaseUrl } from '../shared-utils/base-url';
 
 export const Header = () => {
   const totalItems = useCartStore((state) => state.totalItems());
@@ -77,7 +78,7 @@ export const Header = () => {
           className="order-1 flex items-center gap-3 justify-self-center md:justify-self-start"
         >
           <img
-            src={`${import.meta.env.BASE_URL}loftwahs-pizza.jpg`}
+            src={`${getBaseUrl()}loftwahs-pizza.jpg`}
             alt="Loftwah Pizza logo"
             width={40}
             height={40}

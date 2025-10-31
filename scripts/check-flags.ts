@@ -13,6 +13,13 @@ for (const [name, feature] of Object.entries(features)) {
     continue;
   }
 
+  if (feature.rolloutPercentage < 0 || feature.rolloutPercentage > 100) {
+    console.error(
+      `Flag "${name}" has an invalid rolloutPercentage (${feature.rolloutPercentage}).`,
+    );
+    exitCode = 1;
+  }
+
   if (expiresAt < now) {
     console.error(
       `Flag expired: ${name} (owner: ${feature.owner}, reason: ${feature.reason}).`,

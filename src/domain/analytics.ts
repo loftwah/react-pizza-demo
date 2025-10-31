@@ -1,3 +1,6 @@
+import { getBaseUrl } from '../shared-utils/base-url';
+import { isDevEnvironment } from '../shared-utils/env';
+
 export type MetricTrend = 'up' | 'down' | 'steady';
 
 export type AnalyticsMetric = {
@@ -156,7 +159,7 @@ export const analyticsSnapshot: AnalyticsSnapshot = {
 };
 
 export const fetchAnalytics = async (): Promise<AnalyticsSnapshot> => {
-  const endpoint = `${import.meta.env.BASE_URL}api/analytics.json`;
+  const endpoint = `${getBaseUrl()}api/analytics.json`;
   try {
     const response = await fetch(endpoint, { cache: 'no-store' });
     if (!response.ok) {
@@ -173,7 +176,7 @@ export const fetchAnalytics = async (): Promise<AnalyticsSnapshot> => {
       })),
     };
   } catch (error) {
-    if (import.meta.env.DEV) {
+    if (isDevEnvironment()) {
       console.warn(
         '[analytics] Falling back to embedded analytics snapshot after fetch error:',
         error,

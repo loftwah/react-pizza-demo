@@ -22,6 +22,7 @@ import { useOrderHistory } from '../stores/orders';
 import type { OrderLineItem, OrderRecord } from '../stores/orders';
 import { OrderService } from '../services/order-service';
 import { isFeatureEnabled } from '../config/features';
+import { isDevEnvironment } from '../shared-utils/env';
 import { useOrderInsights } from '../hooks/useOrderInsights';
 
 const orderTimeFormatter = new Intl.DateTimeFormat('en-AU', {
@@ -196,7 +197,7 @@ export const CheckoutPage = () => {
               'Something went wrong while preparing the order.',
             tone: 'error',
           });
-          if (import.meta.env.DEV) {
+          if (isDevEnvironment()) {
             console.table(result.timeline);
           }
           return;
@@ -220,7 +221,7 @@ export const CheckoutPage = () => {
           });
         }
 
-        if (import.meta.env.DEV) {
+        if (isDevEnvironment()) {
           console.table(result.timeline);
         }
 

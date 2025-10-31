@@ -11,7 +11,8 @@ import {
   type StepLog,
   type StepResult,
 } from '../shared-utils/result';
-import { emitEvent } from '../shared-utils/telemetry';
+import { retryWithBackoff } from '../shared-utils/retry-with-backoff';
+import { createCorrelationId, emitEvent } from '../shared-utils/telemetry';
 import { submitOrderToKitchen } from './mock-backend';
 
 const generateOrderId = () =>
@@ -26,6 +27,7 @@ export type OrderRunInput = {
 };
 
 type OrderRunContext = OrderRunInput & {
+  correlationId: string;
   orderId?: string;
   order?: OrderRecord;
 };
@@ -67,7 +69,8 @@ export class OrderService {
   };
 
   async run(input: OrderRunInput): Promise<PipelineResult<OrderRecord>> {
-    let context: OrderRunContext = { ...input };
+    const correlationId = createCorrelationId();
+    let context: OrderRunContext = { ...input, correlationId };
     const timeline: StepLog[] = [];
     const degraded: StepLog[] = [];
 
@@ -98,6 +101,7 @@ export class OrderService {
           ),
           timeline,
           degraded,
+          correlationId,
         };
       }
 
@@ -115,6 +119,7 @@ export class OrderService {
         ),
         timeline,
         degraded,
+        correlationId,
       };
     }
 
@@ -122,6 +127,7 @@ export class OrderService {
       ...ok(context.order),
       timeline,
       degraded,
+      correlationId,
     };
   }
 
@@ -232,22 +238,25 @@ export class OrderService {
       items: context.cartDetails.map((item) => ({ ...item })),
     };
 
-    let submissionError: unknown;
-    let withSubmission = order;
+    const submissionAttempt = await retryWithBackoff(
+      () => submitOrderToKitchen(order),
+      { tries: 2, baseMs: 400 },
+    );
 
-    try {
-      const submission = await submitOrderToKitchen(order);
-      withSubmission = { ...order, submission };
-    } catch (error) {
-      submissionError = error;
-    }
+    const submissionError =
+      'value' in submissionAttempt ? undefined : submissionAttempt.error;
+
+    const submission =
+      'value' in submissionAttempt ? submissionAttempt.value : undefined;
+
+    const withSubmission = submission ? { ...order, submission } : order;
 
     try {
       useOrderHistory.getState().addOrder(withSubmission);
     } catch (error) {
       return {
         status: 'failed',
-        attempts: 1,
+        attempts: submissionAttempt.attempts,
         error: {
           kind: 'PersistFailed',
           message:
@@ -262,7 +271,7 @@ export class OrderService {
     if (submissionError) {
       return {
         status: 'degraded',
-        attempts: 1,
+        attempts: submissionAttempt.attempts,
         error: {
           kind: 'OrderSubmissionFailed',
           message:
@@ -279,7 +288,7 @@ export class OrderService {
 
     return {
       status: 'ok',
-      attempts: 1,
+      attempts: submissionAttempt.attempts,
       value: { order: withSubmission },
     };
   }
@@ -318,12 +327,52 @@ export class OrderService {
     }
 
     try {
-      await emitEvent('order.submitted', {
-        orderId: context.order.id,
-        total: context.order.total,
-        itemCount: context.order.items.length,
-      });
-      return { status: 'ok', attempts: 1 };
+      const attempt = await retryWithBackoff(
+        async () => {
+          const result = await emitEvent({
+            component: 'order-service',
+            action: 'emitAnalytics',
+            status: 'ok',
+            correlationId: context.correlationId,
+            payload: {
+              orderId: context.order?.id,
+              total: context.order?.total,
+              itemCount: context.order?.items.length,
+            },
+          });
+          if (!result.ok) {
+            throw result.error;
+          }
+          return true;
+        },
+        { tries: 2, baseMs: 250 },
+      );
+
+      if ('value' in attempt && attempt.value) {
+        return { status: 'ok', attempts: attempt.attempts };
+      }
+
+      const telemetryError =
+        'error' in attempt
+          ? (attempt.error as {
+              kind?: string;
+              message?: string;
+              retryable?: boolean;
+            })
+          : undefined;
+
+      return {
+        status: 'degraded',
+        attempts: attempt.attempts,
+        error: {
+          kind: telemetryError?.kind ?? 'AnalyticsFailed',
+          message:
+            telemetryError?.message ??
+            'Failed to emit analytics telemetry payload.',
+          retryable: telemetryError?.retryable ?? true,
+        },
+        nextStep: 'Retry analytics emission when connectivity is restored.',
+      };
     } catch (error) {
       return {
         status: 'degraded',

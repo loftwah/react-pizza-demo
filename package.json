@@ -16,8 +16,9 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "doctor:cart": "./bin/doctor-cart.mjs",
-    "doctor:orders": "./bin/doctor-orders.mjs",
+    "doctor:cart": "./bin/doctor-cart.ts",
+    "doctor:orders": "./bin/doctor-orders.ts",
+    "pipeline:debug": "./bin/pipeline-debug.ts",
     "smoke": "./bin/smoke",
     "check:flags": "tsx scripts/check-flags.ts"
   },

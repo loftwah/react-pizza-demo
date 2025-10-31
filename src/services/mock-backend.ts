@@ -1,3 +1,5 @@
+import { getBaseUrl } from '../shared-utils/base-url';
+import { isDevEnvironment } from '../shared-utils/env';
 import type { OrderRecord, OrderSubmissionReceipt } from '../stores/orders';
 const delay = (ms: number) =>
   new Promise((resolve) => {
@@ -10,7 +12,7 @@ export const submitOrderToKitchen = async (
   // Simulate a network round-trip
   await delay(650 + Math.random() * 400);
 
-  const endpoint = `${import.meta.env.BASE_URL}api/order-response.json`;
+  const endpoint = `${getBaseUrl()}api/order-response.json`;
   let response: Response | null = null;
 
   try {
@@ -27,7 +29,7 @@ export const submitOrderToKitchen = async (
       cache: 'no-store',
     });
   } catch (error) {
-    if (import.meta.env.DEV) {
+    if (isDevEnvironment()) {
       console.warn(
         '[mock-backend] POST request failed, retrying with GET fallback.',
         error,

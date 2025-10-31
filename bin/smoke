@@ -22,7 +22,8 @@ trap cleanup EXIT
 sleep 5
 
 echo "Running smoke checks..."
-curl -fsS http://127.0.0.1:42069/react-pizza-demo/ > /dev/null
-curl -fsS http://127.0.0.1:42069/react-pizza-demo/checkout > /dev/null
+curl -fsS http://127.0.0.1:42069/ > /dev/null
+curl -fsS http://127.0.0.1:42069/checkout > /dev/null
+npm exec --prefix "$ROOT_DIR" -- tsx scripts/smoke-order.ts --base http://127.0.0.1:42069/
 
 echo "Smoke test passed."

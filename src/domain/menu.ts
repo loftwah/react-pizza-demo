@@ -1,6 +1,8 @@
+import { getBaseUrl } from '../shared-utils/base-url';
+import { isDevEnvironment } from '../shared-utils/env';
 import type { Pizza } from './pizza';
 
-const withBasePath = (file: string) => `${import.meta.env.BASE_URL}${file}`;
+const withBasePath = (file: string) => `${getBaseUrl()}${file}`;
 const imageWithBasePath = (image: string) =>
   image.startsWith('http') ? image : withBasePath(image.replace(/^\//, ''));
 
@@ -73,7 +75,7 @@ export const menu: Pizza[] = [
 ];
 
 export const fetchMenu = async (): Promise<Pizza[]> => {
-  const endpoint = `${import.meta.env.BASE_URL}api/menu.json`;
+  const endpoint = `${getBaseUrl()}api/menu.json`;
   try {
     const response = await fetch(endpoint, { cache: 'no-store' });
     if (!response.ok) {
@@ -85,7 +87,7 @@ export const fetchMenu = async (): Promise<Pizza[]> => {
       image: imageWithBasePath(pizza.image),
     }));
   } catch (error) {
-    if (import.meta.env.DEV) {
+    if (isDevEnvironment()) {
       console.warn(
         '[menu] Falling back to embedded pizza data after fetch error:',
         error,

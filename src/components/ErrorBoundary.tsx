@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { isDevEnvironment } from '../shared-utils/env';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
@@ -24,7 +25,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    if (import.meta.env.DEV) {
+    if (isDevEnvironment()) {
       console.error('Error captured by ErrorBoundary:', error, errorInfo);
     }
   }
