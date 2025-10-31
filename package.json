@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.69.420",
   "type": "module",
-  "homepage": "https://loftwah.github.io/react-pizza-demo/",
+  "homepage": "https://pizza.deanlofts.xyz/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
