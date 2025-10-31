@@ -1,0 +1,6 @@
+{
+  "status": "received",
+  "message": "Order locked in. The kitchen just got the ticket.",
+  "kitchenReference": "PASS-9B",
+  "estimatedPrepMinutes": 18
+}
