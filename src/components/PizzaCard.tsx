@@ -1,18 +1,18 @@
-import { useMemo, useState } from "react";
-import { Flame, Leaf, ShoppingCart } from "lucide-react";
-import clsx from "clsx";
-import { useCartStore } from "../stores/cart";
-import type { Pizza, PizzaSize } from "../domain/pizza";
-import { formatCurrency, priceForSize, sizeLabels } from "../domain/pizza";
+import { useMemo, useState } from 'react';
+import { Flame, Leaf, ShoppingCart } from 'lucide-react';
+import clsx from 'clsx';
+import { useCartStore } from '../stores/cart';
+import type { Pizza, PizzaSize } from '../domain/pizza';
+import { formatCurrency, priceForSize, sizeLabels } from '../domain/pizza';
 
 type PizzaCardProps = {
   pizza: Pizza;
 };
 
-const sizeOrder: PizzaSize[] = ["small", "medium", "large"];
+const sizeOrder: PizzaSize[] = ['small', 'medium', 'large'];
 
 export const PizzaCard = ({ pizza }: PizzaCardProps) => {
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>("medium");
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>('medium');
   const addItem = useCartStore((state) => state.addItem);
   const decrementItem = useCartStore((state) => state.decrementItem);
   const removeItem = useCartStore((state) => state.removeItem);
@@ -28,7 +28,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
   };
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 transition hover:-translate-y-1 hover:border-brand-400/60 hover:shadow-2xl hover:shadow-brand-500/20 dark:border-white/20 dark:bg-white/10 dark:text-white">
+    <article className="group hover:border-brand-400/60 hover:shadow-brand-500/20 relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 transition hover:-translate-y-1 hover:shadow-2xl dark:border-white/20 dark:bg-white/10 dark:text-white">
       <img
         alt={pizza.displayName}
         src={pizza.image}
@@ -37,7 +37,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
       />
       <div className="flex flex-1 flex-col gap-6 px-6 pt-5">
         <div>
-          <div className="flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-white/60">
+          <div className="flex items-center gap-2 text-xs tracking-[0.3em] text-slate-500 uppercase dark:text-white/60">
             {pizza.vegetarian && (
               <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-600 dark:text-emerald-200">
                 <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
@@ -45,13 +45,13 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
               </span>
             )}
             {pizza.spicy && (
-              <span className="flex items-center gap-1.5 rounded-full border border-brand-500/50 bg-brand-500/10 px-3 py-1 text-brand-500 dark:text-brand-200">
+              <span className="border-brand-500/50 bg-brand-500/10 text-brand-500 dark:text-brand-200 flex items-center gap-1.5 rounded-full border px-3 py-1">
                 <Flame className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Spicy</span>
               </span>
             )}
           </div>
-          <h3 className="mt-3 font-display text-2xl font-semibold text-slate-900 dark:text-white">
+          <h3 className="font-display mt-3 text-2xl font-semibold text-slate-900 dark:text-white">
             {pizza.displayName}
           </h3>
           <p className="mt-2 text-sm text-slate-600 dark:text-white/70">
@@ -67,15 +67,15 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                 type="button"
                 onClick={() => setSelectedSize(size)}
                 className={clsx(
-                  "flex-1 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900",
+                  'focus-visible:ring-brand-400 flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
                   size === selectedSize
-                    ? "border-brand-400 bg-brand-500 text-white shadow-brand-500/20 focus-visible:ring-brand-400"
-                    : "border-stone-200/70 bg-white text-slate-700 hover:border-brand-200 hover:bg-brand-50 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15",
+                    ? 'border-brand-400 bg-brand-500 shadow-brand-500/20 focus-visible:ring-brand-400 text-white'
+                    : 'hover:border-brand-200 hover:bg-brand-50 border-stone-200/70 bg-white text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
                 )}
               >
                 <div className="flex flex-col">
                   <span>{sizeLabels[size]}</span>
-                  <span className="text-[10px] uppercase tracking-[0.3em] text-slate-400 dark:text-white/40">
+                  <span className="text-[10px] tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
                     {formatCurrency(priceForSize(pizza, size))}
                   </span>
                 </div>
@@ -102,14 +102,14 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   <button
                     type="button"
                     onClick={() => addItem(pizza.id, selectedSize)}
-                    className="h-10 w-10 rounded-full border border-brand-500/80 bg-brand-500 text-lg text-white transition hover:bg-brand-400 dark:border-white/30"
+                    className="border-brand-500/80 bg-brand-500 hover:bg-brand-400 h-10 w-10 rounded-full border text-lg text-white transition dark:border-white/30"
                   >
                     +
                   </button>
                   <button
                     type="button"
                     onClick={() => removeItem(cartItem.id)}
-                    className="ml-2 text-xs uppercase tracking-[0.3em] text-slate-500 transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
+                    className="ml-2 text-xs tracking-[0.3em] text-slate-500 uppercase transition hover:text-slate-700 dark:text-white/70 dark:hover:text-white/85"
                   >
                     Clear
                   </button>
@@ -119,7 +119,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                 <button
                   type="button"
                   onClick={handleAdd}
-                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-500 via-brand-500 to-brand-600 px-6 py-2.5 text-sm font-semibold uppercase tracking-[0.22em] text-white shadow-lg shadow-brand-500/30 transition hover:from-brand-600 hover:to-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-brand-400 dark:focus-visible:ring-offset-neutral-950"
+                  className="from-brand-500 via-brand-500 to-brand-600 shadow-brand-500/30 hover:from-brand-600 hover:to-brand-500 focus-visible:ring-brand-300 dark:focus-visible:ring-brand-400 flex items-center gap-2 rounded-full bg-gradient-to-r px-6 py-2.5 text-sm font-semibold tracking-[0.22em] text-white uppercase shadow-lg transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-950"
                 >
                   <ShoppingCart className="h-4 w-4" aria-hidden="true" />
                   <span>Add To Order</span>

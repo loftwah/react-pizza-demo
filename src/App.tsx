@@ -1,7 +1,7 @@
-import { Route, Routes } from "react-router-dom";
-import { Layout } from "./components/Layout";
-import { MenuPage } from "./pages/MenuPage";
-import About from "./pages/About.mdx";
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { MenuPage } from './pages/MenuPage';
+import About from './pages/About.mdx';
 
 const NotFound = () => (
   <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">

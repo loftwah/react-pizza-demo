@@ -1,72 +1,72 @@
-import type { Pizza } from "./pizza";
+import type { Pizza } from './pizza';
 
 const withBasePath = (file: string) => `${import.meta.env.BASE_URL}${file}`;
 
 export const menu: Pizza[] = [
   {
-    id: "pepperoni-classic",
-    displayName: "Pepperoni Classic",
+    id: 'pepperoni-classic',
+    displayName: 'Pepperoni Classic',
     description:
-      "Tomato sugo, shredded mozzarella, pepperoni cups, oregano oil.",
+      'Tomato sugo, shredded mozzarella, pepperoni cups, oregano oil.',
     basePrice: 16,
-    toppings: ["Tomato", "Mozzarella", "Pepperoni"],
+    toppings: ['Tomato', 'Mozzarella', 'Pepperoni'],
     vegetarian: false,
     spicy: false,
-    image: withBasePath("pepperoni-classic.png"),
+    image: withBasePath('pepperoni-classic.png'),
   },
   {
-    id: "smoky-bbq",
-    displayName: "Smoky BBQ Chicken",
+    id: 'smoky-bbq',
+    displayName: 'Smoky BBQ Chicken',
     description:
-      "BBQ sauce base, roast chicken, charred corn, red onion, parsley.",
+      'BBQ sauce base, roast chicken, charred corn, red onion, parsley.',
     basePrice: 18,
-    toppings: ["BBQ Sauce", "Chicken", "Corn", "Parsley"],
+    toppings: ['BBQ Sauce', 'Chicken', 'Corn', 'Parsley'],
     vegetarian: false,
     spicy: false,
-    image: withBasePath("smokey-bbq-chicken.png"),
+    image: withBasePath('smokey-bbq-chicken.png'),
   },
   {
-    id: "firecracker",
-    displayName: "Firecracker",
+    id: 'firecracker',
+    displayName: 'Firecracker',
     description:
-      "Scorpion pepper oil, spicy salami, jalapeños, hot honey drizzle.",
+      'Scorpion pepper oil, spicy salami, jalapeños, hot honey drizzle.',
     basePrice: 19,
-    toppings: ["Scorpion Oil", "Salami", "Jalapeño", "Hot Honey"],
+    toppings: ['Scorpion Oil', 'Salami', 'Jalapeño', 'Hot Honey'],
     vegetarian: false,
     spicy: true,
-    image: withBasePath("firecracker.png"),
+    image: withBasePath('firecracker.png'),
   },
   {
-    id: "green-garden",
-    displayName: "Green Garden",
+    id: 'green-garden',
+    displayName: 'Green Garden',
     description:
-      "Basil pesto base, cherry tomato confit, marinated zucchini, ricotta.",
+      'Basil pesto base, cherry tomato confit, marinated zucchini, ricotta.',
     basePrice: 17,
-    toppings: ["Pesto", "Tomato", "Zucchini", "Ricotta"],
+    toppings: ['Pesto', 'Tomato', 'Zucchini', 'Ricotta'],
     vegetarian: true,
     spicy: false,
-    image: withBasePath("green-garden.png"),
+    image: withBasePath('green-garden.png'),
   },
   {
-    id: "wild-mushroom",
-    displayName: "Wild Mushroom",
-    description: "Garlic cream, roasted field mushrooms, truffle salt, chives.",
+    id: 'wild-mushroom',
+    displayName: 'Wild Mushroom',
+    description: 'Garlic cream, roasted field mushrooms, truffle salt, chives.',
     basePrice: 20,
-    toppings: ["Garlic Cream", "Mushroom", "Truffle Salt"],
+    toppings: ['Garlic Cream', 'Mushroom', 'Truffle Salt'],
     vegetarian: true,
     spicy: false,
-    image: withBasePath("wild-mushroom.png"),
+    image: withBasePath('wild-mushroom.png'),
   },
   {
-    id: "pineapple-party",
-    displayName: "Pineapple Party",
+    id: 'pineapple-party',
+    displayName: 'Pineapple Party',
     description:
-      "Tomato sugo, leg ham, fire-roasted pineapple, pickled chilli.",
+      'Tomato sugo, leg ham, fire-roasted pineapple, pickled chilli.',
     basePrice: 18,
-    toppings: ["Tomato", "Ham", "Pineapple", "Chilli"],
+    toppings: ['Tomato', 'Ham', 'Pineapple', 'Chilli'],
     vegetarian: false,
     spicy: true,
-    image: withBasePath("pineapple-party.png"),
+    image: withBasePath('pineapple-party.png'),
   },
 ];
 

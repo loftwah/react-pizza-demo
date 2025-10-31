@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { getPizzaById } from "../domain/menu";
-import type { PizzaSize } from "../domain/pizza";
-import { priceForSize } from "../domain/pizza";
+import { create } from 'zustand';
+import { getPizzaById } from '../domain/menu';
+import type { PizzaSize } from '../domain/pizza';
+import { priceForSize } from '../domain/pizza';
 
 export type CartItem = {
   id: string;

@@ -4,35 +4,35 @@ import {
   useLayoutEffect,
   useMemo,
   useState,
-} from "react";
-import type { PropsWithChildren } from "react";
+} from 'react';
+import type { PropsWithChildren } from 'react';
 import {
   ThemeContext,
   type Theme,
   type ThemeContextValue,
-} from "./theme-context";
+} from './theme-context';
 
-const STORAGE_KEY = "react-pizza-theme";
+const STORAGE_KEY = 'react-pizza-theme';
 
-const isBrowser = typeof window !== "undefined";
+const isBrowser = typeof window !== 'undefined';
 
 const getStoredTheme = (): Theme | null => {
   if (!isBrowser) return null;
   const fromStorage = window.localStorage.getItem(STORAGE_KEY);
-  return fromStorage === "light" || fromStorage === "dark" ? fromStorage : null;
+  return fromStorage === 'light' || fromStorage === 'dark' ? fromStorage : null;
 };
 
 const getPreferredTheme = (): Theme => {
-  if (!isBrowser) return "dark";
-  return window.matchMedia("(prefers-color-scheme: light)").matches
-    ? "light"
-    : "dark";
+  if (!isBrowser) return 'dark';
+  return window.matchMedia('(prefers-color-scheme: light)').matches
+    ? 'light'
+    : 'dark';
 };
 
 const applyThemeToDocument = (theme: Theme) => {
   if (!isBrowser) return;
   const root = document.documentElement;
-  root.classList.remove("light", "dark");
+  root.classList.remove('light', 'dark');
   root.classList.add(theme);
   root.dataset.theme = theme;
   root.style.colorScheme = theme;
@@ -57,14 +57,14 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (!isBrowser) return;
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
     const stored = getStoredTheme();
     if (stored) return;
     const listener = (event: MediaQueryListEvent) => {
-      setThemeState(event.matches ? "light" : "dark");
+      setThemeState(event.matches ? 'light' : 'dark');
     };
-    mediaQuery.addEventListener("change", listener);
-    return () => mediaQuery.removeEventListener("change", listener);
+    mediaQuery.addEventListener('change', listener);
+    return () => mediaQuery.removeEventListener('change', listener);
   }, []);
 
   const setTheme = useCallback((value: Theme) => {
@@ -72,7 +72,7 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
+    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'));
   }, []);
 
   const value = useMemo(

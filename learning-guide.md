@@ -27,29 +27,29 @@ The video tutorial began with a single HTML file that pulled React from a CDN. N
 const { createElement: h } = React;
 
 const menu = [
-  { id: "pepperoni", displayName: "Pepperoni Classic", price: 14 },
-  { id: "veggie", displayName: "Veggie Delight", price: 19 },
+  { id: 'pepperoni', displayName: 'Pepperoni Classic', price: 14 },
+  { id: 'veggie', displayName: 'Veggie Delight', price: 19 },
 ];
 
 function PizzaCard({ pizza }) {
   return h(
-    "div",
-    { style: { border: "1px solid gray", padding: "10px" } },
-    h("h2", null, pizza.displayName),
-    h("p", null, `$${pizza.price.toFixed(2)}`),
+    'div',
+    { style: { border: '1px solid gray', padding: '10px' } },
+    h('h2', null, pizza.displayName),
+    h('p', null, `$${pizza.price.toFixed(2)}`),
   );
 }
 
 function App() {
   return h(
-    "div",
+    'div',
     null,
-    h("h1", null, "Pizza Menu"),
+    h('h1', null, 'Pizza Menu'),
     menu.map((pizza) => h(PizzaCard, { key: pizza.id, pizza })),
   );
 }
 
-ReactDOM.render(h(App), document.getElementById("root"));
+ReactDOM.render(h(App), document.getElementById('root'));
 ```
 
 ### Why This Matters

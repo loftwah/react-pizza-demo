@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchMenu, menu } from "../domain/menu";
+import { useQuery } from '@tanstack/react-query';
+import { fetchMenu, menu } from '../domain/menu';
 
-const MENU_QUERY_KEY = ["menu"];
+const MENU_QUERY_KEY = ['menu'];
 
 export const useMenu = () =>
   useQuery({
