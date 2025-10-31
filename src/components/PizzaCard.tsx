@@ -37,7 +37,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
       />
       <div className="flex flex-1 flex-col gap-6 px-6 pt-5">
         <div>
-          <div className="flex items-center gap-2 text-xs tracking-[0.3em] text-slate-500 uppercase dark:text-white/60">
+          <div className="flex min-h-[2.75rem] items-center gap-2 text-xs tracking-[0.3em] text-slate-500 uppercase dark:text-white/60">
             {pizza.vegetarian && (
               <span className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-emerald-600 dark:text-emerald-200">
                 <Leaf className="h-3.5 w-3.5" aria-hidden="true" />
@@ -48,6 +48,11 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
               <span className="border-brand-500/50 bg-brand-500/10 text-brand-500 dark:text-brand-200 flex items-center gap-1.5 rounded-full border px-3 py-1">
                 <Flame className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Spicy</span>
+              </span>
+            )}
+            {!pizza.vegetarian && !pizza.spicy && (
+              <span className="rounded-full border border-transparent px-3 py-1 text-xs font-semibold tracking-[0.3em] text-slate-300 uppercase dark:text-white/25">
+                Signature
               </span>
             )}
           </div>
