@@ -7,4 +7,14 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   base: '/react-pizza-demo/',
   plugins: [mdx(), tailwindcss(), react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      reportsDirectory: './coverage',
+    },
+    css: true,
+  },
 });

@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { getPizzaById } from '../domain/menu';
 import type { PizzaSize } from '../domain/pizza';
 import { priceForSize } from '../domain/pizza';
+import type { OrderRecord } from './orders';
 
 export type CartItem = {
   id: string;
@@ -19,10 +20,27 @@ type CartState = {
   clear: () => void;
   totalItems: () => number;
   totalPrice: () => number;
+  hydrateFromOrder: (order: OrderRecord) => void;
 };
 
 const createCartItemId = (pizzaId: string, size: PizzaSize) =>
   `${pizzaId}-${size}`;
+
+const isPizzaSize = (value: string): value is PizzaSize =>
+  value === 'small' || value === 'medium' || value === 'large';
+
+const parseCartItemKey = (
+  id: string,
+): { pizzaId: string; size: string | undefined } => {
+  const lastDash = id.lastIndexOf('-');
+  if (lastDash === -1) {
+    return { pizzaId: id, size: undefined };
+  }
+  return {
+    pizzaId: id.slice(0, lastDash),
+    size: id.slice(lastDash + 1),
+  };
+};
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -63,6 +81,22 @@ export const useCartStore = create<CartState>()(
           };
         }),
       clear: () => set({ items: [] }),
+      hydrateFromOrder: (order) =>
+        set({
+          items: order.items.map((item) => {
+            const reference = parseCartItemKey(item.id);
+            const sizeCandidate = item.size ?? reference.size ?? 'medium';
+            const resolvedSize = isPizzaSize(sizeCandidate)
+              ? sizeCandidate
+              : 'medium';
+            return {
+              id: item.id,
+              pizzaId: item.pizzaId ?? reference.pizzaId,
+              size: resolvedSize,
+              quantity: Math.max(1, item.quantity),
+            };
+          }),
+        }),
       totalItems: () =>
         get().items.reduce((total, item) => total + item.quantity, 0),
       totalPrice: () =>

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+echo "Building production bundle..."
+npm run --prefix "$ROOT_DIR" build > /dev/null
+
+echo "Starting preview server..."
+npm run --prefix "$ROOT_DIR" preview -- --host 127.0.0.1 --port 42069 > /tmp/react-pizza-smoke.log 2>&1 &
+SERVER_PID=$!
+
+cleanup() {
+  if ps -p "$SERVER_PID" > /dev/null 2>&1; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+    wait "$SERVER_PID" 2>/dev/null || true
+  fi
+}
+
+trap cleanup EXIT
+
+sleep 5
+
+echo "Running smoke checks..."
+curl -fsS http://127.0.0.1:42069/react-pizza-demo/ > /dev/null
+curl -fsS http://127.0.0.1:42069/react-pizza-demo/checkout > /dev/null
+
+echo "Smoke test passed."

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Moon, ShoppingCart, SunMedium } from 'lucide-react';
 import clsx from 'clsx';
@@ -10,9 +11,22 @@ export const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   const pizzaLabel = totalItems === 1 ? 'pizza' : 'pizzas';
+  const [badgePulse, setBadgePulse] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (totalItems === 0) return;
+    const prefersReducedMotion =
+      'matchMedia' in window &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+    setBadgePulse(true);
+    const timeout = window.setTimeout(() => setBadgePulse(false), 520);
+    return () => window.clearTimeout(timeout);
+  }, [totalItems]);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-stone-200/70 bg-white/80 backdrop-blur transition-colors duration-300 dark:border-white/15 dark:bg-neutral-900/80">
+    <header className="print-hidden sticky top-0 z-20 border-b border-stone-200/70 bg-white/80 backdrop-blur transition-colors duration-300 dark:border-white/15 dark:bg-neutral-900/80">
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 px-6 py-4 sm:gap-6 md:grid-cols-[auto_1fr_auto]">
         <NavLink
           to="/"
@@ -68,7 +82,13 @@ export const Header = () => {
             }
           >
             Checkout
-            <span className="rounded-full border border-current/20 px-2 py-0.5 text-[10px] font-semibold tracking-[0.3em] uppercase">
+            <span
+              className={clsx(
+                'rounded-full border border-current/20 px-2 py-0.5 text-[10px] font-semibold tracking-[0.3em] uppercase transition',
+                badgePulse &&
+                  'animate-cart-pulse shadow-[0_0_0_4px_rgba(234,88,12,0.15)]',
+              )}
+            >
               {totalItems.toString().padStart(2, '0')}
             </span>
           </NavLink>
@@ -95,7 +115,13 @@ export const Header = () => {
             className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-slate-700 uppercase transition hover:bg-white md:w-auto md:justify-end dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15"
           >
             <ShoppingCart className="h-4 w-4" aria-hidden="true" />
-            <span>{`${totalItems.toString().padStart(2, '0')} ${pizzaLabel}`}</span>
+            <span
+              className={clsx(
+                'transition',
+                badgePulse &&
+                  'animate-cart-pulse shadow-[0_0_0_4px_rgba(234,88,12,0.12)]',
+              )}
+            >{`${totalItems.toString().padStart(2, '0')} ${pizzaLabel}`}</span>
             <span className="text-stone-400 transition-colors dark:text-white/40">
               •
             </span>

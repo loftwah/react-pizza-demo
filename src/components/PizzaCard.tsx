@@ -59,12 +59,18 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
     });
   };
 
+  const imageSrcSet = `${pizza.image} 400w, ${pizza.image} 640w, ${pizza.image} 960w`;
+  const imageSizes = '(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw';
+
   return (
     <article className="group hover:border-brand-400/60 hover:shadow-brand-500/20 relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 transition hover:-translate-y-1 hover:shadow-2xl dark:border-white/20 dark:bg-white/10 dark:text-white">
       <img
         alt={pizza.displayName}
         src={pizza.image}
+        srcSet={imageSrcSet}
+        sizes={imageSizes}
         loading="lazy"
+        decoding="async"
         width={400}
         height={224}
         className="h-56 w-full object-cover transition group-hover:scale-105"
@@ -105,6 +111,13 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                 key={size}
                 type="button"
                 onClick={() => setSelectedSize(size)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setSelectedSize(size);
+                  }
+                }}
+                aria-pressed={size === selectedSize}
                 className={clsx(
                   'focus-visible:ring-brand-400 flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
                   size === selectedSize

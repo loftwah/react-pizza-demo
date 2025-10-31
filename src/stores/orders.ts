@@ -1,8 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { PizzaSize } from '../domain/pizza';
 
 export type OrderLineItem = {
   id: string;
+  pizzaId?: string;
+  size?: PizzaSize;
   name: string;
   sizeLabel: string;
   quantity: number;
