@@ -15,7 +15,7 @@ export const Header = () => {
   const [badgePulse, setBadgePulse] = useState(false);
   const [cartAnnouncement, setCartAnnouncement] = useState('');
   const isFirstRender = useRef(true);
-  const announcementTimer = useRef<number>();
+  const announcementTimer = useRef<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -45,18 +45,19 @@ export const Header = () => {
 
     setCartAnnouncement(totalMessage);
 
-    if (announcementTimer.current) {
+    if (announcementTimer.current !== null) {
       window.clearTimeout(announcementTimer.current);
+      announcementTimer.current = null;
     }
     announcementTimer.current = window.setTimeout(() => {
       setCartAnnouncement('');
-      announcementTimer.current = undefined;
+      announcementTimer.current = null;
     }, 2000);
 
     return () => {
-      if (announcementTimer.current) {
+      if (announcementTimer.current !== null) {
         window.clearTimeout(announcementTimer.current);
-        announcementTimer.current = undefined;
+        announcementTimer.current = null;
       }
     };
   }, [pizzaLabel, totalItems, totalPrice]);
