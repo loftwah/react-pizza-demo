@@ -9,6 +9,15 @@ export const Layout = ({ children }: PropsWithChildren) => (
     </main>
     <footer className="print-hidden border-t border-stone-200/70 bg-white/70 py-8 text-center text-xs tracking-[0.3em] text-stone-500 uppercase transition-colors dark:border-white/5 dark:bg-black/50 dark:text-white/40">
       Crafted for the React Pizza demo – {new Date().getFullYear()}
+      {' | '}
+      <a
+        href="https://github.com/loftwah/react-pizza-demo"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-brand-500 transition-colors hover:text-brand-400 dark:text-brand-300 dark:hover:text-brand-200"
+      >
+        View the code on GitHub
+      </a>
     </footer>
   </div>
 );
