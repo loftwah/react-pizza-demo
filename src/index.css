@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark &));
+
+:root {
+  color-scheme: light;
+  background-color: #f9f5f1;
+}
+
+html.dark {
+  color-scheme: dark;
+  background-color: #090909;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: theme('fontFamily.sans');
+  background-color: #fdf7f2;
+  background-image: radial-gradient(circle at top, rgba(255, 61, 61, 0.12), transparent 55%),
+    radial-gradient(circle at bottom, rgba(255, 156, 153, 0.08), transparent 45%);
+  transition: background-color 0.3s ease, background-image 0.3s ease;
+}
+
+html.dark body {
+  background-color: #050505;
+  background-image: radial-gradient(circle at top, rgba(255, 61, 61, 0.08), transparent 55%),
+    radial-gradient(circle at bottom, rgba(255, 156, 153, 0.06), transparent 45%);
+}
+
+#root {
+  min-height: 100vh;
+}
