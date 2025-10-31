@@ -82,9 +82,7 @@ const App = () => (
         path="/checkout"
         element={
           <ErrorBoundary
-            fallback={(error) => (
-              <CheckoutPageErrorFallback error={error} />
-            )}
+            fallback={(error) => <CheckoutPageErrorFallback error={error} />}
           >
             <CheckoutPage />
           </ErrorBoundary>

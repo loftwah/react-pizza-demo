@@ -44,20 +44,32 @@ const createToastId = () =>
   `toast-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 const useToastTimers = () => {
-  const timers = useRef<Record<string, number>>({});
+  const timers = useRef<Map<string, number>>(new Map());
 
   useEffect(
     () => () => {
       if (!isBrowser) return;
-      Object.values(timers.current).forEach((timerId) =>
-        window.clearTimeout(timerId),
-      );
-      timers.current = {};
+      timers.current.forEach((timerId) => window.clearTimeout(timerId));
+      timers.current.clear();
     },
     [],
   );
 
-  return timers;
+  const registerTimer = useCallback((id: string, timerId: number) => {
+    if (!isBrowser) return;
+    timers.current.set(id, timerId);
+  }, []);
+
+  const clearTimer = useCallback((id: string) => {
+    if (!isBrowser) return;
+    const timerId = timers.current.get(id);
+    if (timerId) {
+      window.clearTimeout(timerId);
+      timers.current.delete(id);
+    }
+  }, []);
+
+  return { registerTimer, clearTimer };
 };
 
 const ToastViewport = ({
@@ -97,19 +109,14 @@ const ToastViewport = ({
 
 export const ToastProvider = ({ children }: PropsWithChildren) => {
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
-  const timers = useToastTimers();
+  const { clearTimer, registerTimer } = useToastTimers();
 
   const dismiss = useCallback(
     (id: string) => {
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
-      if (!isBrowser) return;
-      const timerId = timers.current[id];
-      if (timerId) {
-        window.clearTimeout(timerId);
-        delete timers.current[id];
-      }
+      clearTimer(id);
     },
-    [timers],
+    [clearTimer],
   );
 
   const showToast = useCallback(
@@ -120,9 +127,9 @@ export const ToastProvider = ({ children }: PropsWithChildren) => {
       const timerId = window.setTimeout(() => {
         dismiss(id);
       }, duration);
-      timers.current[id] = timerId;
+      registerTimer(id, timerId);
     },
-    [dismiss, timers],
+    [dismiss, registerTimer],
   );
 
   const value = useMemo(

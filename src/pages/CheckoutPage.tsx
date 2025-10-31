@@ -671,7 +671,7 @@ export const CheckoutPage = () => {
                     <button
                       type="button"
                       onClick={() => void copyToClipboard(shareLink)}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200/70 bg-white px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase text-slate-600 transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200/70 bg-white px-4 py-2 text-[11px] font-semibold tracking-[0.3em] text-slate-600 uppercase transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
                     >
                       <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                       Copy link

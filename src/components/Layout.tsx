@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import { Header } from './Header';
 
 export const Layout = ({ children }: PropsWithChildren) => (
-  <div className="min-h-screen bg-stone-100 text-slate-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-white">
+  <div className="min-h-screen bg-transparent text-slate-900 transition-colors duration-300 dark:bg-transparent dark:text-white">
     <Header />
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-6 pt-10 pb-16">
       {children}

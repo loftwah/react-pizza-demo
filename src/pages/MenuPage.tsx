@@ -195,11 +195,15 @@ export const MenuPage = () => {
       <header className="flex flex-col gap-6 text-center text-slate-900 sm:text-left dark:text-white">
         <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-between">
           <div className="max-w-lg">
-            <p className="text-xs tracking-[0.35em] text-slate-500 uppercase dark:text-white/60">
+            <p className="flex items-center gap-2 text-xs tracking-[0.35em] text-slate-500 uppercase dark:text-white/60">
+              <Sparkles
+                className="text-brand-500 dark:text-brand-200 h-3.5 w-3.5"
+                aria-hidden="true"
+              />
               Fresh Dough • 72 Hour Ferment
             </p>
             <h1 className="font-display text-4xl font-semibold text-slate-900 sm:text-5xl dark:text-white">
-              The Menu
+              The <span className="text-aurora">Menu</span>
             </h1>
           </div>
           <motion.div

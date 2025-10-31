@@ -29,9 +29,16 @@ export const Header = () => {
       'matchMedia' in window &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
-    setBadgePulse(true);
-    const timeout = window.setTimeout(() => setBadgePulse(false), 520);
-    return () => window.clearTimeout(timeout);
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      setBadgePulse(true);
+    });
+    const timeoutId = window.setTimeout(() => setBadgePulse(false), 520);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      window.clearTimeout(timeoutId);
+    };
   }, [totalItems]);
 
   useEffect(() => {
@@ -48,7 +55,9 @@ export const Header = () => {
           )}.`
         : 'Cart cleared.';
 
-    setCartAnnouncement(totalMessage);
+    const commitId = window.setTimeout(() => {
+      setCartAnnouncement(totalMessage);
+    });
 
     if (announcementTimer.current !== null) {
       window.clearTimeout(announcementTimer.current);
@@ -60,6 +69,7 @@ export const Header = () => {
     }, 2000);
 
     return () => {
+      window.clearTimeout(commitId);
       if (announcementTimer.current !== null) {
         window.clearTimeout(announcementTimer.current);
         announcementTimer.current = null;
@@ -68,7 +78,11 @@ export const Header = () => {
   }, [pizzaLabel, totalItems, totalPrice]);
 
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    if (typeof window === 'undefined') return;
+    const frameId = window.requestAnimationFrame(() => {
+      setIsMobileMenuOpen(false);
+    });
+    return () => window.cancelAnimationFrame(frameId);
   }, [location.pathname]);
 
   return (
@@ -99,7 +113,7 @@ export const Header = () => {
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
           aria-expanded={isMobileMenuOpen}
           aria-controls="primary-navigation"
-          className="order-2 flex w-full items-center justify-between rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] uppercase text-slate-700 transition hover:bg-white focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none sm:hidden dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+          className="order-2 flex w-full items-center justify-between rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-slate-700 uppercase transition hover:bg-white focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none sm:hidden dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
         >
           <span>Navigation</span>
           {isMobileMenuOpen ? (

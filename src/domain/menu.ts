@@ -72,6 +72,49 @@ export const menu: Pizza[] = [
     spicy: true,
     image: imageWithBasePath('pineapple-party.jpg'),
   },
+  {
+    id: 'sunrise-margherita',
+    displayName: 'Sunrise Margherita',
+    description: 'Slow-roasted tomatoes, stracciatella, basil oil, lemon zest.',
+    basePrice: 17,
+    toppings: ['Tomato', 'Stracciatella', 'Basil Oil', 'Lemon Zest'],
+    vegetarian: true,
+    spicy: false,
+    image: imageWithBasePath('green-garden.jpg'),
+  },
+  {
+    id: 'smoked-maple-bacon',
+    displayName: 'Smoked Maple Bacon',
+    description:
+      'Maple glaze, smoked bacon, roasted sweet potato, pickled onion.',
+    basePrice: 19,
+    toppings: ['Maple', 'Bacon', 'Sweet Potato', 'Pickled Onion'],
+    vegetarian: false,
+    spicy: false,
+    image: imageWithBasePath('smokey-bbq-chicken.jpg'),
+  },
+  {
+    id: 'calabrian-scorcher',
+    displayName: 'Calabrian Scorcher',
+    description:
+      'Nduja butter base, fennel sausage, charred peppers, chilli honey.',
+    basePrice: 21,
+    toppings: ['Nduja', 'Fennel Sausage', 'Charred Peppers', 'Chilli Honey'],
+    vegetarian: false,
+    spicy: true,
+    image: imageWithBasePath('firecracker.jpg'),
+  },
+  {
+    id: 'forest-fable',
+    displayName: 'Forest Fable',
+    description:
+      'Porcini cream, rosemary potato, caramelised shallot, fried sage.',
+    basePrice: 20,
+    toppings: ['Porcini', 'Potato', 'Shallot', 'Sage'],
+    vegetarian: true,
+    spicy: false,
+    image: imageWithBasePath('wild-mushroom.jpg'),
+  },
 ];
 
 export const fetchMenu = async (): Promise<Pizza[]> => {

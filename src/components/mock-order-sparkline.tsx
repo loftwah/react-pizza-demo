@@ -123,20 +123,20 @@ export const MockOrderSparkline: FC<MockOrderSparklineProps> = ({
       >
         <defs>
           <linearGradient id="sparkline-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(59,130,246,0.45)" />
-            <stop offset="100%" stopColor="rgba(59,130,246,0.05)" />
+            <stop offset="0%" stopColor="rgba(56,189,248,0.5)" />
+            <stop offset="100%" stopColor="rgba(45,212,191,0.12)" />
           </linearGradient>
         </defs>
         <path
           d={areaClosed}
           fill="url(#sparkline-fill)"
-          stroke="rgba(59,130,246,0.35)"
+          stroke="rgba(45,212,191,0.45)"
           strokeWidth={1}
         />
         <path
           d={baselinePath}
           fill="none"
-          stroke="rgba(148,163,184,0.9)"
+          stroke="rgba(148,163,184,0.7)"
           strokeWidth={1.2}
           strokeDasharray="4 4"
         />
@@ -153,10 +153,9 @@ export const MockOrderSparkline: FC<MockOrderSparklineProps> = ({
               cx={x}
               cy={y}
               r={1.6}
-              className={clsx(
-                'fill-brand-500 stroke-brand-500/80',
-                entry.local === 0 && 'opacity-0',
-              )}
+              fill="rgba(56,189,248,1)"
+              stroke="rgba(14,165,233,0.75)"
+              className={clsx(entry.local === 0 && 'opacity-0')}
             />
           );
         })}
