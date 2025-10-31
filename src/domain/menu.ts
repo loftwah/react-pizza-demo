@@ -1,6 +1,8 @@
 import type { Pizza } from './pizza';
 
 const withBasePath = (file: string) => `${import.meta.env.BASE_URL}${file}`;
+const imageWithBasePath = (image: string) =>
+  image.startsWith('http') ? image : withBasePath(image.replace(/^\//, ''));
 
 export const menu: Pizza[] = [
   {
@@ -12,7 +14,7 @@ export const menu: Pizza[] = [
     toppings: ['Tomato', 'Mozzarella', 'Pepperoni'],
     vegetarian: false,
     spicy: false,
-    image: withBasePath('pepperoni-classic.jpg'),
+    image: imageWithBasePath('pepperoni-classic.jpg'),
   },
   {
     id: 'smoky-bbq',
@@ -23,7 +25,7 @@ export const menu: Pizza[] = [
     toppings: ['BBQ Sauce', 'Chicken', 'Corn', 'Parsley'],
     vegetarian: false,
     spicy: false,
-    image: withBasePath('smokey-bbq-chicken.jpg'),
+    image: imageWithBasePath('smokey-bbq-chicken.jpg'),
   },
   {
     id: 'firecracker',
@@ -34,7 +36,7 @@ export const menu: Pizza[] = [
     toppings: ['Scorpion Oil', 'Salami', 'Jalapeño', 'Hot Honey'],
     vegetarian: false,
     spicy: true,
-    image: withBasePath('firecracker.jpg'),
+    image: imageWithBasePath('firecracker.jpg'),
   },
   {
     id: 'green-garden',
@@ -45,7 +47,7 @@ export const menu: Pizza[] = [
     toppings: ['Pesto', 'Tomato', 'Zucchini', 'Ricotta'],
     vegetarian: true,
     spicy: false,
-    image: withBasePath('green-garden.jpg'),
+    image: imageWithBasePath('green-garden.jpg'),
   },
   {
     id: 'wild-mushroom',
@@ -55,7 +57,7 @@ export const menu: Pizza[] = [
     toppings: ['Garlic Cream', 'Mushroom', 'Truffle Salt'],
     vegetarian: true,
     spicy: false,
-    image: withBasePath('wild-mushroom.jpg'),
+    image: imageWithBasePath('wild-mushroom.jpg'),
   },
   {
     id: 'pineapple-party',
@@ -66,13 +68,31 @@ export const menu: Pizza[] = [
     toppings: ['Tomato', 'Ham', 'Pineapple', 'Chilli'],
     vegetarian: false,
     spicy: true,
-    image: withBasePath('pineapple-party.jpg'),
+    image: imageWithBasePath('pineapple-party.jpg'),
   },
 ];
 
-export const fetchMenu = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 450));
-  return menu;
+export const fetchMenu = async (): Promise<Pizza[]> => {
+  const endpoint = `${import.meta.env.BASE_URL}api/menu.json`;
+  try {
+    const response = await fetch(endpoint, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`Menu request failed with status ${response.status}`);
+    }
+    const data = (await response.json()) as Pizza[];
+    return data.map((pizza) => ({
+      ...pizza,
+      image: imageWithBasePath(pizza.image),
+    }));
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.warn(
+        '[menu] Falling back to embedded pizza data after fetch error:',
+        error,
+      );
+    }
+    return menu;
+  }
 };
 
 export const getPizzaById = (id: string) =>

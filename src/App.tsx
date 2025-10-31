@@ -4,6 +4,8 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { MenuPage } from './pages/MenuPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import About from './pages/About.mdx';
+import AnalyticsPage from './pages/AnalyticsPage';
+import { isFeatureEnabled } from './config/features';
 
 const NotFound = () => (
   <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
@@ -39,6 +41,8 @@ const MenuPageErrorFallback = ({ error }: { error: Error }) => (
   </div>
 );
 
+const analyticsEnabled = isFeatureEnabled('analyticsDashboard');
+
 const App = () => (
   <Layout>
     <Routes>
@@ -53,6 +57,9 @@ const App = () => (
         }
       />
       <Route path="/checkout" element={<CheckoutPage />} />
+      {analyticsEnabled && (
+        <Route path="/analytics" element={<AnalyticsPage />} />
+      )}
       <Route path="/about" element={<About />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

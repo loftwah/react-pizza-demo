@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { useCartStore } from '../stores/cart';
 import { useTheme } from '../providers/theme-context';
 import { formatCurrency } from '../domain/pizza';
+import { isFeatureEnabled } from '../config/features';
 
 export const Header = () => {
   const totalItems = useCartStore((state) => state.totalItems());
@@ -16,6 +17,7 @@ export const Header = () => {
   const [cartAnnouncement, setCartAnnouncement] = useState('');
   const isFirstRender = useRef(true);
   const announcementTimer = useRef<number | null>(null);
+  const analyticsEnabled = isFeatureEnabled('analyticsDashboard');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -112,6 +114,21 @@ export const Header = () => {
           >
             About
           </NavLink>
+          {analyticsEnabled && (
+            <NavLink
+              to="/analytics"
+              className={({ isActive }) =>
+                clsx(
+                  'rounded-full px-4 py-2 transition-colors',
+                  isActive
+                    ? 'bg-brand-500/20 text-brand-700 shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-100'
+                    : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
+                )
+              }
+            >
+              Analytics
+            </NavLink>
+          )}
           <NavLink
             to="/checkout"
             className={({ isActive }) =>

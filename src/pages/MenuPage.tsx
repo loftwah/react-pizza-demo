@@ -91,13 +91,7 @@ const PizzaCardSkeleton = () => (
 export const MenuPage = () => {
   const [filter, setFilter] = useState<PizzaFilter>('all');
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const {
-    data: pizzas,
-    isLoading,
-    isFetching,
-    error,
-    refetch,
-  } = useMenu();
+  const { data: pizzas, isLoading, isFetching, error, refetch } = useMenu();
   const totalPrice = useCartStore((state) => state.totalPrice());
   const totalItems = useCartStore((state) => state.totalItems());
   const addItemToCart = useCartStore((state) => state.addItem);
@@ -295,7 +289,7 @@ export const MenuPage = () => {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:border-emerald-300/40 dark:bg-emerald-500/20 dark:text-emerald-100 flex items-center justify-center gap-3 rounded-2xl border px-5 py-3 text-xs font-semibold tracking-[0.3em] uppercase"
+            className="flex items-center justify-center gap-3 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-5 py-3 text-xs font-semibold tracking-[0.3em] text-emerald-700 uppercase dark:border-emerald-300/40 dark:bg-emerald-500/20 dark:text-emerald-100"
             role="status"
             aria-live="polite"
           >
@@ -322,7 +316,7 @@ export const MenuPage = () => {
           <button
             type="button"
             onClick={() => void refetch()}
-            className="self-start rounded-full border border-brand-500/40 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-700 transition hover:bg-white focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-brand-200/50 dark:bg-white/10 dark:text-brand-100 dark:hover:bg-white/15 dark:focus-visible:ring-brand-300/80 dark:focus-visible:ring-offset-slate-950"
+            className="border-brand-500/40 text-brand-700 focus-visible:ring-brand-300 dark:border-brand-200/50 dark:text-brand-100 dark:focus-visible:ring-brand-300/80 self-start rounded-full border bg-white/80 px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase transition hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-white/10 dark:hover:bg-white/15 dark:focus-visible:ring-offset-slate-950"
           >
             Retry loading menu
           </button>

@@ -12,6 +12,7 @@ import {
   type StepResult,
 } from '../shared-utils/result';
 import { emitEvent } from '../shared-utils/telemetry';
+import { submitOrderToKitchen } from './mock-backend';
 
 const generateOrderId = () =>
   `LP-${Date.now().toString(36).toUpperCase().slice(-5)}`;
@@ -231,8 +232,18 @@ export class OrderService {
       items: context.cartDetails.map((item) => ({ ...item })),
     };
 
+    let submissionError: unknown;
+    let withSubmission = order;
+
     try {
-      useOrderHistory.getState().addOrder(order);
+      const submission = await submitOrderToKitchen(order);
+      withSubmission = { ...order, submission };
+    } catch (error) {
+      submissionError = error;
+    }
+
+    try {
+      useOrderHistory.getState().addOrder(withSubmission);
     } catch (error) {
       return {
         status: 'failed',
@@ -248,10 +259,28 @@ export class OrderService {
       };
     }
 
+    if (submissionError) {
+      return {
+        status: 'degraded',
+        attempts: 1,
+        error: {
+          kind: 'OrderSubmissionFailed',
+          message:
+            submissionError instanceof Error
+              ? submissionError.message
+              : 'Submitting the order to the kitchen mock API failed.',
+          retryable: true,
+        },
+        nextStep:
+          'Retry when connectivity returns or inspect the mock API stub.',
+        value: { order: withSubmission },
+      };
+    }
+
     return {
       status: 'ok',
       attempts: 1,
-      value: { order },
+      value: { order: withSubmission },
     };
   }
 

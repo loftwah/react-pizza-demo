@@ -13,6 +13,14 @@ export type OrderLineItem = {
   lineTotal: number;
 };
 
+export type OrderSubmissionReceipt = {
+  status: string;
+  message: string;
+  kitchenReference: string;
+  estimatedPrepMinutes: number;
+  receivedAt: string;
+};
+
 export type OrderRecord = {
   id: string;
   customer: string;
@@ -21,6 +29,7 @@ export type OrderRecord = {
   total: number;
   createdAt: string;
   items: OrderLineItem[];
+  submission?: OrderSubmissionReceipt;
 };
 
 type OrderHistoryState = {

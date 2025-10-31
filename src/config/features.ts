@@ -24,6 +24,12 @@ export const features = {
     reason: 'Generate share URLs for mock orders',
     expiresAt: '2026-01-01',
   },
+  analyticsDashboard: {
+    enabled: true,
+    owner: 'loftwah',
+    reason: 'Expose mock telemetry and charting surfaces',
+    expiresAt: '2026-01-01',
+  },
 } satisfies Record<string, FeatureToggle>;
 
 export const isFeatureEnabled = (flag: keyof typeof features) =>

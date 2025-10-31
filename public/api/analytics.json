@@ -1,0 +1,106 @@
+{
+  "generatedAt": "2025-01-07T13:15:00.000Z",
+  "metrics": [
+    {
+      "id": "ordersToday",
+      "label": "Orders today",
+      "value": 128,
+      "unit": "orders",
+      "change": 18,
+      "trend": "up"
+    },
+    {
+      "id": "revenueToday",
+      "label": "Revenue today",
+      "value": 3124.5,
+      "unit": "currency",
+      "change": 12,
+      "trend": "up"
+    },
+    {
+      "id": "avgPrepTime",
+      "label": "Avg prep time",
+      "value": 17.8,
+      "unit": "minutes",
+      "change": -1.4,
+      "trend": "down"
+    },
+    {
+      "id": "returningCustomers",
+      "label": "Returning customers",
+      "value": 54,
+      "unit": "percent",
+      "change": 6,
+      "trend": "up"
+    }
+  ],
+  "topPizzas": [
+    {
+      "pizzaId": "pepperoni-classic",
+      "name": "Pepperoni Classic",
+      "orders": 52,
+      "share": 0.27,
+      "trend": "up"
+    },
+    {
+      "pizzaId": "firecracker",
+      "name": "Firecracker",
+      "orders": 34,
+      "share": 0.18,
+      "trend": "up"
+    },
+    {
+      "pizzaId": "wild-mushroom",
+      "name": "Wild Mushroom",
+      "orders": 29,
+      "share": 0.15,
+      "trend": "steady"
+    },
+    {
+      "pizzaId": "green-garden",
+      "name": "Green Garden",
+      "orders": 21,
+      "share": 0.11,
+      "trend": "down"
+    }
+  ],
+  "hourlyOrders": [
+    { "hour": "11:00", "orders": 8 },
+    { "hour": "12:00", "orders": 24 },
+    { "hour": "13:00", "orders": 19 },
+    { "hour": "14:00", "orders": 11 },
+    { "hour": "15:00", "orders": 10 },
+    { "hour": "16:00", "orders": 13 },
+    { "hour": "17:00", "orders": 17 },
+    { "hour": "18:00", "orders": 26 }
+  ],
+  "channelBreakdown": [
+    { "channel": "In-store", "orders": 48, "share": 0.38 },
+    { "channel": "Mobile app", "orders": 41, "share": 0.32 },
+    { "channel": "Web", "orders": 25, "share": 0.2 },
+    { "channel": "Delivery partners", "orders": 14, "share": 0.1 }
+  ],
+  "insights": [
+    "Lunch rush peaked at 12:00 with 24 orders.",
+    "Firecracker promo lifted spicy segment share by 5 percentage points.",
+    "Average prep time improved 1.4 minutes after oven calibration.",
+    "Mobile app reorders grew 11% versus the prior day."
+  ],
+  "recentEvents": [
+    {
+      "timestamp": "2025-01-07T12:45:00.000Z",
+      "label": "Promo applied",
+      "details": "Firecracker lunch promo boosted orders by 14% during the window."
+    },
+    {
+      "timestamp": "2025-01-07T12:20:00.000Z",
+      "label": "Kitchen alert cleared",
+      "details": "Station B backlog resolved, prep time normalised."
+    },
+    {
+      "timestamp": "2025-01-07T11:15:00.000Z",
+      "label": "New loyalty enrolments",
+      "details": "Six customers opted into VIP lunch list at the counter."
+    }
+  ]
+}

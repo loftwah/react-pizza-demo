@@ -22,6 +22,7 @@ import { useOrderHistory } from '../stores/orders';
 import type { OrderLineItem, OrderRecord } from '../stores/orders';
 import { OrderService } from '../services/order-service';
 import { isFeatureEnabled } from '../config/features';
+import { useOrderInsights } from '../hooks/useOrderInsights';
 
 const orderTimeFormatter = new Intl.DateTimeFormat('en-AU', {
   hour: 'numeric',
@@ -39,8 +40,10 @@ export const CheckoutPage = () => {
   const cartTotal = useCartStore((state) => state.totalPrice());
   const cartCount = useCartStore((state) => state.totalItems());
   const { showToast } = useToast();
-  const orderHistory = useOrderHistory((state) => state.orders);
   const clearOrderHistory = useOrderHistory((state) => state.clearOrders);
+  const { summary: orderSummary, recentOrders } = useOrderInsights({
+    recentLimit: 5,
+  });
   const navigate = useNavigate();
   const orderService = useMemo(() => new OrderService(), []);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -85,7 +88,14 @@ export const CheckoutPage = () => {
     }
     return getMockReadyEta();
   }, [hasCart, cartCount]);
-  const historyPreview = orderHistory.slice(0, 3);
+  const historyPreview = useMemo(
+    () => recentOrders.slice(0, 3),
+    [recentOrders],
+  );
+  const sidebarRecentOrders = useMemo(
+    () => recentOrders.slice(0, 4),
+    [recentOrders],
+  );
   const shareLink = useMemo(() => {
     if (!submittedOrder || typeof window === 'undefined') return null;
     const shareUrl = new URL(window.location.href);
@@ -721,13 +731,13 @@ export const CheckoutPage = () => {
 
           <aside className="print-hidden flex flex-col justify-between gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/60 p-8 text-sm text-slate-600 shadow-[0_30px_100px_-60px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-white/5 dark:text-white/70">
             <div className="space-y-5">
-              {orderHistory.length > 0 && (
+              {orderSummary.totalOrders > 0 && (
                 <div className="space-y-3">
                   <h3 className="text-xs font-semibold tracking-[0.35em] text-slate-400 uppercase dark:text-white/40">
                     Recent mock orders
                   </h3>
                   <ul className="space-y-2 text-sm">
-                    {orderHistory.slice(0, 4).map((order) => (
+                    {sidebarRecentOrders.map((order) => (
                       <li
                         key={order.id}
                         className="flex items-center justify-between rounded-xl border border-slate-200/60 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/10"
@@ -887,7 +897,7 @@ export const CheckoutPage = () => {
             </div>
           )}
 
-          {orderHistory.length > 0 && (
+          {orderSummary.totalOrders > 0 && (
             <div className="space-y-3 rounded-2xl border border-stone-200/70 bg-white/60 px-5 py-4 text-sm text-slate-600 dark:border-white/15 dark:bg-white/5 dark:text-white/70">
               <div className="flex items-center justify-between text-[11px] font-semibold tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
                 <span>Mock order history</span>
@@ -898,6 +908,27 @@ export const CheckoutPage = () => {
                 >
                   Clear
                 </button>
+              </div>
+              <div className="grid gap-3 rounded-2xl border border-slate-200/60 bg-white/70 p-4 text-[11px] tracking-[0.3em] text-slate-500 uppercase sm:grid-cols-3 dark:border-white/15 dark:bg-white/10 dark:text-white/50">
+                <div className="flex flex-col gap-1">
+                  <span>Total orders</span>
+                  <span className="text-sm font-semibold tracking-normal text-slate-800 dark:text-white">
+                    {orderSummary.totalOrders.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span>Lifetime revenue</span>
+                  <span className="text-sm font-semibold tracking-normal text-slate-800 dark:text-white">
+                    {formatCurrency(orderSummary.totalRevenue)}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span>Latest kitchen ref</span>
+                  <span className="font-mono text-sm tracking-normal text-slate-800 dark:text-white">
+                    {orderSummary.latestSubmission?.submission
+                      ?.kitchenReference ?? 'Pending'}
+                  </span>
+                </div>
               </div>
               <ul className="space-y-2">
                 {historyPreview.map((order) => (
@@ -929,9 +960,9 @@ export const CheckoutPage = () => {
                   </li>
                 ))}
               </ul>
-              {orderHistory.length > 3 && (
+              {orderSummary.totalOrders > 3 && (
                 <p className="text-[11px] tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
-                  Showing latest 3 of {orderHistory.length}
+                  Showing latest 3 of {orderSummary.totalOrders}
                 </p>
               )}
             </div>
