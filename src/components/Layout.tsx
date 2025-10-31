@@ -1,5 +1,5 @@
-import type { PropsWithChildren } from 'react'
-import { Header } from './Header'
+import type { PropsWithChildren } from "react";
+import { Header } from "./Header";
 
 export const Layout = ({ children }: PropsWithChildren) => (
   <div className="min-h-screen bg-stone-100 text-slate-900 transition-colors duration-300 dark:bg-neutral-950 dark:text-white">
@@ -11,4 +11,4 @@ export const Layout = ({ children }: PropsWithChildren) => (
       Crafted for the React Pizza demo – {new Date().getFullYear()}
     </footer>
   </div>
-)
+);

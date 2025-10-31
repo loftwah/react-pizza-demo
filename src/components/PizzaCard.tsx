@@ -1,31 +1,31 @@
-import { useMemo, useState } from 'react'
-import { Flame, Leaf, ShoppingCart } from 'lucide-react'
-import clsx from 'clsx'
-import { useCartStore } from '../stores/cart'
-import type { Pizza, PizzaSize } from '../domain/pizza'
-import { formatCurrency, priceForSize, sizeLabels } from '../domain/pizza'
+import { useMemo, useState } from "react";
+import { Flame, Leaf, ShoppingCart } from "lucide-react";
+import clsx from "clsx";
+import { useCartStore } from "../stores/cart";
+import type { Pizza, PizzaSize } from "../domain/pizza";
+import { formatCurrency, priceForSize, sizeLabels } from "../domain/pizza";
 
 type PizzaCardProps = {
-  pizza: Pizza
-}
+  pizza: Pizza;
+};
 
-const sizeOrder: PizzaSize[] = ['small', 'medium', 'large']
+const sizeOrder: PizzaSize[] = ["small", "medium", "large"];
 
 export const PizzaCard = ({ pizza }: PizzaCardProps) => {
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>('medium')
-  const addItem = useCartStore((state) => state.addItem)
-  const decrementItem = useCartStore((state) => state.decrementItem)
-  const removeItem = useCartStore((state) => state.removeItem)
-  const cartItems = useCartStore((state) => state.items)
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>("medium");
+  const addItem = useCartStore((state) => state.addItem);
+  const decrementItem = useCartStore((state) => state.decrementItem);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const cartItems = useCartStore((state) => state.items);
 
   const cartItem = useMemo(
     () => cartItems.find((item) => item.id === `${pizza.id}-${selectedSize}`),
     [cartItems, pizza.id, selectedSize],
-  )
+  );
 
   const handleAdd = () => {
-    addItem(pizza.id, selectedSize)
-  }
+    addItem(pizza.id, selectedSize);
+  };
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 transition hover:-translate-y-1 hover:border-brand-400/60 hover:shadow-2xl hover:shadow-brand-500/20 dark:border-white/20 dark:bg-white/10 dark:text-white">
@@ -54,7 +54,9 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
           <h3 className="mt-3 font-display text-2xl font-semibold text-slate-900 dark:text-white">
             {pizza.displayName}
           </h3>
-          <p className="mt-2 text-sm text-slate-600 dark:text-white/70">{pizza.description}</p>
+          <p className="mt-2 text-sm text-slate-600 dark:text-white/70">
+            {pizza.description}
+          </p>
         </div>
         <div className="flex flex-col gap-4">
           <fieldset className="flex gap-2">
@@ -65,10 +67,10 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                 type="button"
                 onClick={() => setSelectedSize(size)}
                 className={clsx(
-                  'flex-1 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
+                  "flex-1 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900",
                   size === selectedSize
-                    ? 'border-brand-400 bg-brand-500 text-white shadow-brand-500/20 focus-visible:ring-brand-400'
-                    : 'border-stone-200/70 bg-white text-slate-700 hover:border-brand-200 hover:bg-brand-50 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
+                    ? "border-brand-400 bg-brand-500 text-white shadow-brand-500/20 focus-visible:ring-brand-400"
+                    : "border-stone-200/70 bg-white text-slate-700 hover:border-brand-200 hover:bg-brand-50 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15",
                 )}
               >
                 <div className="flex flex-col">
@@ -128,5 +130,5 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
         </div>
       </div>
     </article>
-  )
-}
+  );
+};

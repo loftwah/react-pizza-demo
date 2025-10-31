@@ -24,32 +24,32 @@ The video tutorial began with a single HTML file that pulled React from a CDN. N
 ```
 
 ```js
-const { createElement: h } = React
+const { createElement: h } = React;
 
 const menu = [
-  { id: 'pepperoni', displayName: 'Pepperoni Classic', price: 14 },
-  { id: 'veggie', displayName: 'Veggie Delight', price: 19 },
-]
+  { id: "pepperoni", displayName: "Pepperoni Classic", price: 14 },
+  { id: "veggie", displayName: "Veggie Delight", price: 19 },
+];
 
 function PizzaCard({ pizza }) {
   return h(
-    'div',
-    { style: { border: '1px solid gray', padding: '10px' } },
-    h('h2', null, pizza.displayName),
-    h('p', null, `$${pizza.price.toFixed(2)}`),
-  )
+    "div",
+    { style: { border: "1px solid gray", padding: "10px" } },
+    h("h2", null, pizza.displayName),
+    h("p", null, `$${pizza.price.toFixed(2)}`),
+  );
 }
 
 function App() {
   return h(
-    'div',
+    "div",
     null,
-    h('h1', null, 'Pizza Menu'),
+    h("h1", null, "Pizza Menu"),
     menu.map((pizza) => h(PizzaCard, { key: pizza.id, pizza })),
-  )
+  );
 }
 
-ReactDOM.render(h(App), document.getElementById('root'))
+ReactDOM.render(h(App), document.getElementById("root"));
 ```
 
 ### Why This Matters
@@ -73,13 +73,13 @@ npm install
 
 Key files:
 
-| File | Purpose |
-| --- | --- |
-| `index.html` | Still the single HTML entry point, but script tags now point to Vite’s bundle. |
-| `src/main.tsx` | Boots React with `createRoot`, wraps the app in `StrictMode`, and imports CSS. |
-| `src/App.tsx` | Uses JSX and TypeScript to render the UI. |
+| File             | Purpose                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| `index.html`     | Still the single HTML entry point, but script tags now point to Vite’s bundle.       |
+| `src/main.tsx`   | Boots React with `createRoot`, wraps the app in `StrictMode`, and imports CSS.       |
+| `src/App.tsx`    | Uses JSX and TypeScript to render the UI.                                            |
 | `tsconfig*.json` | Controls TypeScript behaviour – `jsx: react-jsx` tells TS to emit JSX automatically. |
-| `vite.config.ts` | Wires up plugins – React, MDX, Tailwind – and exposes dev/build commands. |
+| `vite.config.ts` | Wires up plugins – React, MDX, Tailwind – and exposes dev/build commands.            |
 
 ### What Changed vs the CDN version
 
@@ -162,13 +162,13 @@ Result: content writers keep markdown ergonomics, developers keep component powe
 
 Real apps separate UI from domain logic. This repo follows that pattern:
 
-| Folder | Highlights |
-| --- | --- |
-| `src/domain` | Pure TypeScript modules for pizza data, pricing helpers, and filters. |
-| `src/hooks` | `useMenu` wraps React Query for menu fetching/caching. |
-| `src/stores` | Zustand store drives cart totals, quantities, and actions. |
-| `src/components` | Presentation components – `PizzaCard`, `Header`, `Layout`. |
-| `src/pages` | Route-level screens (`MenuPage.tsx`, `About.mdx`). |
+| Folder           | Highlights                                                            |
+| ---------------- | --------------------------------------------------------------------- |
+| `src/domain`     | Pure TypeScript modules for pizza data, pricing helpers, and filters. |
+| `src/hooks`      | `useMenu` wraps React Query for menu fetching/caching.                |
+| `src/stores`     | Zustand store drives cart totals, quantities, and actions.            |
+| `src/components` | Presentation components – `PizzaCard`, `Header`, `Layout`.            |
+| `src/pages`      | Route-level screens (`MenuPage.tsx`, `About.mdx`).                    |
 
 ### React Query (`@tanstack/react-query`)
 
@@ -233,15 +233,15 @@ src/
 
 ## 9. Core React APIs Reference
 
-| Function | From | What it does | Where to see it |
-| --- | --- | --- | --- |
-| `createRoot` | `react-dom/client` | Creates the render root; replaces `ReactDOM.render`. | `src/main.tsx` |
-| `StrictMode` | `react` | Highlights unsafe patterns in dev. | `src/main.tsx` |
-| `useState` | `react` | Local component state. | `src/components/PizzaCard.tsx` |
-| `useEffect` | `react` | Runs side-effects after render. | `src/pages/MenuPage.tsx` |
-| `useMemo` | `react` | Memoises derived data. | `src/components/PizzaCard.tsx` |
-| `Routes` / `Route` / `NavLink` | `react-router-dom` | Client-side routing. | `src/App.tsx`, `src/components/Header.tsx` |
-| `useQuery` | `@tanstack/react-query` | Fetch/caches data with auto states. | `src/hooks/useMenu.ts` |
-| `create` | `zustand` | Builds a lightweight global store. | `src/stores/cart.ts` |
+| Function                       | From                    | What it does                                         | Where to see it                            |
+| ------------------------------ | ----------------------- | ---------------------------------------------------- | ------------------------------------------ |
+| `createRoot`                   | `react-dom/client`      | Creates the render root; replaces `ReactDOM.render`. | `src/main.tsx`                             |
+| `StrictMode`                   | `react`                 | Highlights unsafe patterns in dev.                   | `src/main.tsx`                             |
+| `useState`                     | `react`                 | Local component state.                               | `src/components/PizzaCard.tsx`             |
+| `useEffect`                    | `react`                 | Runs side-effects after render.                      | `src/pages/MenuPage.tsx`                   |
+| `useMemo`                      | `react`                 | Memoises derived data.                               | `src/components/PizzaCard.tsx`             |
+| `Routes` / `Route` / `NavLink` | `react-router-dom`      | Client-side routing.                                 | `src/App.tsx`, `src/components/Header.tsx` |
+| `useQuery`                     | `@tanstack/react-query` | Fetch/caches data with auto states.                  | `src/hooks/useMenu.ts`                     |
+| `create`                       | `zustand`               | Builds a lightweight global store.                   | `src/stores/cart.ts`                       |
 
 Every concept from the CDN demo appears here, just with modern tooling layered on top. Follow the progression, tweak the code, and you’ll cement not only how React works but also why the ecosystem’s tools matter.
