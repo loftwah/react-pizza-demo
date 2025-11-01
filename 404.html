@@ -8,7 +8,9 @@
       (function handleSpaRedirect() {
         sessionStorage.setItem(
           'pizza-spa-redirect',
-          window.location.pathname + window.location.search + window.location.hash,
+          window.location.pathname +
+            window.location.search +
+            window.location.hash,
         );
         window.location.replace('/');
       })();

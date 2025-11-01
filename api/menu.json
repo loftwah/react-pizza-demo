@@ -6,7 +6,9 @@
     "basePrice": 16,
     "toppings": ["Tomato", "Mozzarella", "Pepperoni"],
     "vegetarian": false,
+    "vegan": false,
     "spicy": false,
+    "category": "savoury",
     "image": "/pepperoni-classic.jpg"
   },
   {
@@ -16,7 +18,9 @@
     "basePrice": 18,
     "toppings": ["BBQ Sauce", "Chicken", "Corn", "Parsley"],
     "vegetarian": false,
+    "vegan": false,
     "spicy": false,
+    "category": "savoury",
     "image": "/smokey-bbq-chicken.jpg"
   },
   {
@@ -26,7 +30,9 @@
     "basePrice": 19,
     "toppings": ["Scorpion Oil", "Salami", "Jalapeño", "Hot Honey"],
     "vegetarian": false,
+    "vegan": false,
     "spicy": true,
+    "category": "savoury",
     "image": "/firecracker.jpg"
   },
   {
@@ -36,7 +42,9 @@
     "basePrice": 17,
     "toppings": ["Pesto", "Tomato", "Zucchini", "Ricotta"],
     "vegetarian": true,
+    "vegan": false,
     "spicy": false,
+    "category": "savoury",
     "image": "/green-garden.jpg"
   },
   {
@@ -46,7 +54,9 @@
     "basePrice": 20,
     "toppings": ["Garlic Cream", "Mushroom", "Truffle Salt"],
     "vegetarian": true,
+    "vegan": false,
     "spicy": false,
+    "category": "savoury",
     "image": "/wild-mushroom.jpg"
   },
   {
@@ -56,7 +66,9 @@
     "basePrice": 18,
     "toppings": ["Tomato", "Ham", "Pineapple", "Chilli"],
     "vegetarian": false,
+    "vegan": false,
     "spicy": true,
+    "category": "savoury",
     "image": "/pineapple-party.jpg"
   },
   {
@@ -66,8 +78,10 @@
     "basePrice": 17,
     "toppings": ["Tomato", "Stracciatella", "Basil Oil", "Lemon Zest"],
     "vegetarian": true,
+    "vegan": false,
     "spicy": false,
-    "image": "/green-garden.jpg"
+    "category": "savoury",
+    "image": "/sunrise-margherita.jpg"
   },
   {
     "id": "smoked-maple-bacon",
@@ -76,8 +90,10 @@
     "basePrice": 19,
     "toppings": ["Maple", "Bacon", "Sweet Potato", "Pickled Onion"],
     "vegetarian": false,
+    "vegan": false,
     "spicy": false,
-    "image": "/smokey-bbq-chicken.jpg"
+    "category": "savoury",
+    "image": "/smoked-maple-bacon.jpg"
   },
   {
     "id": "calabrian-scorcher",
@@ -86,17 +102,92 @@
     "basePrice": 21,
     "toppings": ["Nduja", "Fennel Sausage", "Charred Peppers", "Chilli Honey"],
     "vegetarian": false,
+    "vegan": false,
     "spicy": true,
-    "image": "/firecracker.jpg"
+    "category": "savoury",
+    "image": "/calabrian-scorcher.jpg"
   },
   {
     "id": "forest-fable",
-    "displayName": "Forest Fable",
-    "description": "Porcini cream, rosemary potato, caramelised shallot, fried sage.",
+    "displayName": "Forest Fable (Vegan)",
+    "description": "Porcini cashew cream, rosemary roast potatoes, caramelised shallot, crispy sage.",
     "basePrice": 20,
-    "toppings": ["Porcini", "Potato", "Shallot", "Sage"],
+    "toppings": [
+      "Porcini Cashew Cream",
+      "Rosemary Potatoes",
+      "Caramelised Shallot",
+      "Crispy Sage"
+    ],
     "vegetarian": true,
+    "vegan": true,
     "spicy": false,
-    "image": "/wild-mushroom.jpg"
+    "category": "savoury",
+    "image": "/forest-fable.jpg"
+  },
+  {
+    "id": "home-alone-cheese",
+    "displayName": "Home Alone Cheese Pizza",
+    "description": "Crisp base, tomato sugo, melty mozzarella, olive oil gloss.",
+    "basePrice": 17,
+    "toppings": ["Tomato Sugo", "Mozzarella", "Olive Oil Gloss"],
+    "vegetarian": true,
+    "vegan": false,
+    "spicy": false,
+    "category": "savoury",
+    "image": "/home-alone-cheese.jpg"
+  },
+  {
+    "id": "home-alone-vegan-cheese",
+    "displayName": "Home Alone Vegan Cheese Pizza",
+    "description": "Crisp base, tomato sugo, melty vegan mozzarella, olive oil gloss.",
+    "basePrice": 17,
+    "toppings": ["Tomato Sugo", "Vegan Mozzarella", "Olive Oil Gloss"],
+    "vegetarian": true,
+    "vegan": true,
+    "spicy": false,
+    "category": "savoury",
+    "image": "/home-alone-cheese.jpg"
+  },
+  {
+    "id": "white-chocolate-nutella-biscoff",
+    "displayName": "White Chocolate Nutella Biscoff",
+    "description": "Cinnamon crust, warm white chocolate ganache, Nutella ripple, crushed Biscoff biscuit.",
+    "basePrice": 18,
+    "toppings": ["White Chocolate", "Nutella", "Biscoff Crumb", "Cinnamon"],
+    "vegetarian": true,
+    "vegan": false,
+    "spicy": false,
+    "category": "dessert",
+    "image": "/white-chocolate-biscoff.jpg"
+  },
+  {
+    "id": "nutella-chocolate",
+    "displayName": "Nutella Chocolate",
+    "description": "Toasted base, Nutella spread, dark chocolate shards, strawberry compote drizzle.",
+    "basePrice": 17,
+    "toppings": ["Nutella", "Dark Chocolate Shards", "Strawberry Compote"],
+    "vegetarian": true,
+    "vegan": false,
+    "spicy": false,
+    "category": "dessert",
+    "image": "/nutella-chocolate.jpg"
+  },
+  {
+    "id": "loftwah-cola",
+    "displayName": "Loftwah Cola",
+    "description": "House-label cola with a crisp finish. Served chilled in share-friendly bottles.",
+    "basePrice": 4.5,
+    "toppings": [],
+    "vegetarian": true,
+    "vegan": true,
+    "spicy": false,
+    "category": "drink",
+    "allowCustomization": false,
+    "sizeLabelsOverride": {
+      "small": "375 ml",
+      "medium": "600 ml",
+      "large": "1 L"
+    },
+    "image": "/loftwah-cola.jpg"
   }
 ]
