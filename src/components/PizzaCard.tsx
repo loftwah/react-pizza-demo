@@ -106,33 +106,43 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
         <div className="flex flex-col gap-4">
           <fieldset className="flex gap-2">
             <legend className="sr-only">Choose pizza size</legend>
-            {sizeOrder.map((size) => (
-              <button
-                key={size}
-                type="button"
-                onClick={() => setSelectedSize(size)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    setSelectedSize(size);
-                  }
-                }}
-                aria-pressed={size === selectedSize}
-                className={clsx(
-                  'focus-visible:ring-brand-400 flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
-                  size === selectedSize
-                    ? 'border-brand-400 bg-brand-500 shadow-brand-500/20 focus-visible:ring-brand-400 text-white'
-                    : 'hover:border-brand-200 hover:bg-brand-50 border-stone-200/70 bg-white text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
-                )}
-              >
-                <div className="flex flex-col">
-                  <span>{sizeLabels[size]}</span>
-                  <span className="text-[10px] tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
-                    {formatCurrency(priceForSize(pizza, size))}
-                  </span>
-                </div>
-              </button>
-            ))}
+            {sizeOrder.map((size) => {
+              const isSelected = size === selectedSize;
+              return (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => setSelectedSize(size)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      setSelectedSize(size);
+                    }
+                  }}
+                  aria-pressed={isSelected}
+                  className={clsx(
+                    'focus-visible:ring-brand-400 flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
+                    isSelected
+                      ? 'border-brand-400 bg-brand-500 shadow-brand-500/20 focus-visible:ring-brand-400 text-white'
+                      : 'hover:border-brand-200 hover:bg-brand-50 border-stone-200/70 bg-white text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
+                  )}
+                >
+                  <div className="flex flex-col">
+                    <span>{sizeLabels[size]}</span>
+                    <span
+                      className={clsx(
+                        'text-[10px] tracking-[0.3em] uppercase transition-colors',
+                        isSelected
+                          ? 'text-white/85 dark:text-white/85'
+                          : 'text-slate-400 dark:text-white/40',
+                      )}
+                    >
+                      {formatCurrency(priceForSize(pizza, size))}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </fieldset>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-lg font-semibold text-slate-900 dark:text-white">
