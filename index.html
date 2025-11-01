@@ -52,6 +52,16 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function restoreSpaRedirect() {
+        const redirectPath = sessionStorage.getItem('pizza-spa-redirect');
+        if (!redirectPath) {
+          return;
+        }
+        sessionStorage.removeItem('pizza-spa-redirect');
+        window.history.replaceState(null, '', redirectPath);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
