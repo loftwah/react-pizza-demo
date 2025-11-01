@@ -123,7 +123,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   className={clsx(
                     'focus-visible:ring-brand-400 flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
                     isSelected
-                      ? 'border-brand-400 bg-brand-500 shadow-brand-500/20 focus-visible:ring-brand-400 text-white'
+                      ? 'border-slate-900/80 bg-slate-900 text-white shadow-[0_12px_28px_rgba(15,23,42,0.28)] focus-visible:ring-slate-900/70 dark:border-white dark:bg-white text-white dark:text-slate-900 dark:shadow-[0_12px_28px_rgba(255,255,255,0.24)] dark:focus-visible:ring-white/70'
                       : 'hover:border-brand-200 hover:bg-brand-50 border-stone-200/70 bg-white text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
                   )}
                 >
