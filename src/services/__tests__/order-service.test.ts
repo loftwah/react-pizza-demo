@@ -14,6 +14,7 @@ import { OrderService, type OrderRunInput } from '../order-service';
 import { useCartStore } from '../../stores/cart';
 import { useOrderHistory } from '../../stores/orders';
 import { ok, err } from '../../shared-utils/result';
+import { getIngredientById } from '../../domain/ingredients';
 
 vi.mock('../mock-backend', () => ({
   submitOrderToKitchen: vi.fn(),
@@ -175,16 +176,14 @@ describe('OrderService.run', () => {
       throw new Error('Expected pepperoni-classic menu item');
     }
 
+    const extra = getIngredientById('truffle-oil');
+    if (!extra) {
+      throw new Error('Expected truffle-oil ingredient');
+    }
     const customization = {
       removedIngredients: ['Mozzarella'],
-      addedIngredients: [
-        {
-          id: 'truffle-oil',
-          name: 'Truffle oil drizzle',
-          price: 2.2,
-        },
-      ],
-    } as const;
+      addedIngredients: [extra],
+    };
 
     const unitPrice = priceForConfiguration(pizza, 'medium', {
       removedIngredients: customization.removedIngredients,

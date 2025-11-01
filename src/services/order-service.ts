@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import { getPizzaById } from '../domain/menu';
-import { isIngredientId } from '../domain/ingredients';
+import {
+  getIngredientById,
+  isIngredientId,
+  type IngredientSelection,
+} from '../domain/ingredients';
 import {
   normalizeCustomization,
   priceForConfiguration,
@@ -105,12 +109,29 @@ const sanitizeCustomization = (
         .filter(Boolean),
     ),
   );
-  const addedIngredients =
-    customization.addedIngredients?.map((ingredient) => ({
-      ...ingredient,
-      name: ingredient.name.trim(),
-      price: Math.round(Math.max(0, ingredient.price) * 100) / 100,
-    })) ?? [];
+  const addedIngredients: IngredientSelection[] = [];
+  customization.addedIngredients?.forEach((ingredient) => {
+    const id = ingredient.id.trim();
+    if (!isIngredientId(id)) return;
+    const catalogEntry = getIngredientById(id);
+    if (!catalogEntry) return;
+    const name = ingredient.name.trim() || catalogEntry.name;
+    const sanitizedPrice =
+      Math.round(Math.max(0, ingredient.price) * 100) / 100;
+    const price = Number.isFinite(sanitizedPrice)
+      ? sanitizedPrice
+      : catalogEntry.price;
+    const category = ingredient.category ?? catalogEntry.category;
+    const dietary = ingredient.dietary ?? catalogEntry.dietary;
+    addedIngredients.push({
+      ...catalogEntry,
+      id: catalogEntry.id,
+      name,
+      price,
+      category,
+      dietary,
+    });
+  });
   if (removedIngredients.length === 0 && addedIngredients.length === 0) {
     return undefined;
   }

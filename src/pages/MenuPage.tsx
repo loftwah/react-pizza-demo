@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Clock, Flame, Leaf, Pizza, Sparkles, Sprout } from 'lucide-react';
+import {
+  BadgeCheck,
+  Clock,
+  Flame,
+  Leaf,
+  Pizza,
+  Sparkles,
+  Sprout,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { Link, useSearchParams } from 'react-router-dom';

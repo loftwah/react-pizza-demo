@@ -142,35 +142,40 @@ export const useCartStore = create<CartState>()(
         }),
       clear: () => set({ items: [] }),
       hydrateFromOrder: (order) =>
-        set({
-          items: order.items
-            .map((item) => {
-              const reference = parseCartItemKey(item.id);
-              const sizeCandidate = item.size ?? reference.size ?? 'medium';
-              const resolvedSize = isPizzaSize(sizeCandidate)
-                ? sizeCandidate
-                : 'medium';
-              const pizzaId = item.pizzaId ?? reference.pizzaId;
-              if (!pizzaId) return null;
-              const customization = mapOrderCustomization(item.customization);
-              const fallbackId = createCartItemId(
-                pizzaId,
-                resolvedSize,
-                customization,
-              );
-              const id =
-                item.id && item.id.startsWith(`${pizzaId}-${resolvedSize}`)
-                  ? item.id
-                  : fallbackId;
-              return {
+        set(() => {
+          const items: CartItem[] = [];
+          order.items.forEach((item) => {
+            const reference = parseCartItemKey(item.id);
+            const sizeCandidate = item.size ?? reference.size ?? 'medium';
+            const resolvedSize = isPizzaSize(sizeCandidate)
+              ? sizeCandidate
+              : 'medium';
+            const pizzaId = item.pizzaId ?? reference.pizzaId;
+            if (!pizzaId) return;
+            const customization = mapOrderCustomization(item.customization);
+            const fallbackId = createCartItemId(
+              pizzaId,
+              resolvedSize,
+              customization,
+            );
+            const id =
+              item.id && item.id.startsWith(`${pizzaId}-${resolvedSize}`)
+                ? item.id
+                : fallbackId;
+            const rawQuantity =
+              typeof item.quantity === 'number' ? item.quantity : 1;
+            const quantity = Math.max(1, rawQuantity);
+            items.push(
+              withHydratedCustomization({
                 id,
                 pizzaId,
                 size: resolvedSize,
-                quantity: Math.max(1, item.quantity),
+                quantity,
                 customization,
-              };
-            })
-            .filter((entry): entry is CartItem => Boolean(entry)),
+              }),
+            );
+          });
+          return { items };
         }),
       totalItems: () =>
         get().items.reduce(
