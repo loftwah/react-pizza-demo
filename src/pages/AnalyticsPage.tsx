@@ -623,7 +623,7 @@ export const AnalyticsPage = () => {
         </AnimatePresence>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+      <section className="flex flex-col gap-6">
         <article className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm transition dark:border-white/10 dark:bg-white/5">
           <header className="flex items-start gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-600 dark:bg-sky-400/15 dark:text-sky-200">
@@ -779,7 +779,7 @@ export const AnalyticsPage = () => {
         </article>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <section className="flex flex-col gap-6">
         <article className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm transition dark:border-white/10 dark:bg-white/5">
           <header className="flex items-center justify-between">
             <div>
@@ -792,7 +792,7 @@ export const AnalyticsPage = () => {
             </div>
             <Activity className="text-brand-500 dark:text-brand-300 h-5 w-5" />
           </header>
-          <div className="mt-6 h-72">
+          <div className="mt-6 h-[280px]">
             <HourlyOrdersChart
               blended={blendedHourlyOrders}
               snapshot={data?.hourlyOrders ?? []}
@@ -810,7 +810,7 @@ export const AnalyticsPage = () => {
               Share of orders by channel for the current snapshot.
             </p>
           </header>
-          <div className="mt-6 h-72">
+          <div className="mt-6 h-[280px]">
             <ChannelMixChart data={blendedChannelBreakdown} />
           </div>
           {blendedChannelBreakdown.length > 0 ? (
@@ -841,7 +841,7 @@ export const AnalyticsPage = () => {
         </article>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <section className="flex flex-col gap-6">
         <article className="rounded-3xl border border-slate-200/70 bg-white p-6 shadow-sm transition dark:border-white/10 dark:bg-white/5">
           <header>
             <h2 className="font-display text-xl text-slate-900 dark:text-white">
@@ -985,3 +985,9 @@ export const AnalyticsPage = () => {
 };
 
 export default AnalyticsPage;
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(AnalyticsPage, 'displayName', {
+    value: 'Station.SignalRoom',
+  });
+}

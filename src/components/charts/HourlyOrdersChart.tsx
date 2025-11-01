@@ -120,7 +120,7 @@ export const HourlyOrdersChart: FC<HourlyOrdersChartProps> = ({
   }
 
   return (
-    <ResponsiveContainer width="100%" height={260}>
+    <ResponsiveContainer width="100%" height={280}>
       <BarChart
         data={data}
         margin={{
@@ -145,16 +145,26 @@ export const HourlyOrdersChart: FC<HourlyOrdersChartProps> = ({
           width={36}
         />
         <Tooltip
-          cursor={{ fill: 'rgba(2, 132, 199, 0.08)' }}
+          cursor={{ fill: 'rgba(56, 189, 248, 0.12)' }}
           formatter={formatTooltip}
           labelFormatter={labelFormatter}
+          wrapperStyle={{ outline: 'none' }}
           contentStyle={{
             borderRadius: 12,
-            border: '1px solid rgba(148, 163, 184, 0.35)',
-            backgroundColor: 'rgba(15, 23, 42, 0.96)',
-            color: '#f8fafc',
+            border: '1px solid rgba(148, 163, 184, 0.25)',
+            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+            color: '#0f172a',
+            boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18)',
             fontSize: 12,
           }}
+          labelStyle={{
+            color: '#475569',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            fontSize: 11,
+          }}
+          itemStyle={{ color: '#0f172a' }}
         />
         <Legend
           formatter={(value) =>
@@ -186,3 +196,9 @@ export const HourlyOrdersChart: FC<HourlyOrdersChartProps> = ({
     </ResponsiveContainer>
   );
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(HourlyOrdersChart, 'displayName', {
+    value: 'Station.HourlyBoard',
+  });
+}

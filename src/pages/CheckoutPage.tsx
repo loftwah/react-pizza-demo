@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import QRCode from 'qrcode';
+import { z } from 'zod';
 import { useCartStore } from '../stores/cart';
 import { getPizzaById } from '../domain/menu';
 import { formatCurrency, priceForSize, sizeLabels } from '../domain/pizza';
@@ -35,6 +36,16 @@ const getMockReadyEta = () =>
 
 const formatOrderTimestamp = (iso: string) =>
   orderTimeFormatter.format(new Date(iso));
+
+const checkoutFormSchema = z.object({
+  customer: z.string().trim().min(1, 'Name is required.'),
+  contact: z.string().trim().min(1, 'Contact details are required.'),
+  instructions: z
+    .string()
+    .trim()
+    .max(500, 'Instructions must be 500 characters or fewer.')
+    .optional(),
+});
 
 export const CheckoutPage = () => {
   const items = useCartStore((state) => state.items);
@@ -164,19 +175,30 @@ export const CheckoutPage = () => {
       }
 
       const formData = new FormData(form);
-      const customer = (formData.get('customer') as string | null)?.trim();
-      const contact = (formData.get('contact') as string | null)?.trim();
-      const instructions =
-        (formData.get('instructions') as string | null)?.trim() ?? '';
+      const toInputString = (value: FormDataEntryValue | null) =>
+        typeof value === 'string' ? value : value ? value.name : '';
 
-      if (!customer || !contact) {
+      const parsed = checkoutFormSchema.safeParse({
+        customer: toInputString(formData.get('customer')),
+        contact: toInputString(formData.get('contact')),
+        instructions: (() => {
+          const raw = toInputString(formData.get('instructions'));
+          return raw.length > 0 ? raw : undefined;
+        })(),
+      });
+
+      if (!parsed.success) {
+        const firstIssue = parsed.error.issues.at(0);
         showToast({
           message:
+            firstIssue?.message ??
             'Name and contact details are required to simulate checkout.',
           tone: 'error',
         });
         return;
       }
+
+      const { customer, contact, instructions = '' } = parsed.data;
 
       setIsProcessing(true);
       try {
@@ -1075,3 +1097,9 @@ export const CheckoutPage = () => {
     </section>
   );
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(CheckoutPage, 'displayName', {
+    value: 'Station.CheckoutBay',
+  });
+}

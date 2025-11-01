@@ -18,7 +18,10 @@ export const getBaseUrl = () => {
     return ensureTrailingSlash(viteBase);
   }
 
-  const envBase = process.env.PUBLIC_BASE_URL;
+  const envBase =
+    typeof process !== 'undefined' && process?.env
+      ? process.env.PUBLIC_BASE_URL
+      : undefined;
   if (envBase) {
     return ensureTrailingSlash(envBase);
   }

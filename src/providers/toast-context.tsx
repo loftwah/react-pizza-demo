@@ -156,3 +156,9 @@ export const useToast = () => {
   }
   return context;
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(ToastProvider, 'displayName', {
+    value: 'Station.ToastWindow',
+  });
+}

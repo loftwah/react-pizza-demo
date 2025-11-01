@@ -235,3 +235,9 @@ export const Header = () => {
     </header>
   );
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(Header, 'displayName', {
+    value: 'Station.FrontCounter',
+  });
+}

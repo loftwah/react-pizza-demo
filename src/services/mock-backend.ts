@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { getBaseUrl } from '../shared-utils/base-url';
 import { isDevEnvironment } from '../shared-utils/env';
 import type { OrderRecord, OrderSubmissionReceipt } from '../stores/orders';
@@ -5,6 +6,13 @@ const delay = (ms: number) =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+
+const OrderSubmissionReceiptSchema = z.object({
+  status: z.string().min(1),
+  message: z.string().min(1),
+  kitchenReference: z.string().min(1),
+  estimatedPrepMinutes: z.number().int().nonnegative(),
+});
 
 export const submitOrderToKitchen = async (
   order: OrderRecord,
@@ -45,11 +53,20 @@ export const submitOrderToKitchen = async (
     throw new Error(`Mock order API failed with status ${response.status}`);
   }
 
-  const payload: Omit<OrderSubmissionReceipt, 'receivedAt'> =
-    await response.json();
+  const rawPayload: unknown = await response.json();
+  const parsed = OrderSubmissionReceiptSchema.safeParse(rawPayload);
+  if (!parsed.success) {
+    if (isDevEnvironment()) {
+      console.warn(
+        '[mock-backend] Invalid submission payload received from mock API',
+        parsed.error,
+      );
+    }
+    throw new Error('Mock order API returned invalid payload.');
+  }
 
   return {
-    ...payload,
+    ...parsed.data,
     receivedAt: new Date().toISOString(),
   };
 };

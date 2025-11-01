@@ -21,3 +21,9 @@ export const Layout = ({ children }: PropsWithChildren) => (
     </footer>
   </div>
 );
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(Layout, 'displayName', {
+    value: 'Station.LayoutDeck',
+  });
+}

@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { getBaseUrl } from '../shared-utils/base-url';
 import { isDevEnvironment } from '../shared-utils/env';
 
@@ -49,6 +50,61 @@ export type AnalyticsSnapshot = {
 
 const clampShare = (value: number) =>
   Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0));
+
+const MetricTrendSchema = z.union([
+  z.literal('up'),
+  z.literal('down'),
+  z.literal('steady'),
+]);
+
+const AnalyticsMetricSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  value: z.number(),
+  unit: z.union([
+    z.literal('orders'),
+    z.literal('currency'),
+    z.literal('minutes'),
+    z.literal('percent'),
+  ]),
+  change: z.number(),
+  trend: MetricTrendSchema,
+});
+
+const PizzaPerformanceSchema = z.object({
+  pizzaId: z.string().min(1),
+  name: z.string().min(1),
+  orders: z.number().nonnegative(),
+  share: z.number().nonnegative(),
+  trend: MetricTrendSchema,
+});
+
+const HourlyOrdersSchema = z.object({
+  hour: z.string().min(1),
+  orders: z.number().nonnegative(),
+});
+
+const ChannelBreakdownSchema = z.object({
+  channel: z.string().min(1),
+  orders: z.number().nonnegative(),
+  share: z.number().nonnegative(),
+});
+
+const AnalyticsEventSchema = z.object({
+  timestamp: z.string().min(1),
+  label: z.string().min(1),
+  details: z.string().min(1),
+});
+
+const AnalyticsSnapshotSchema = z.object({
+  generatedAt: z.string().min(1),
+  metrics: z.array(AnalyticsMetricSchema),
+  topPizzas: z.array(PizzaPerformanceSchema),
+  hourlyOrders: z.array(HourlyOrdersSchema),
+  channelBreakdown: z.array(ChannelBreakdownSchema),
+  insights: z.array(z.string().min(1)),
+  recentEvents: z.array(AnalyticsEventSchema),
+});
 
 export const analyticsSnapshot: AnalyticsSnapshot = {
   generatedAt: '2025-01-07T18:45:00.000Z',
@@ -221,6 +277,16 @@ export const analyticsSnapshot: AnalyticsSnapshot = {
   ],
 };
 
+(() => {
+  const validation = AnalyticsSnapshotSchema.safeParse(analyticsSnapshot);
+  if (!validation.success && isDevEnvironment()) {
+    console.warn(
+      '[analytics] Embedded analytics snapshot failed validation',
+      validation.error,
+    );
+  }
+})();
+
 export const fetchAnalytics = async (): Promise<AnalyticsSnapshot> => {
   const endpoint = `${getBaseUrl()}api/analytics.json`;
   try {
@@ -230,10 +296,11 @@ export const fetchAnalytics = async (): Promise<AnalyticsSnapshot> => {
         `Analytics request failed with status ${response.status}`,
       );
     }
-    const payload = (await response.json()) as AnalyticsSnapshot;
+    const payload = await response.json();
+    const parsed = AnalyticsSnapshotSchema.parse(payload);
     return {
-      ...payload,
-      topPizzas: payload.topPizzas.map((pizza) => ({
+      ...parsed,
+      topPizzas: parsed.topPizzas.map((pizza) => ({
         ...pizza,
         share: clampShare(pizza.share),
       })),

@@ -98,3 +98,9 @@ const App = () => (
 );
 
 export default App;
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(App, 'displayName', {
+    value: 'Station.Terminal',
+  });
+}

@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 type FeatureToggle = {
   enabled: boolean;
   rolloutPercentage: number;
@@ -15,6 +17,22 @@ const hashToBucket = (value: string) => {
   }
   return Math.abs(hash) % 100;
 };
+
+const FeatureToggleSchema = z.object({
+  enabled: z.boolean(),
+  rolloutPercentage: z.number().int().min(0).max(100),
+  owner: z.string().trim().min(1),
+  reason: z.string().trim().min(1),
+  expiresAt: z.string().trim().min(1),
+  killSwitchNote: z.string().trim().min(1).optional(),
+});
+
+const FeaturesSchema = z.object({
+  voiceMode: FeatureToggleSchema,
+  surpriseMe: FeatureToggleSchema,
+  shareLinks: FeatureToggleSchema,
+  analyticsDashboard: FeatureToggleSchema,
+});
 
 export const features = {
   voiceMode: {
@@ -47,6 +65,16 @@ export const features = {
     expiresAt: '2026-01-01',
   },
 } satisfies Record<string, FeatureToggle>;
+
+(() => {
+  const validation = FeaturesSchema.safeParse(features);
+  if (!validation.success && typeof console !== 'undefined') {
+    console.warn(
+      '[features] Feature toggle configuration failed validation',
+      validation.error,
+    );
+  }
+})();
 
 export const isFeatureEnabled = (
   flag: keyof typeof features,

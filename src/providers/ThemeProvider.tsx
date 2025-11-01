@@ -89,3 +89,9 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(ThemeProvider, 'displayName', {
+    value: 'Station.AuroraSwitchboard',
+  });
+}

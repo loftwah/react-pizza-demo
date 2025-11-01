@@ -9,6 +9,25 @@ import './index.css';
 
 const queryClient = new QueryClient();
 
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  const stationMap = [
+    'Station.Terminal → Station.LayoutDeck → Station.FrontCounter',
+    'Station.MenuHall → Station.PizzaLine',
+    'Station.CheckoutBay → Station.ToastWindow',
+    'Station.SignalRoom → Station.SparklineLab',
+    'Station.HourlyBoard → Station.ChannelMixer',
+  ];
+  // Surface a little developer treat without polluting production logs
+  console.info(
+    '%cLoftwah Station Map%c\n%s',
+    'font-weight:700; color:#f97316;',
+    'color:inherit;',
+    stationMap.join('\n'),
+  );
+  (window as typeof window & { __LOFTWAH_STATIONS__?: string[] }).__LOFTWAH_STATIONS__ =
+    stationMap;
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { getPizzaById } from '../domain/menu';
 import { sizeLabels, priceForSize } from '../domain/pizza';
 import type { OrderLineItem, OrderRecord } from '../stores/orders';
@@ -14,6 +15,31 @@ import {
 import { retryWithBackoff } from '../shared-utils/retry-with-backoff';
 import { createCorrelationId, emitEvent } from '../shared-utils/telemetry';
 import { submitOrderToKitchen } from './mock-backend';
+
+const PizzaSizeEnum = z.enum(['small', 'medium', 'large']);
+
+const OrderLineItemSchema = z.object({
+  id: z.string().trim().min(1),
+  pizzaId: z.string().trim().min(1),
+  size: PizzaSizeEnum,
+  name: z.string().trim().min(1),
+  sizeLabel: z.string().trim().min(1),
+  quantity: z.number().int().positive(),
+  unitPrice: z.number().finite().nonnegative(),
+  lineTotal: z.number().finite().nonnegative(),
+});
+
+const OrderRunInputSchema = z.object({
+  customer: z.string().trim().min(1),
+  contact: z.string().trim().min(1),
+  instructions: z
+    .string()
+    .trim()
+    .max(500, 'Instructions must be 500 characters or fewer.')
+    .optional(),
+  cartDetails: z.array(OrderLineItemSchema).min(1),
+  cartTotal: z.number().finite().nonnegative(),
+});
 
 const generateOrderId = () =>
   `LP-${Date.now().toString(36).toUpperCase().slice(-5)}`;
@@ -44,6 +70,7 @@ const unknownError = (message: string): StepError => ({
 
 export class OrderService {
   static steps = [
+    'validateInput',
     'validateCustomer',
     'validateCart',
     'generateOrderReference',
@@ -57,7 +84,7 @@ export class OrderService {
   }
 
   private readonly handlers: Record<
-    (typeof OrderService)['steps'][number],
+    Exclude<(typeof OrderService)['steps'][number], 'validateInput'>,
     StepHandler
   > = {
     validateCustomer: this.validateCustomer,
@@ -70,11 +97,54 @@ export class OrderService {
 
   async run(input: OrderRunInput): Promise<PipelineResult<OrderRecord>> {
     const correlationId = createCorrelationId();
-    let context: OrderRunContext = { ...input, correlationId };
     const timeline: StepLog[] = [];
     const degraded: StepLog[] = [];
 
-    for (const step of OrderService.steps) {
+    const validation = await this.validateInput(input);
+
+    timeline.push({
+      step: 'validateInput',
+      status: validation.status,
+      attempts: validation.attempts,
+      error: validation.error,
+      nextStep: validation.nextStep,
+    });
+
+    if (validation.status === 'failed') {
+      return {
+        ...err(
+          validation.error ?? {
+            kind: 'InputInvalid',
+            message: 'Order input failed validation.',
+            retryable: false,
+          },
+        ),
+        timeline,
+        degraded,
+        correlationId,
+      };
+    }
+
+    let context: OrderRunContext = {
+      ...input,
+      instructions: input.instructions?.trim?.() ?? '',
+      correlationId,
+    };
+
+    if (validation.value) {
+      context = {
+        ...context,
+        ...validation.value,
+        instructions: validation.value.instructions ?? '',
+      };
+    }
+
+    const pipelineSteps = OrderService.steps.slice(1) as Exclude<
+      (typeof OrderService)['steps'][number],
+      'validateInput'
+    >[];
+
+    for (const step of pipelineSteps) {
       const handler = this.handlers[step];
       const result = await handler.call(this, context);
       const log: StepLog = {
@@ -128,6 +198,45 @@ export class OrderService {
       timeline,
       degraded,
       correlationId,
+    };
+  }
+
+  private async validateInput(
+    input: OrderRunInput,
+  ): Promise<StepResult<Partial<OrderRunContext>>> {
+    const validation = OrderRunInputSchema.safeParse(input);
+    if (!validation.success) {
+      const message =
+        validation.error.issues
+          .map((issue) => issue.message)
+          .join(', ') || 'Order input failed validation.';
+      return {
+        status: 'failed',
+        attempts: 1,
+        error: {
+          kind: 'InputInvalid',
+          message,
+          retryable: false,
+        },
+        nextStep:
+          'Ensure customer name, contact, and at least one cart item are provided before submitting.',
+      };
+    }
+
+    const sanitized = {
+      ...validation.data,
+      instructions: validation.data.instructions ?? '',
+      cartDetails: validation.data.cartDetails.map((item) => ({
+        ...item,
+        name: item.name.trim(),
+        sizeLabel: item.sizeLabel.trim(),
+      })),
+    };
+
+    return {
+      status: 'ok',
+      attempts: 1,
+      value: sanitized,
     };
   }
 

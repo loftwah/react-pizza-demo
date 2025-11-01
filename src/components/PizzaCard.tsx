@@ -190,3 +190,9 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
     </article>
   );
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(PizzaCard, 'displayName', {
+    value: 'Station.PizzaLine',
+  });
+}

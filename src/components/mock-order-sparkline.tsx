@@ -167,3 +167,9 @@ export const MockOrderSparkline: FC<MockOrderSparklineProps> = ({
     </div>
   );
 };
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(MockOrderSparkline, 'displayName', {
+    value: 'Station.SparklineLab',
+  });
+}

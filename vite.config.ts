@@ -8,7 +8,7 @@ export default defineConfig({
   base: '/',
   plugins: [mdx(), tailwindcss(), react()],
   test: {
-    environment: 'jsdom',
+    environment: 'happy-dom',
     setupFiles: './src/test/setup.ts',
     coverage: {
       provider: 'v8',

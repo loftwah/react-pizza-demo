@@ -54,3 +54,9 @@ export class ErrorBoundary extends Component<
     return this.props.children;
   }
 }
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(ErrorBoundary, 'displayName', {
+    value: 'Station.SafeGuard',
+  });
+}

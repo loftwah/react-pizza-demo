@@ -373,3 +373,9 @@ export const MenuPage = () => {
   'handleSurprise',
   'syncSharedOrder',
 ];
+
+if (import.meta.env.DEV) {
+  Object.defineProperty(MenuPage, 'displayName', {
+    value: 'Station.MenuHall',
+  });
+}
