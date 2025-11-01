@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { BadgeCheck, Clock, Flame, Leaf, Pizza, Sparkles } from 'lucide-react';
+import { Clock, Flame, Leaf, Pizza, Sparkles, Sprout } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -16,6 +16,7 @@ import { isFeatureEnabled } from '../config/features';
 const filters: { id: PizzaFilter; label: string; icon: LucideIcon }[] = [
   { id: 'all', label: 'All Pizzas', icon: Pizza },
   { id: 'vegetarian', label: 'Veg Only', icon: Leaf },
+  { id: 'vegan', label: 'Vegan Picks', icon: Sprout },
   { id: 'spicy', label: 'Bring the Heat', icon: Flame },
 ];
 
@@ -23,6 +24,8 @@ const activeFilterStyles: Record<PizzaFilter, string> = {
   all: 'border-slate-900 bg-slate-900 text-white shadow-slate-900/25 dark:border-slate-100 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20',
   vegetarian:
     'border-emerald-600 bg-emerald-500 text-white shadow-emerald-500/25 dark:border-emerald-200 dark:bg-emerald-200 dark:text-emerald-950 dark:shadow-emerald-200/30',
+  vegan:
+    'border-lime-500 bg-lime-500 text-white shadow-lime-500/25 dark:border-lime-200 dark:bg-lime-200 dark:text-lime-900 dark:shadow-lime-200/30',
   spicy:
     'border-orange-500 bg-orange-500 text-white shadow-orange-500/25 dark:border-orange-200 dark:bg-orange-200 dark:text-orange-950 dark:shadow-orange-200/30',
 };
@@ -178,9 +181,11 @@ export const MenuPage = () => {
       availablePizzas[Math.floor(Math.random() * availablePizzas.length)];
     const randomSize =
       sizeOptions[Math.floor(Math.random() * sizeOptions.length)];
+    const randomLabel =
+      randomPizza.sizeLabelsOverride?.[randomSize] ?? sizeLabels[randomSize];
     addItemToCart(randomPizza.id, randomSize);
     showToast({
-      message: `Chef added a ${sizeLabels[randomSize]} ${randomPizza.displayName}!`,
+      message: `Chef added a ${randomLabel} ${randomPizza.displayName}!`,
       tone: 'success',
     });
   }, [addItemToCart, filteredPizzas, pizzas, showToast]);
@@ -197,7 +202,7 @@ export const MenuPage = () => {
           <div className="max-w-lg">
             <p className="flex items-center gap-2 text-xs tracking-[0.35em] text-slate-500 uppercase dark:text-white/60">
               <Sparkles
-                className="text-red-500 dark:text-red-200 h-3.5 w-3.5"
+                className="h-3.5 w-3.5 text-red-500 dark:text-red-200"
                 aria-hidden="true"
               />
               Fresh Dough • 72 Hour Ferment
@@ -267,7 +272,7 @@ export const MenuPage = () => {
               <motion.button
                 type="button"
                 onClick={handleSurprise}
-                className="border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 inline-flex items-center gap-2 rounded-full border px-5 py-2 font-semibold tracking-[0.3em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-slate-950"
+                className="inline-flex items-center gap-2 rounded-full border border-red-500/40 bg-red-500/10 px-5 py-2 font-semibold tracking-[0.3em] text-red-600 transition hover:bg-red-500/20 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 dark:focus-visible:ring-offset-slate-950"
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ x: 2 }}
               >
@@ -311,7 +316,7 @@ export const MenuPage = () => {
       )}
 
       {error && (
-        <div className="border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-100 flex flex-col gap-4 rounded-2xl border p-6 text-sm">
+        <div className="flex flex-col gap-4 rounded-2xl border border-red-500/40 bg-red-500/10 p-6 text-sm text-red-700 dark:text-red-100">
           <span>
             {error instanceof Error
               ? error.message
@@ -320,7 +325,7 @@ export const MenuPage = () => {
           <button
             type="button"
             onClick={() => void refetch()}
-            className="border-red-500/40 text-red-700 focus-visible:ring-red-300 dark:border-red-200/50 dark:text-red-100 dark:focus-visible:ring-red-300/80 self-start rounded-full border bg-white/80 px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase transition hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-white/10 dark:hover:bg-white/15 dark:focus-visible:ring-offset-slate-950"
+            className="self-start rounded-full border border-red-500/40 bg-white/80 px-4 py-2 text-[11px] font-semibold tracking-[0.3em] text-red-700 uppercase transition hover:bg-white focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-red-200/50 dark:bg-white/10 dark:text-red-100 dark:hover:bg-white/15 dark:focus-visible:ring-red-300/80 dark:focus-visible:ring-offset-slate-950"
           >
             Retry loading menu
           </button>
@@ -333,6 +338,7 @@ export const MenuPage = () => {
             {filteredPizzas.map((pizza, index) => (
               <motion.div
                 key={pizza.id}
+                className="h-full"
                 layout
                 variants={cardVariants}
                 initial="initial"
@@ -352,7 +358,7 @@ export const MenuPage = () => {
         {totalItems > 0 ? (
           <Link
             to="/checkout"
-            className="border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/30 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/20 dark:focus-visible:ring-red-400 inline-flex items-center justify-center rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.35em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
+            className="inline-flex items-center justify-center rounded-full border border-red-500/40 bg-red-500/10 px-4 py-2 text-[11px] font-semibold tracking-[0.35em] text-red-600 transition hover:bg-red-500/20 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-red-200/30 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/20 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
           >
             Proceed to checkout
           </Link>

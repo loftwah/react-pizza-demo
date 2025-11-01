@@ -28,13 +28,13 @@ const MenuPageErrorFallback = ({ error }: { error: Error }) => (
       Something unexpected happened while loading the page. Try refreshing to
       bring the ovens back online.
     </p>
-    <p className="mt-4 text-xs uppercase tracking-[0.3em] text-red-500/80 dark:text-red-100/60">
+    <p className="mt-4 text-xs tracking-[0.3em] text-red-500/80 uppercase dark:text-red-100/60">
       {error.message}
     </p>
     <button
       type="button"
       onClick={() => window.location.reload()}
-      className="mt-6 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
+      className="mt-6 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold tracking-[0.3em] text-white uppercase transition hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
     >
       Refresh Menu
     </button>
@@ -50,13 +50,13 @@ const CheckoutPageErrorFallback = ({ error }: { error: Error }) => (
       We couldn&apos;t finish staging your mock order. Refresh the page or head
       back to the menu to try again.
     </p>
-    <p className="mt-4 text-xs uppercase tracking-[0.3em] text-red-500/80 dark:text-red-100/60">
+    <p className="mt-4 text-xs tracking-[0.3em] text-red-500/80 uppercase dark:text-red-100/60">
       {error.message}
     </p>
     <button
       type="button"
       onClick={() => window.location.reload()}
-      className="mt-6 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
+      className="mt-6 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold tracking-[0.3em] text-white uppercase transition hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
     >
       Retry Checkout
     </button>

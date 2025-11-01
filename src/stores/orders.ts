@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { PizzaSize } from '../domain/pizza';
+import type { IngredientSelection } from '../domain/ingredients';
+
+export type LineItemCustomization = {
+  removedIngredients: string[];
+  addedIngredients: IngredientSelection[];
+};
 
 export type OrderLineItem = {
   id: string;
@@ -11,6 +17,7 @@ export type OrderLineItem = {
   quantity: number;
   unitPrice: number;
   lineTotal: number;
+  customization?: LineItemCustomization;
 };
 
 export type OrderSubmissionReceipt = {

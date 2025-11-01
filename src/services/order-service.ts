@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { getPizzaById } from '../domain/menu';
-import { sizeLabels, priceForSize } from '../domain/pizza';
+import { isIngredientId } from '../domain/ingredients';
+import {
+  normalizeCustomization,
+  priceForConfiguration,
+  sizeLabels,
+} from '../domain/pizza';
 import type { OrderLineItem, OrderRecord } from '../stores/orders';
 import { useOrderHistory } from '../stores/orders';
 import { useCartStore } from '../stores/cart';
@@ -18,6 +23,26 @@ import { submitOrderToKitchen } from './mock-backend';
 
 const PizzaSizeEnum = z.enum(['small', 'medium', 'large']);
 
+const IngredientSelectionSchema = z.object({
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1),
+  price: z.number().finite().nonnegative(),
+  category: z.enum(['savoury', 'dessert']).optional(),
+  dietary: z
+    .object({
+      vegetarian: z.boolean().optional(),
+      vegan: z.boolean().optional(),
+    })
+    .optional(),
+});
+
+const LineItemCustomizationSchema = z
+  .object({
+    removedIngredients: z.array(z.string().trim().min(1)).optional(),
+    addedIngredients: z.array(IngredientSelectionSchema).optional(),
+  })
+  .optional();
+
 const OrderLineItemSchema = z.object({
   id: z.string().trim().min(1),
   pizzaId: z.string().trim().min(1),
@@ -27,6 +52,7 @@ const OrderLineItemSchema = z.object({
   quantity: z.number().int().positive(),
   unitPrice: z.number().finite().nonnegative(),
   lineTotal: z.number().finite().nonnegative(),
+  customization: LineItemCustomizationSchema,
 });
 
 const OrderRunInputSchema = z.object({
@@ -67,6 +93,39 @@ const unknownError = (message: string): StepError => ({
   message,
   retryable: false,
 });
+
+const sanitizeCustomization = (
+  customization: z.infer<typeof LineItemCustomizationSchema>,
+): OrderLineItem['customization'] => {
+  if (!customization) return undefined;
+  const removedIngredients = Array.from(
+    new Set(
+      (customization.removedIngredients ?? [])
+        .map((ingredient) => ingredient.trim())
+        .filter(Boolean),
+    ),
+  );
+  const addedIngredients =
+    customization.addedIngredients?.map((ingredient) => ({
+      ...ingredient,
+      name: ingredient.name.trim(),
+      price: Math.round(Math.max(0, ingredient.price) * 100) / 100,
+    })) ?? [];
+  if (removedIngredients.length === 0 && addedIngredients.length === 0) {
+    return undefined;
+  }
+  return { removedIngredients, addedIngredients };
+};
+
+const toPizzaCustomization = (customization: OrderLineItem['customization']) =>
+  customization
+    ? normalizeCustomization({
+        removedIngredients: customization.removedIngredients,
+        addedIngredients: customization.addedIngredients
+          .map((ingredient) => ingredient.id)
+          .filter(isIngredientId),
+      })
+    : undefined;
 
 export class OrderService {
   static steps = [
@@ -207,9 +266,8 @@ export class OrderService {
     const validation = OrderRunInputSchema.safeParse(input);
     if (!validation.success) {
       const message =
-        validation.error.issues
-          .map((issue) => issue.message)
-          .join(', ') || 'Order input failed validation.';
+        validation.error.issues.map((issue) => issue.message).join(', ') ||
+        'Order input failed validation.';
       return {
         status: 'failed',
         attempts: 1,
@@ -226,11 +284,17 @@ export class OrderService {
     const sanitized = {
       ...validation.data,
       instructions: validation.data.instructions ?? '',
-      cartDetails: validation.data.cartDetails.map((item) => ({
-        ...item,
-        name: item.name.trim(),
-        sizeLabel: item.sizeLabel.trim(),
-      })),
+      cartDetails: validation.data.cartDetails.map((item) => {
+        const customization = sanitizeCustomization(item.customization);
+        return {
+          ...item,
+          name: item.name.trim(),
+          sizeLabel: item.sizeLabel.trim(),
+          unitPrice: Math.round(item.unitPrice * 100) / 100,
+          lineTotal: Math.round(item.lineTotal * 100) / 100,
+          customization,
+        };
+      }),
     };
 
     return {
@@ -295,17 +359,21 @@ export class OrderService {
             const menuItem = getPizzaById(lineItem.pizzaId ?? '');
             if (!menuItem) return lineItem;
             const resolvedSize = lineItem.size ?? 'medium';
+            const sizeLabel =
+              menuItem.sizeLabelsOverride?.[resolvedSize] ??
+              sizeLabels[resolvedSize];
+            const configuration = toPizzaCustomization(lineItem.customization);
+            const unitPrice = priceForConfiguration(
+              menuItem,
+              resolvedSize,
+              configuration,
+            );
             const hydrated: OrderLineItem = {
               ...lineItem,
               name: menuItem.displayName,
-              sizeLabel: sizeLabels[resolvedSize],
-              unitPrice: priceForSize(menuItem, resolvedSize),
-              lineTotal:
-                Math.round(
-                  priceForSize(menuItem, resolvedSize) *
-                    lineItem.quantity *
-                    100,
-                ) / 100,
+              sizeLabel,
+              unitPrice,
+              lineTotal: Math.round(unitPrice * lineItem.quantity * 100) / 100,
             };
             return hydrated;
           }),

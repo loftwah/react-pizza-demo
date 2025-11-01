@@ -24,8 +24,9 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
     'color:inherit;',
     stationMap.join('\n'),
   );
-  (window as typeof window & { __LOFTWAH_STATIONS__?: string[] }).__LOFTWAH_STATIONS__ =
-    stationMap;
+  (
+    window as typeof window & { __LOFTWAH_STATIONS__?: string[] }
+  ).__LOFTWAH_STATIONS__ = stationMap;
 }
 
 createRoot(document.getElementById('root')!).render(
