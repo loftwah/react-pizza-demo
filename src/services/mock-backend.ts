@@ -30,7 +30,9 @@ export const submitOrderToKitchen = async (
   resolvedEndpoint.searchParams.set('items', order.items.length.toString());
   resolvedEndpoint.searchParams.set('total', order.total.toFixed(2));
 
-  const response = await fetch(resolvedEndpoint.toString(), { cache: 'no-store' });
+  const response = await fetch(resolvedEndpoint.toString(), {
+    cache: 'no-store',
+  });
 
   if (!response.ok) {
     throw new Error(`Mock order API failed with status ${response.status}`);

@@ -5,9 +5,12 @@ import {
   CalendarPlus,
   Copy,
   FileDown,
+  Minus,
   Mail,
+  Plus,
   Printer,
   Share2,
+  Trash2,
   Twitter,
   Volume2,
   VolumeX,
@@ -15,9 +18,15 @@ import {
 import clsx from 'clsx';
 import QRCode from 'qrcode';
 import { z } from 'zod';
-import { useCartStore } from '../stores/cart';
+import { useCartStore, type CartItem } from '../stores/cart';
 import { getPizzaById } from '../domain/menu';
-import { formatCurrency, priceForSize, sizeLabels } from '../domain/pizza';
+import {
+  formatCurrency,
+  hydrateCustomizationDetails,
+  normalizeCustomization,
+  priceForConfiguration,
+  sizeLabels,
+} from '../domain/pizza';
 import { useToast } from '../providers/toast-context';
 import { useOrderHistory } from '../stores/orders';
 import type { OrderLineItem, OrderRecord } from '../stores/orders';
@@ -43,6 +52,22 @@ const getMockReadyEta = () =>
 const formatOrderTimestamp = (iso: string) =>
   orderTimeFormatter.format(new Date(iso));
 
+const summarizeCustomization = (item: OrderLineItem): string => {
+  const removed = item.customization?.removedIngredients ?? [];
+  const added =
+    item.customization?.addedIngredients?.map(
+      (ingredient) => ingredient.name,
+    ) ?? [];
+  const parts: string[] = [];
+  if (removed.length > 0) {
+    parts.push(`Hold: ${removed.join(', ')}`);
+  }
+  if (added.length > 0) {
+    parts.push(`Add: ${added.join(', ')}`);
+  }
+  return parts.join(' • ');
+};
+
 const checkoutFormSchema = z.object({
   customer: z.string().trim().min(1, 'Name is required.'),
   contact: z.string().trim().min(1, 'Contact details are required.'),
@@ -57,6 +82,9 @@ export const CheckoutPage = () => {
   const items = useCartStore((state) => state.items);
   const cartTotal = useCartStore((state) => state.totalPrice());
   const cartCount = useCartStore((state) => state.totalItems());
+  const addCartItem = useCartStore((state) => state.addItem);
+  const decrementCartItem = useCartStore((state) => state.decrementItem);
+  const removeCartItem = useCartStore((state) => state.removeItem);
   const { showToast } = useToast();
   const clearOrderHistory = useOrderHistory((state) => state.clearOrders);
   const orderHistory = useOrderHistory((state) => state.orders);
@@ -83,9 +111,26 @@ export const CheckoutPage = () => {
       .map((item) => {
         const pizza = getPizzaById(item.pizzaId);
         if (!pizza) return null;
-        const sizeLabel = sizeLabels[item.size];
-        const pricePerUnit = priceForSize(pizza, item.size);
-        const lineTotal = Math.round(pricePerUnit * item.quantity * 100) / 100;
+        const customization = normalizeCustomization(item.customization);
+        const { removed, added } = hydrateCustomizationDetails(
+          pizza,
+          customization,
+        );
+        const sizeLabel =
+          pizza.sizeLabelsOverride?.[item.size] ?? sizeLabels[item.size];
+        const unitPrice = priceForConfiguration(
+          pizza,
+          item.size,
+          customization,
+        );
+        const lineTotal = Math.round(unitPrice * item.quantity * 100) / 100;
+        const customizationDetail =
+          removed.length === 0 && added.length === 0
+            ? undefined
+            : {
+                removedIngredients: removed,
+                addedIngredients: added,
+              };
         return {
           id: item.id,
           pizzaId: item.pizzaId,
@@ -93,8 +138,9 @@ export const CheckoutPage = () => {
           name: pizza.displayName,
           sizeLabel,
           quantity: item.quantity,
-          unitPrice: pricePerUnit,
+          unitPrice,
           lineTotal,
+          customization: customizationDetail,
         };
       })
       .filter((detail): detail is NonNullable<typeof detail> =>
@@ -102,6 +148,48 @@ export const CheckoutPage = () => {
       );
     return detail;
   }, [items]);
+  const cartItemsById = useMemo(
+    () =>
+      new Map<string, CartItem>(
+        items.map((item) => [item.id, item] as const),
+      ),
+    [items],
+  );
+  const handleIncrementCartItem = useCallback(
+    (lineItem: OrderLineItem) => {
+      const cartItem = cartItemsById.get(lineItem.id);
+      if (!cartItem) return;
+      addCartItem(cartItem.pizzaId, cartItem.size, cartItem.customization);
+      showToast({
+        message: `Added another ${lineItem.sizeLabel} ${lineItem.name}`,
+        tone: 'success',
+      });
+    },
+    [addCartItem, cartItemsById, showToast],
+  );
+  const handleDecrementCartItem = useCallback(
+    (lineItem: OrderLineItem) => {
+      decrementCartItem(lineItem.id);
+      showToast({
+        message:
+          lineItem.quantity <= 1
+            ? `Removed ${lineItem.name} from your cart`
+            : `Removed one ${lineItem.sizeLabel} ${lineItem.name}`,
+        tone: 'info',
+      });
+    },
+    [decrementCartItem, showToast],
+  );
+  const handleRemoveCartItem = useCallback(
+    (lineItem: OrderLineItem) => {
+      removeCartItem(lineItem.id);
+      showToast({
+        message: `Cleared ${lineItem.sizeLabel} ${lineItem.name} from your cart`,
+        tone: 'info',
+      });
+    },
+    [removeCartItem, showToast],
+  );
   const hasCart = cartDetails.length > 0;
   const formattedTotal = formatCurrency(cartTotal);
   const formattedCount = cartCount.toString().padStart(2, '0');
@@ -125,6 +213,8 @@ export const CheckoutPage = () => {
     shareUrl.searchParams.set('order', submittedOrder.id);
     return shareUrl.toString();
   }, [submittedOrder]);
+  const historyButtonClass =
+    'rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[10px] font-semibold tracking-[0.3em] text-slate-500 uppercase transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950';
 
   useEffect(() => {
     if (!sharedOrderId || !ordersHydrated) return;
@@ -186,12 +276,16 @@ export const CheckoutPage = () => {
     });
   }, [clearOrderHistory, showToast]);
 
-  const handleResetSubmittedOrder = useCallback(() => {
+  const stopVoicePlayback = useCallback(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       voiceStopRequestedRef.current = true;
       window.speechSynthesis.cancel();
     }
     setIsSpeaking(false);
+  }, [setIsSpeaking]);
+
+  const handleResetSubmittedOrder = useCallback(() => {
+    stopVoicePlayback();
     setSubmittedOrder(null);
     setVoiceRate(1.05);
     showToast({
@@ -199,7 +293,20 @@ export const CheckoutPage = () => {
         'Ready for another mock order—head back to the menu to add pizzas.',
       tone: 'info',
     });
-  }, [setSubmittedOrder, setIsSpeaking, setVoiceRate, showToast]);
+  }, [setSubmittedOrder, setVoiceRate, showToast, stopVoicePlayback]);
+
+  const handleViewOrderRecord = useCallback(
+    (order: OrderRecord) => {
+      stopVoicePlayback();
+      setSubmittedOrder(order);
+      setVoiceRate(1.05);
+      showToast({
+        message: `Viewing mock order ${order.id}.`,
+        tone: 'info',
+      });
+    },
+    [setSubmittedOrder, setVoiceRate, showToast, stopVoicePlayback],
+  );
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -398,10 +505,12 @@ export const CheckoutPage = () => {
       `Total: ${formatCurrency(submittedOrder.total)}`,
       '',
       'Items:',
-      ...submittedOrder.items.map(
-        (item) =>
-          `${item.quantity}× ${item.sizeLabel.toLowerCase()} ${item.name} (${formatCurrency(item.lineTotal)})`,
-      ),
+      ...submittedOrder.items.map((item) => {
+        const summary = summarizeCustomization(item);
+        const detail =
+          summary.length > 0 ? ` (${summary.replaceAll(' • ', '; ')})` : '';
+        return `${item.quantity}× ${item.sizeLabel.toLowerCase()} ${item.name}${detail} (${formatCurrency(item.lineTotal)})`;
+      }),
     ];
     if (shareLink) {
       summaryLines.push('', `Recreate this order: ${shareLink}`);
@@ -433,9 +542,12 @@ export const CheckoutPage = () => {
       `Contact: ${submittedOrder.contact}`,
       `Total: ${formatCurrency(submittedOrder.total)}`,
       'Items:',
-      ...submittedOrder.items.map(
-        (item) => `${item.quantity}× ${item.sizeLabel} ${item.name}`,
-      ),
+      ...submittedOrder.items.map((item) => {
+        const summary = summarizeCustomization(item);
+        const detail =
+          summary.length > 0 ? ` (${summary.replaceAll(' • ', '; ')})` : '';
+        return `${item.quantity}× ${item.sizeLabel} ${item.name}${detail}`;
+      }),
     ];
     if (shareLink) {
       descriptionLines.push('', `Recreate: ${shareLink}`);
@@ -510,10 +622,20 @@ export const CheckoutPage = () => {
     const itemSummary =
       submittedOrder.items.length > 0
         ? submittedOrder.items
-            .map(
-              (item) =>
-                `${item.quantity} ${item.sizeLabel.toLowerCase()} ${item.name}`,
-            )
+            .map((item) => {
+              const summary = summarizeCustomization(item);
+              const speechMods =
+                summary.length > 0
+                  ? summary
+                      .split(' • ')
+                      .map((part) =>
+                        part.replace('Hold:', 'hold').replace('Add:', 'add'),
+                      )
+                      .join(', ')
+                  : '';
+              const modSuffix = speechMods ? ` (${speechMods})` : '';
+              return `${item.quantity} ${item.sizeLabel.toLowerCase()} ${item.name}${modSuffix}`;
+            })
             .join(', ')
         : 'no pizzas selected';
     const spokenSummary = [
@@ -553,12 +675,14 @@ export const CheckoutPage = () => {
 
   const actionButtonBase =
     'inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950';
+  const itemActionButtonBase =
+    'inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-[10px] font-semibold tracking-[0.25em] uppercase text-slate-600 transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/25 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950';
 
   if (submittedOrder) {
     return (
-      <section className="mx-auto flex w-full max-w-5xl flex-col gap-10">
+      <section className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 sm:px-6">
         <header className="space-y-3 text-center lg:text-left">
-          <p className="text-red-500 dark:text-red-200/80 text-xs font-semibold tracking-[0.35em] uppercase">
+          <p className="text-xs font-semibold tracking-[0.35em] text-red-500 uppercase dark:text-red-200/80">
             Simulated service complete
           </p>
           <h1 className="font-display text-4xl leading-tight text-slate-900 dark:text-white">
@@ -572,7 +696,7 @@ export const CheckoutPage = () => {
         </header>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
-          <article className="print-area print-stack space-y-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-8 shadow-[0_40px_120px_-50px_rgba(15,23,42,0.2)] dark:border-white/15 dark:bg-white/10">
+          <article className="print-area print-stack space-y-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-6 shadow-[0_40px_120px_-50px_rgba(15,23,42,0.2)] sm:p-8 dark:border-white/15 dark:bg-white/10">
             <div className="flex flex-col gap-2">
               <span className="text-xs tracking-[0.35em] text-slate-400 uppercase dark:text-white/40">
                 Order reference
@@ -592,7 +716,7 @@ export const CheckoutPage = () => {
                   onClick={handleShareOrder}
                   className={clsx(
                     actionButtonBase,
-                    'border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 w-full',
+                    'w-full border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80',
                   )}
                 >
                   <Share2 className="h-4 w-4" aria-hidden="true" />
@@ -637,7 +761,7 @@ export const CheckoutPage = () => {
                 onClick={handleEmailReceipt}
                 className={clsx(
                   actionButtonBase,
-                  'border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 w-full',
+                  'w-full border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80',
                 )}
               >
                 <Mail className="h-4 w-4" aria-hidden="true" />
@@ -703,7 +827,7 @@ export const CheckoutPage = () => {
                       value={voiceRate}
                       onChange={handleVoiceSpeedChange}
                       aria-label="Adjust voice speed"
-                      className="accent-red-500 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-white/20"
+                      className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-red-500 dark:bg-white/20"
                     />
                     <span className="text-xs font-semibold text-slate-600 dark:text-white/70">
                       {voiceRate.toFixed(2)}×
@@ -778,34 +902,42 @@ export const CheckoutPage = () => {
                 Line items
               </h3>
               <ul className="space-y-3 text-sm text-slate-600 dark:text-white/70">
-                {submittedOrder.items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="flex items-center justify-between rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5"
-                  >
-                    <div>
-                      <p className="font-semibold text-slate-900 dark:text-white">
-                        {item.name}
-                      </p>
-                      <p className="text-xs tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
-                        {item.sizeLabel} • Qty {item.quantity} •{' '}
-                        {formatCurrency(item.unitPrice)}
-                      </p>
-                    </div>
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                      {formatCurrency(item.lineTotal)}
-                    </span>
-                  </li>
-                ))}
+                {submittedOrder.items.map((item) => {
+                  const customizationSummary = summarizeCustomization(item);
+                  return (
+                    <li
+                      key={item.id}
+                      className="flex items-start justify-between gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5"
+                    >
+                      <div className="space-y-1">
+                        <p className="font-semibold text-slate-900 dark:text-white">
+                          {item.name}
+                        </p>
+                        <p className="text-xs tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
+                          {item.sizeLabel} • Qty {item.quantity} •{' '}
+                          {formatCurrency(item.unitPrice)}
+                        </p>
+                        {customizationSummary && (
+                          <p className="text-[11px] tracking-[0.25em] text-slate-400 uppercase dark:text-white/45">
+                            {customizationSummary}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {formatCurrency(item.lineTotal)}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
-              <div className="border-red-500/40 bg-red-500/10 text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold">
+              <div className="flex items-center justify-between rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100">
                 <span>Total</span>
                 <span>{formatCurrency(submittedOrder.total)}</span>
               </div>
             </div>
           </article>
 
-          <aside className="print-hidden flex flex-col justify-between gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/60 p-8 text-sm text-slate-600 shadow-[0_30px_100px_-60px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-white/5 dark:text-white/70">
+          <aside className="print-hidden flex flex-col justify-between gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/60 p-6 text-sm text-slate-600 shadow-[0_30px_100px_-60px_rgba(15,23,42,0.25)] sm:p-8 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
             <div className="space-y-5">
               {orderSummary.totalOrders > 0 && (
                 <div className="space-y-3">
@@ -827,14 +959,21 @@ export const CheckoutPage = () => {
                             {formatOrderTimestamp(order.createdAt)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="text-sm font-semibold text-slate-900 dark:text-white">
                             {formatCurrency(order.total)}
                           </span>
                           <button
                             type="button"
+                            onClick={() => handleViewOrderRecord(order)}
+                            className={`${historyButtonClass} whitespace-nowrap`}
+                          >
+                            View summary
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => void copyOrderRecord(order)}
-                            className="rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[10px] font-semibold tracking-[0.3em] text-slate-500 uppercase transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+                            className={`${historyButtonClass} whitespace-nowrap`}
                           >
                             Copy JSON
                           </button>
@@ -862,7 +1001,7 @@ export const CheckoutPage = () => {
               <button
                 type="button"
                 onClick={handleResetSubmittedOrder}
-                className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
+                className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold tracking-[0.3em] text-white uppercase transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
               >
                 Run another mock order
               </button>
@@ -880,7 +1019,7 @@ export const CheckoutPage = () => {
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-5xl flex-col gap-10">
+    <section className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 sm:px-6">
       <header className="space-y-3 text-center lg:text-left">
         <p className="text-xs font-semibold tracking-[0.35em] text-slate-400 uppercase dark:text-white/40">
           Mock checkout flow
@@ -933,27 +1072,74 @@ export const CheckoutPage = () => {
           </div>
 
           {hasCart ? (
-            <ul className="space-y-3 text-sm text-slate-600 dark:text-white/70">
-              {cartDetails.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center justify-between rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5"
+            <>
+              <ul className="space-y-3 text-sm text-slate-600 dark:text-white/70">
+                {cartDetails.map((item) => {
+                  const customizationSummary = summarizeCustomization(item);
+                  return (
+                    <li
+                      key={item.id}
+                      className="flex items-start justify-between gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5"
+                    >
+                      <div className="space-y-2">
+                        <p className="font-semibold text-slate-900 dark:text-white">
+                          {item.name}
+                        </p>
+                        <p className="text-xs tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
+                          {item.sizeLabel} • Qty {item.quantity} •{' '}
+                          {formatCurrency(item.unitPrice)}
+                        </p>
+                        {customizationSummary && (
+                          <p className="text-[11px] tracking-[0.25em] text-slate-400 uppercase dark:text-white/45">
+                            {customizationSummary}
+                          </p>
+                        )}
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => handleDecrementCartItem(item)}
+                            className={itemActionButtonBase}
+                          >
+                            <Minus className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>
+                              {item.quantity <= 1 ? 'Remove item' : 'Remove one'}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleIncrementCartItem(item)}
+                            className={itemActionButtonBase}
+                          >
+                            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>Add one</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveCartItem(item)}
+                            className={itemActionButtonBase}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>Remove all</span>
+                          </button>
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {formatCurrency(item.lineTotal)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 bg-white/60 px-5 py-4 text-xs tracking-[0.3em] text-slate-500 uppercase dark:border-white/20 dark:bg-white/5 dark:text-white/60">
+                <span>Need to tweak your order?</span>
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-[11px] font-semibold tracking-[0.35em] text-slate-700 transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/25 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
                 >
-                  <div>
-                    <p className="font-semibold text-slate-900 dark:text-white">
-                      {item.name}
-                    </p>
-                    <p className="text-xs tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
-                      {item.sizeLabel} • Qty {item.quantity} •{' '}
-                      {formatCurrency(item.unitPrice)}
-                    </p>
-                  </div>
-                  <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                    {formatCurrency(item.lineTotal)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                  Continue ordering
+                </Link>
+              </div>
+            </>
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white/60 px-6 py-8 text-center text-xs tracking-[0.3em] text-slate-400 uppercase dark:border-white/20 dark:bg-white/5 dark:text-white/40">
               <span>Cart is empty</span>
@@ -967,7 +1153,7 @@ export const CheckoutPage = () => {
           )}
 
           {hasCart && (
-            <div className="border-red-500/40 bg-red-500/10 text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold">
+            <div className="flex items-center justify-between rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100">
               <span>Total</span>
               <span>{formattedTotal}</span>
             </div>
@@ -1021,14 +1207,21 @@ export const CheckoutPage = () => {
                         {formatOrderTimestamp(order.createdAt)}
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-semibold text-slate-900 dark:text-white">
                         {formatCurrency(order.total)}
                       </span>
                       <button
                         type="button"
+                        onClick={() => handleViewOrderRecord(order)}
+                        className={`${historyButtonClass} whitespace-nowrap`}
+                      >
+                        View summary
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => void copyOrderRecord(order)}
-                        className="rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[10px] font-semibold tracking-[0.3em] text-slate-500 uppercase transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+                        className={`${historyButtonClass} whitespace-nowrap`}
                       >
                         Copy JSON
                       </button>
@@ -1074,7 +1267,7 @@ export const CheckoutPage = () => {
                 name="customer"
                 autoComplete="name"
                 required
-                className="focus:border-red-400 focus:ring-red-200 dark:focus:border-red-300 dark:focus:ring-red-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
+                className="rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:ring-2 focus:ring-red-200 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-400/30"
                 placeholder="Ada Lovelace"
               />
             </label>
@@ -1087,7 +1280,7 @@ export const CheckoutPage = () => {
                 name="contact"
                 autoComplete="tel"
                 required
-                className="focus:border-red-400 focus:ring-red-200 dark:focus:border-red-300 dark:focus:ring-red-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
+                className="rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:ring-2 focus:ring-red-200 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-400/30"
                 placeholder="Phone or email"
               />
             </label>
@@ -1100,7 +1293,7 @@ export const CheckoutPage = () => {
             <textarea
               name="instructions"
               rows={4}
-              className="focus:border-red-400 focus:ring-red-200 dark:focus:border-red-300 dark:focus:ring-red-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
+              className="rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:ring-2 focus:ring-red-200 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-400/30"
               placeholder="Parking out front, call when you arrive..."
             />
           </label>
@@ -1126,7 +1319,7 @@ export const CheckoutPage = () => {
               type="submit"
               disabled={isProcessing || !hasCart}
               className={clsx(
-                'inline-flex items-center justify-center rounded-full bg-red-600 px-7 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950',
+                'inline-flex items-center justify-center rounded-full bg-red-600 px-7 py-3 text-xs font-semibold tracking-[0.35em] text-white uppercase transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950',
                 (isProcessing || !hasCart) && 'opacity-70',
               )}
             >

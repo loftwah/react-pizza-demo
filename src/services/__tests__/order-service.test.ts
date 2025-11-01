@@ -8,12 +8,13 @@ import {
   vi,
 } from 'vitest';
 import { getPizzaById } from '../../domain/menu';
-import { priceForSize, sizeLabels } from '../../domain/pizza';
+import { priceForConfiguration, sizeLabels } from '../../domain/pizza';
 import { setupNodeEnv } from '../../../scripts/setup-node-env';
 import { OrderService, type OrderRunInput } from '../order-service';
 import { useCartStore } from '../../stores/cart';
 import { useOrderHistory } from '../../stores/orders';
 import { ok, err } from '../../shared-utils/result';
+import { getIngredientById } from '../../domain/ingredients';
 
 vi.mock('../mock-backend', () => ({
   submitOrderToKitchen: vi.fn(),
@@ -44,7 +45,7 @@ const buildInput = (): OrderRunInput => {
     throw new Error('Expected pepperoni-classic menu item');
   }
   const size = 'medium';
-  const unitPrice = priceForSize(pizza, size);
+  const unitPrice = priceForConfiguration(pizza, size);
   return {
     customer: 'Test Customer',
     contact: 'test@example.com',
@@ -59,6 +60,7 @@ const buildInput = (): OrderRunInput => {
         quantity: 1,
         unitPrice,
         lineTotal: unitPrice,
+        customization: undefined,
       },
     ],
     cartTotal: unitPrice,
@@ -156,5 +158,78 @@ describe('OrderService.run', () => {
 
     expect(useCartStore.getState().totalItems()).toBe(0);
     expect(useOrderHistory.getState().orders[0]?.id).toBe(result.value.id);
+  });
+
+  it('persists customization metadata with order records', async () => {
+    mockedSubmit.mockResolvedValue({
+      status: 'ok',
+      message: 'Accepted',
+      kitchenReference: 'K-202',
+      estimatedPrepMinutes: 16,
+      receivedAt: new Date().toISOString(),
+    });
+    mockedEmitEvent.mockResolvedValue(ok(true));
+
+    const input = buildInput();
+    const pizza = getPizzaById(input.cartDetails[0]?.pizzaId ?? '');
+    if (!pizza) {
+      throw new Error('Expected pepperoni-classic menu item');
+    }
+
+    const extra = getIngredientById('truffle-oil');
+    if (!extra) {
+      throw new Error('Expected truffle-oil ingredient');
+    }
+    const customization = {
+      removedIngredients: ['Mozzarella'],
+      addedIngredients: [extra],
+    };
+
+    const unitPrice = priceForConfiguration(pizza, 'medium', {
+      removedIngredients: customization.removedIngredients,
+      addedIngredients: customization.addedIngredients.map(
+        (ingredient) => ingredient.id,
+      ),
+    });
+
+    input.cartDetails[0] = {
+      ...input.cartDetails[0]!,
+      unitPrice,
+      lineTotal: unitPrice,
+      customization: {
+        removedIngredients: [...customization.removedIngredients],
+        addedIngredients: customization.addedIngredients.map((ingredient) => ({
+          ...ingredient,
+        })),
+      },
+    };
+    input.cartTotal = unitPrice;
+
+    const cart = useCartStore.getState();
+    cart.addItem(pizza.id, 'medium', {
+      removedIngredients: customization.removedIngredients,
+      addedIngredients: customization.addedIngredients.map(
+        (ingredient) => ingredient.id,
+      ),
+    });
+
+    const service = new OrderService();
+    const result = await service.run(input);
+
+    if (!result.ok) {
+      throw new Error(
+        `Pipeline failed unexpectedly: ${result.error?.message ?? 'unknown'}`,
+      );
+    }
+
+    const savedOrder = useOrderHistory.getState().orders[0];
+    expect(savedOrder?.items[0]?.customization?.removedIngredients).toEqual([
+      'Mozzarella',
+    ]);
+    expect(
+      savedOrder?.items[0]?.customization?.addedIngredients.map(
+        (ingredient) => ingredient.id,
+      ),
+    ).toEqual(['truffle-oil']);
   });
 });
