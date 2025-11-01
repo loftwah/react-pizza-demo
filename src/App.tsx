@@ -20,21 +20,21 @@ const NotFound = () => (
 );
 
 const MenuPageErrorFallback = ({ error }: { error: Error }) => (
-  <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:border-brand-200/30 dark:bg-brand-500/20 dark:text-brand-100 mx-auto w-full max-w-2xl rounded-3xl border p-8 text-center text-sm">
-    <h2 className="font-display text-brand-700 dark:text-brand-100 text-2xl">
+  <div className="mx-auto w-full max-w-2xl rounded-3xl border border-red-500/40 bg-red-500/10 p-8 text-center text-sm text-red-700 dark:border-red-200/30 dark:bg-red-500/20 dark:text-red-100">
+    <h2 className="font-display text-2xl text-red-700 dark:text-red-100">
       The menu is taking a break
     </h2>
-    <p className="text-brand-600 dark:text-brand-100/80 mt-3">
+    <p className="mt-3 text-red-600 dark:text-red-100/80">
       Something unexpected happened while loading the page. Try refreshing to
       bring the ovens back online.
     </p>
-    <p className="text-brand-500/80 dark:text-brand-100/60 mt-4 text-xs tracking-[0.3em] uppercase">
+    <p className="mt-4 text-xs uppercase tracking-[0.3em] text-red-500/80 dark:text-red-100/60">
       {error.message}
     </p>
     <button
       type="button"
       onClick={() => window.location.reload()}
-      className="bg-brand-500 hover:bg-brand-400 focus-visible:ring-brand-200 dark:focus-visible:ring-brand-400 mt-6 inline-flex items-center justify-center rounded-full px-6 py-2 text-xs font-semibold tracking-[0.3em] text-white uppercase transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
+      className="mt-6 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
     >
       Refresh Menu
     </button>
@@ -42,21 +42,21 @@ const MenuPageErrorFallback = ({ error }: { error: Error }) => (
 );
 
 const CheckoutPageErrorFallback = ({ error }: { error: Error }) => (
-  <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:border-brand-200/30 dark:bg-brand-500/20 dark:text-brand-100 mx-auto w-full max-w-2xl rounded-3xl border p-8 text-center text-sm">
-    <h2 className="font-display text-brand-700 dark:text-brand-100 text-2xl">
+  <div className="mx-auto w-full max-w-2xl rounded-3xl border border-red-500/40 bg-red-500/10 p-8 text-center text-sm text-red-700 dark:border-red-200/30 dark:bg-red-500/20 dark:text-red-100">
+    <h2 className="font-display text-2xl text-red-700 dark:text-red-100">
       Checkout hit a snag
     </h2>
-    <p className="text-brand-600 dark:text-brand-100/80 mt-3">
+    <p className="mt-3 text-red-600 dark:text-red-100/80">
       We couldn&apos;t finish staging your mock order. Refresh the page or head
       back to the menu to try again.
     </p>
-    <p className="text-brand-500/80 dark:text-brand-100/60 mt-4 text-xs tracking-[0.3em] uppercase">
+    <p className="mt-4 text-xs uppercase tracking-[0.3em] text-red-500/80 dark:text-red-100/60">
       {error.message}
     </p>
     <button
       type="button"
       onClick={() => window.location.reload()}
-      className="bg-brand-500 hover:bg-brand-400 focus-visible:ring-brand-200 dark:focus-visible:ring-brand-400 mt-6 inline-flex items-center justify-center rounded-full px-6 py-2 text-xs font-semibold tracking-[0.3em] text-white uppercase transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
+      className="mt-6 inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
     >
       Retry Checkout
     </button>

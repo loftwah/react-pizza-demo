@@ -790,7 +790,7 @@ export const AnalyticsPage = () => {
                 Tracks order count per hour across the latest trading window.
               </p>
             </div>
-            <Activity className="text-brand-500 dark:text-brand-300 h-5 w-5" />
+            <Activity className="text-red-500 dark:text-red-300 h-5 w-5" />
           </header>
           <div className="mt-6 h-[280px]">
             <HourlyOrdersChart
@@ -826,7 +826,7 @@ export const AnalyticsPage = () => {
                   </div>
                   <div className="mt-2 h-3 rounded-full bg-white/60 dark:bg-white/20">
                     <div
-                      className="bg-brand-500 dark:bg-brand-400 h-full rounded-full transition-colors"
+                      className="bg-red-500 dark:bg-red-400 h-full rounded-full transition-colors"
                       style={{ width: `${Math.round(channel.share * 100)}%` }}
                       aria-hidden="true"
                     />
@@ -926,7 +926,7 @@ export const AnalyticsPage = () => {
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="rounded-2xl border border-slate-200/60 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-white/75"
                 >
-                  <span className="bg-brand-500/10 font-display text-brand-600 dark:bg-brand-500/20 dark:text-brand-200 mr-3 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold">
+                  <span className="bg-red-500/10 font-display text-red-600 dark:bg-red-500/20 dark:text-red-200 mr-3 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold">
                     {(index + 1).toString().padStart(2, '0')}
                   </span>
                   {insight}

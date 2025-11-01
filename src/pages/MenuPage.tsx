@@ -197,7 +197,7 @@ export const MenuPage = () => {
           <div className="max-w-lg">
             <p className="flex items-center gap-2 text-xs tracking-[0.35em] text-slate-500 uppercase dark:text-white/60">
               <Sparkles
-                className="text-brand-500 dark:text-brand-200 h-3.5 w-3.5"
+                className="text-red-500 dark:text-red-200 h-3.5 w-3.5"
                 aria-hidden="true"
               />
               Fresh Dough • 72 Hour Ferment
@@ -211,7 +211,7 @@ export const MenuPage = () => {
               'flex items-center justify-center gap-2 rounded-full border px-5 py-2 text-xs font-semibold tracking-[0.3em] uppercase transition sm:justify-start',
               isShopOpen
                 ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/25 dark:text-emerald-200'
-                : 'border-brand-500/40 bg-brand-500/15 text-brand-600 dark:bg-brand-500/25 dark:text-brand-100',
+                : 'border-red-500/40 bg-red-500/15 text-red-600 dark:bg-red-500/25 dark:text-red-100',
             )}
             animate={{
               scale: isShopOpen ? [1, 1.04, 1] : [1, 1.02, 1],
@@ -267,7 +267,7 @@ export const MenuPage = () => {
               <motion.button
                 type="button"
                 onClick={handleSurprise}
-                className="border-brand-500/40 bg-brand-500/10 text-brand-600 hover:bg-brand-500/20 focus-visible:ring-brand-300 dark:border-brand-200/40 dark:bg-brand-500/15 dark:text-brand-100 dark:hover:bg-brand-500/25 dark:focus-visible:ring-brand-300/80 inline-flex items-center gap-2 rounded-full border px-5 py-2 font-semibold tracking-[0.3em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-slate-950"
+                className="border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 inline-flex items-center gap-2 rounded-full border px-5 py-2 font-semibold tracking-[0.3em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-slate-950"
                 whileTap={{ scale: 0.95 }}
                 whileHover={{ x: 2 }}
               >
@@ -311,7 +311,7 @@ export const MenuPage = () => {
       )}
 
       {error && (
-        <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:text-brand-100 flex flex-col gap-4 rounded-2xl border p-6 text-sm">
+        <div className="border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-100 flex flex-col gap-4 rounded-2xl border p-6 text-sm">
           <span>
             {error instanceof Error
               ? error.message
@@ -320,7 +320,7 @@ export const MenuPage = () => {
           <button
             type="button"
             onClick={() => void refetch()}
-            className="border-brand-500/40 text-brand-700 focus-visible:ring-brand-300 dark:border-brand-200/50 dark:text-brand-100 dark:focus-visible:ring-brand-300/80 self-start rounded-full border bg-white/80 px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase transition hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-white/10 dark:hover:bg-white/15 dark:focus-visible:ring-offset-slate-950"
+            className="border-red-500/40 text-red-700 focus-visible:ring-red-300 dark:border-red-200/50 dark:text-red-100 dark:focus-visible:ring-red-300/80 self-start rounded-full border bg-white/80 px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase transition hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:bg-white/10 dark:hover:bg-white/15 dark:focus-visible:ring-offset-slate-950"
           >
             Retry loading menu
           </button>
@@ -352,7 +352,7 @@ export const MenuPage = () => {
         {totalItems > 0 ? (
           <Link
             to="/checkout"
-            className="border-brand-500/40 bg-brand-500/10 text-brand-600 hover:bg-brand-500/20 focus-visible:ring-brand-300 dark:border-brand-200/30 dark:bg-brand-500/15 dark:text-brand-100 dark:hover:bg-brand-500/20 dark:focus-visible:ring-brand-400 inline-flex items-center justify-center rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.35em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
+            className="border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/30 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/20 dark:focus-visible:ring-red-400 inline-flex items-center justify-center rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.35em] transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
           >
             Proceed to checkout
           </Link>

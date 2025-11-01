@@ -136,7 +136,7 @@ export const Header = () => {
               clsx(
                 'rounded-full px-4 py-2 text-center transition-colors',
                 isActive
-                  ? 'bg-brand-500 shadow-brand-500/25 text-white shadow-lg'
+                  ? 'bg-slate-900 text-white shadow shadow-slate-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20'
                   : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
               )
             }
@@ -149,7 +149,7 @@ export const Header = () => {
               clsx(
                 'rounded-full px-4 py-2 text-center transition-colors',
                 isActive
-                  ? 'bg-slate-900 text-white shadow shadow-slate-900/10 dark:bg-white dark:text-black'
+                  ? 'bg-slate-900 text-white shadow shadow-slate-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20'
                   : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
               )
             }
@@ -163,7 +163,7 @@ export const Header = () => {
                 clsx(
                   'rounded-full px-4 py-2 text-center transition-colors',
                   isActive
-                    ? 'bg-brand-500/20 text-brand-700 shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-100'
+                    ? 'bg-slate-900 text-white shadow shadow-slate-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20'
                     : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
                 )
               }
@@ -177,7 +177,7 @@ export const Header = () => {
               clsx(
                 'flex items-center gap-2 rounded-full px-4 py-2 transition-colors',
                 isActive
-                  ? 'bg-brand-500/15 text-brand-700 shadow-brand-500/25 dark:bg-brand-500/20 dark:text-brand-100'
+                  ? 'bg-slate-900 text-white shadow shadow-slate-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20'
                   : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
               )
             }

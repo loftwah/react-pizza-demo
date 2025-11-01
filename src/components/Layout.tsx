@@ -14,7 +14,7 @@ export const Layout = ({ children }: PropsWithChildren) => (
         href="https://github.com/loftwah/react-pizza-demo"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-brand-500 hover:text-brand-400 dark:text-brand-300 dark:hover:text-brand-200 transition-colors"
+        className="text-red-600 transition-colors hover:text-red-500 dark:text-red-300 dark:hover:text-red-200"
       >
         View the code on GitHub
       </a>

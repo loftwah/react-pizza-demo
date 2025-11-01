@@ -63,7 +63,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
   const imageSizes = '(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw';
 
   return (
-    <article className="group hover:border-brand-400/60 hover:shadow-brand-500/20 relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 transition hover:-translate-y-1 hover:shadow-2xl dark:border-white/20 dark:bg-white/10 dark:text-white">
+    <article className="group hover:border-red-400/60 hover:shadow-red-500/20 relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/70 bg-white pb-6 text-slate-900 transition hover:-translate-y-1 hover:shadow-2xl dark:border-white/20 dark:bg-white/10 dark:text-white">
       <img
         alt={pizza.displayName}
         src={pizza.image}
@@ -85,7 +85,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
               </span>
             )}
             {pizza.spicy && (
-              <span className="border-brand-500/50 bg-brand-500/10 text-brand-500 dark:text-brand-200 flex items-center gap-1.5 rounded-full border px-3 py-1">
+              <span className="flex items-center gap-1.5 rounded-full border border-red-500/50 bg-red-500/10 px-3 py-1 text-red-500 dark:border-red-400/40 dark:bg-red-500/20 dark:text-red-200">
                 <Flame className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Spicy</span>
               </span>
@@ -121,10 +121,10 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   }}
                   aria-pressed={isSelected}
                   className={clsx(
-                    'focus-visible:ring-brand-400 flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900',
+                    'flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-slate-300 dark:focus-visible:ring-offset-neutral-900 dark:focus-visible:ring-white/40',
                     isSelected
-                      ? 'border-slate-900/80 bg-slate-900 text-white shadow-[0_12px_28px_rgba(15,23,42,0.28)] focus-visible:ring-slate-900/70 dark:border-white dark:bg-white text-white dark:text-slate-900 dark:shadow-[0_12px_28px_rgba(255,255,255,0.24)] dark:focus-visible:ring-white/70'
-                      : 'hover:border-brand-200 hover:bg-brand-50 border-stone-200/70 bg-white text-slate-700 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
+                      ? 'border-slate-900 bg-slate-900 text-white shadow-[0_12px_28px_rgba(15,23,42,0.28)] focus-visible:ring-slate-900 dark:border-slate-100 dark:bg-slate-100 dark:text-slate-900 dark:shadow-[0_12px_28px_rgba(226,232,240,0.28)] dark:focus-visible:ring-slate-100'
+                      : 'border-stone-200/70 bg-white text-slate-700 hover:border-red-200 hover:bg-red-50 focus-visible:ring-slate-300 dark:border-white/20 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/40 dark:hover:bg-white/15',
                   )}
                 >
                   <div className="flex flex-col">
@@ -133,8 +133,8 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                       className={clsx(
                         'text-[10px] tracking-[0.3em] uppercase transition-colors',
                         isSelected
-                          ? 'text-white/85 dark:text-white/85'
-                          : 'text-slate-400 dark:text-white/40',
+                          ? 'text-white/85 dark:text-slate-700'
+                          : 'text-slate-400 dark:text-white/50',
                       )}
                     >
                       {formatCurrency(priceForSize(pizza, size))}
@@ -155,7 +155,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                     type="button"
                     onClick={handleDecrement}
                     aria-label={`Remove one ${pizza.displayName} (${sizeLabels[cartItem.size]}) from cart`}
-                    className="focus-visible:ring-brand-300 dark:focus-visible:ring-brand-400 h-11 w-11 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25 dark:focus-visible:ring-offset-neutral-950"
+                    className="h-11 w-11 rounded-full border border-stone-300 bg-white text-lg text-slate-700 transition hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:border-white/30 dark:bg-white/15 dark:text-white dark:hover:bg-white/25 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
                   >
                     −
                   </button>
@@ -166,7 +166,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                     type="button"
                     onClick={handleIncrement}
                     aria-label={`Add one ${pizza.displayName} (${sizeLabels[selectedSize]}) to cart`}
-                    className="border-brand-500/80 bg-brand-500 hover:bg-brand-400 focus-visible:ring-brand-300 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 h-11 w-11 rounded-full border text-lg text-white transition hover:scale-[1.05] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/40 dark:focus-visible:ring-offset-neutral-950"
+                    className="h-11 w-11 rounded-full border border-red-600/70 bg-red-600 text-lg text-white transition hover:scale-[1.05] hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:border-red-400/60 dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
                   >
                     +
                   </button>
@@ -184,7 +184,7 @@ export const PizzaCard = ({ pizza }: PizzaCardProps) => {
                   type="button"
                   onClick={handleAdd}
                   aria-label={`Add ${pizza.displayName} pizza to your order`}
-                  className="group/cta bg-brand-500 shadow-brand-500/40 hover:bg-brand-400 focus-visible:ring-brand-200 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3 text-base font-semibold text-white shadow-xl transition hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none sm:w-auto dark:focus-visible:ring-offset-neutral-950"
+                  className="group/cta relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-red-600 px-7 py-3 text-base font-semibold text-white shadow-xl shadow-red-600/40 transition hover:scale-[1.02] hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none sm:w-auto dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
                 >
                   <ShoppingCart
                     className="h-5 w-5 transition-transform duration-200 group-hover/cta:-translate-y-0.5"

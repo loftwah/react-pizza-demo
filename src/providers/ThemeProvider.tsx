@@ -46,6 +46,11 @@ export const ThemeProvider = ({ children }: PropsWithChildren) => {
     () => getStoredTheme() ?? getPreferredTheme(),
   );
 
+  useEffect(() => {
+    applyThemeToDocument(theme);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useLayoutEffect(() => {
     applyThemeToDocument(theme);
   }, [theme]);

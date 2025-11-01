@@ -37,7 +37,7 @@ const toneStyles: Record<ToastTone, string> = {
   success:
     'border-emerald-400/60 bg-emerald-50/90 text-emerald-800 shadow-emerald-600/20 dark:border-emerald-300/35 dark:bg-emerald-500/10 dark:text-emerald-200',
   error:
-    'border-brand-500/50 bg-brand-50/95 text-brand-700 shadow-brand-500/30 dark:border-brand-200/35 dark:bg-brand-500/15 dark:text-brand-100',
+    'border-red-500/50 bg-red-50/95 text-red-700 shadow-red-500/30 dark:border-red-200/35 dark:bg-red-500/15 dark:text-red-100',
 };
 
 const createToastId = () =>

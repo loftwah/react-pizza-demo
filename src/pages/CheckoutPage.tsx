@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   CalendarPlus,
   Copy,
@@ -25,6 +25,12 @@ import { OrderService } from '../services/order-service';
 import { isFeatureEnabled } from '../config/features';
 import { isDevEnvironment } from '../shared-utils/env';
 import { useOrderInsights } from '../hooks/useOrderInsights';
+
+type PersistedHistoryStore = typeof useOrderHistory & {
+  persist?: {
+    hasHydrated?: () => boolean;
+  };
+};
 
 const orderTimeFormatter = new Intl.DateTimeFormat('en-AU', {
   hour: 'numeric',
@@ -53,6 +59,7 @@ export const CheckoutPage = () => {
   const cartCount = useCartStore((state) => state.totalItems());
   const { showToast } = useToast();
   const clearOrderHistory = useOrderHistory((state) => state.clearOrders);
+  const orderHistory = useOrderHistory((state) => state.orders);
   const { summary: orderSummary, recentOrders } = useOrderInsights({
     recentLimit: 5,
   });
@@ -66,6 +73,10 @@ export const CheckoutPage = () => {
   const [voiceRate, setVoiceRate] = useState(1.05);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
   const voiceStopRequestedRef = useRef(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sharedOrderId = searchParams.get('order');
+  const ordersHydrated =
+    (useOrderHistory as PersistedHistoryStore).persist?.hasHydrated?.() ?? true;
 
   const cartDetails = useMemo<OrderLineItem[]>(() => {
     const detail = items
@@ -114,6 +125,36 @@ export const CheckoutPage = () => {
     shareUrl.searchParams.set('order', submittedOrder.id);
     return shareUrl.toString();
   }, [submittedOrder]);
+
+  useEffect(() => {
+    if (!sharedOrderId || !ordersHydrated) return;
+    const matchingOrder = orderHistory.find(
+      (order) => order.id === sharedOrderId,
+    );
+    if (matchingOrder) {
+      setSubmittedOrder(matchingOrder);
+      showToast({
+        message: `Loaded mock order ${matchingOrder.id} from history.`,
+        tone: 'success',
+      });
+    } else {
+      showToast({
+        message:
+          'Shared order not found on this device. Create it once to access the summary directly.',
+        tone: 'info',
+      });
+    }
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('order');
+    setSearchParams(nextParams, { replace: true });
+  }, [
+    sharedOrderId,
+    ordersHydrated,
+    orderHistory,
+    searchParams,
+    setSearchParams,
+    showToast,
+  ]);
 
   useEffect(() => {
     let cancelled = false;
@@ -517,7 +558,7 @@ export const CheckoutPage = () => {
     return (
       <section className="mx-auto flex w-full max-w-5xl flex-col gap-10">
         <header className="space-y-3 text-center lg:text-left">
-          <p className="text-brand-500 dark:text-brand-200/80 text-xs font-semibold tracking-[0.35em] uppercase">
+          <p className="text-red-500 dark:text-red-200/80 text-xs font-semibold tracking-[0.35em] uppercase">
             Simulated service complete
           </p>
           <h1 className="font-display text-4xl leading-tight text-slate-900 dark:text-white">
@@ -551,7 +592,7 @@ export const CheckoutPage = () => {
                   onClick={handleShareOrder}
                   className={clsx(
                     actionButtonBase,
-                    'border-brand-500/40 bg-brand-500/10 text-brand-600 hover:bg-brand-500/20 focus-visible:ring-brand-300 dark:border-brand-200/40 dark:bg-brand-500/15 dark:text-brand-100 dark:hover:bg-brand-500/25 dark:focus-visible:ring-brand-300/80 w-full',
+                    'border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 w-full',
                   )}
                 >
                   <Share2 className="h-4 w-4" aria-hidden="true" />
@@ -596,7 +637,7 @@ export const CheckoutPage = () => {
                 onClick={handleEmailReceipt}
                 className={clsx(
                   actionButtonBase,
-                  'border-brand-500/40 bg-brand-500/10 text-brand-600 hover:bg-brand-500/20 focus-visible:ring-brand-300 dark:border-brand-200/40 dark:bg-brand-500/15 dark:text-brand-100 dark:hover:bg-brand-500/25 dark:focus-visible:ring-brand-300/80 w-full',
+                  'border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 focus-visible:ring-red-300 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 dark:hover:bg-red-500/25 dark:focus-visible:ring-red-300/80 w-full',
                 )}
               >
                 <Mail className="h-4 w-4" aria-hidden="true" />
@@ -662,7 +703,7 @@ export const CheckoutPage = () => {
                       value={voiceRate}
                       onChange={handleVoiceSpeedChange}
                       aria-label="Adjust voice speed"
-                      className="accent-brand-500 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-white/20"
+                      className="accent-red-500 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-white/20"
                     />
                     <span className="text-xs font-semibold text-slate-600 dark:text-white/70">
                       {voiceRate.toFixed(2)}×
@@ -757,7 +798,7 @@ export const CheckoutPage = () => {
                   </li>
                 ))}
               </ul>
-              <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:border-brand-200/40 dark:bg-brand-500/15 dark:text-brand-100 flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold">
+              <div className="border-red-500/40 bg-red-500/10 text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold">
                 <span>Total</span>
                 <span>{formatCurrency(submittedOrder.total)}</span>
               </div>
@@ -821,7 +862,7 @@ export const CheckoutPage = () => {
               <button
                 type="button"
                 onClick={handleResetSubmittedOrder}
-                className="bg-brand-500 hover:bg-brand-400 focus-visible:ring-brand-200 dark:hover:bg-brand-400/90 dark:focus-visible:ring-brand-400 inline-flex items-center justify-center rounded-full px-6 py-2 text-xs font-semibold tracking-[0.3em] text-white uppercase transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950"
+                className="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950"
               >
                 Run another mock order
               </button>
@@ -926,7 +967,7 @@ export const CheckoutPage = () => {
           )}
 
           {hasCart && (
-            <div className="border-brand-500/40 bg-brand-500/10 text-brand-700 dark:border-brand-200/40 dark:bg-brand-500/15 dark:text-brand-100 flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold">
+            <div className="border-red-500/40 bg-red-500/10 text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100 flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold">
               <span>Total</span>
               <span>{formattedTotal}</span>
             </div>
@@ -1033,7 +1074,7 @@ export const CheckoutPage = () => {
                 name="customer"
                 autoComplete="name"
                 required
-                className="focus:border-brand-400 focus:ring-brand-200 dark:focus:border-brand-300 dark:focus:ring-brand-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
+                className="focus:border-red-400 focus:ring-red-200 dark:focus:border-red-300 dark:focus:ring-red-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
                 placeholder="Ada Lovelace"
               />
             </label>
@@ -1046,7 +1087,7 @@ export const CheckoutPage = () => {
                 name="contact"
                 autoComplete="tel"
                 required
-                className="focus:border-brand-400 focus:ring-brand-200 dark:focus:border-brand-300 dark:focus:ring-brand-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
+                className="focus:border-red-400 focus:ring-red-200 dark:focus:border-red-300 dark:focus:ring-red-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
                 placeholder="Phone or email"
               />
             </label>
@@ -1059,7 +1100,7 @@ export const CheckoutPage = () => {
             <textarea
               name="instructions"
               rows={4}
-              className="focus:border-brand-400 focus:ring-brand-200 dark:focus:border-brand-300 dark:focus:ring-brand-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
+              className="focus:border-red-400 focus:ring-red-200 dark:focus:border-red-300 dark:focus:ring-red-400/30 rounded-2xl border border-stone-200/60 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition focus:ring-2 focus:outline-none dark:border-white/20 dark:bg-white/10 dark:text-white"
               placeholder="Parking out front, call when you arrive..."
             />
           </label>
@@ -1085,7 +1126,7 @@ export const CheckoutPage = () => {
               type="submit"
               disabled={isProcessing || !hasCart}
               className={clsx(
-                'bg-brand-500 focus-visible:ring-brand-200 dark:focus-visible:ring-brand-400 inline-flex items-center justify-center rounded-full px-7 py-3 text-xs font-semibold tracking-[0.35em] text-white uppercase transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950',
+                'inline-flex items-center justify-center rounded-full bg-red-600 px-7 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-red-300 focus-visible:outline-none dark:bg-red-500 dark:hover:bg-red-400 dark:focus-visible:ring-red-400 dark:focus-visible:ring-offset-neutral-950',
                 (isProcessing || !hasCart) && 'opacity-70',
               )}
             >

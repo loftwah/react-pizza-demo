@@ -21,33 +21,16 @@ export const submitOrderToKitchen = async (
   await delay(650 + Math.random() * 400);
 
   const endpoint = `${getBaseUrl()}api/order-response.json`;
-  let response: Response | null = null;
+  const origin =
+    typeof window !== 'undefined' && window.location
+      ? window.location.origin
+      : 'http://localhost';
+  const resolvedEndpoint = new URL(endpoint, origin);
+  resolvedEndpoint.searchParams.set('orderId', order.id);
+  resolvedEndpoint.searchParams.set('items', order.items.length.toString());
+  resolvedEndpoint.searchParams.set('total', order.total.toFixed(2));
 
-  try {
-    response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        orderId: order.id,
-        total: order.total,
-        itemCount: order.items.length,
-      }),
-      cache: 'no-store',
-    });
-  } catch (error) {
-    if (isDevEnvironment()) {
-      console.warn(
-        '[mock-backend] POST request failed, retrying with GET fallback.',
-        error,
-      );
-    }
-  }
-
-  if (!response || !response.ok) {
-    response = await fetch(endpoint, { cache: 'no-store' });
-  }
+  const response = await fetch(resolvedEndpoint.toString(), { cache: 'no-store' });
 
   if (!response.ok) {
     throw new Error(`Mock order API failed with status ${response.status}`);

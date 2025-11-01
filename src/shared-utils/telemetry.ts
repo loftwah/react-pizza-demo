@@ -58,8 +58,38 @@ const ensureBrowser = (): Result<true, TelemetryFailure> => {
   return ok(true);
 };
 
+const getTelemetryEndpoint = (): string | null => {
+  try {
+    const meta = import.meta as unknown as {
+      env?: Record<string, string | undefined>;
+    };
+    const candidate = meta?.env?.VITE_TELEMETRY_ENDPOINT;
+    if (candidate && candidate.trim().length > 0) {
+      return candidate.trim();
+    }
+  } catch {
+    // fall through to process.env
+  }
+
+  if (typeof process !== 'undefined' && process?.env) {
+    const candidates = [
+      process.env.VITE_TELEMETRY_ENDPOINT,
+      process.env.TELEMETRY_ENDPOINT,
+    ];
+    for (const value of candidates) {
+      if (value && value.trim().length > 0) {
+        return value.trim();
+      }
+    }
+  }
+
+  return null;
+};
+
 export const createCorrelationId = () =>
   `corr-${Math.random().toString(36).slice(2, 10)}-${Date.now().toString(36)}`;
+
+let warnedAboutMissingEndpoint = false;
 
 export const emitEvent = async (
   record: TelemetryRecord,
@@ -72,8 +102,20 @@ export const emitEvent = async (
     return transport;
   }
 
+  const endpoint = getTelemetryEndpoint();
+
   if (isDevEnvironment()) {
     console.log('[telemetry]', buildEnvelope(record));
+    return ok(true);
+  }
+
+  if (!endpoint) {
+    if (!warnedAboutMissingEndpoint && typeof console !== 'undefined') {
+      console.info(
+        '[telemetry] endpoint not configured — skipping network send.',
+      );
+      warnedAboutMissingEndpoint = true;
+    }
     return ok(true);
   }
 
@@ -81,11 +123,11 @@ export const emitEvent = async (
     const body = JSON.stringify(buildEnvelope(record));
     if (navigator.sendBeacon) {
       const blob = new Blob([body], { type: 'application/json' });
-      const sent = navigator.sendBeacon('/telemetry', blob);
+      const sent = navigator.sendBeacon(endpoint, blob);
       if (sent) return ok(true);
     }
 
-    const response = await fetch('/telemetry', {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body,
