@@ -5,9 +5,12 @@ import {
   CalendarPlus,
   Copy,
   FileDown,
+  Minus,
   Mail,
+  Plus,
   Printer,
   Share2,
+  Trash2,
   Twitter,
   Volume2,
   VolumeX,
@@ -15,7 +18,7 @@ import {
 import clsx from 'clsx';
 import QRCode from 'qrcode';
 import { z } from 'zod';
-import { useCartStore } from '../stores/cart';
+import { useCartStore, type CartItem } from '../stores/cart';
 import { getPizzaById } from '../domain/menu';
 import {
   formatCurrency,
@@ -79,6 +82,9 @@ export const CheckoutPage = () => {
   const items = useCartStore((state) => state.items);
   const cartTotal = useCartStore((state) => state.totalPrice());
   const cartCount = useCartStore((state) => state.totalItems());
+  const addCartItem = useCartStore((state) => state.addItem);
+  const decrementCartItem = useCartStore((state) => state.decrementItem);
+  const removeCartItem = useCartStore((state) => state.removeItem);
   const { showToast } = useToast();
   const clearOrderHistory = useOrderHistory((state) => state.clearOrders);
   const orderHistory = useOrderHistory((state) => state.orders);
@@ -142,6 +148,48 @@ export const CheckoutPage = () => {
       );
     return detail;
   }, [items]);
+  const cartItemsById = useMemo(
+    () =>
+      new Map<string, CartItem>(
+        items.map((item) => [item.id, item] as const),
+      ),
+    [items],
+  );
+  const handleIncrementCartItem = useCallback(
+    (lineItem: OrderLineItem) => {
+      const cartItem = cartItemsById.get(lineItem.id);
+      if (!cartItem) return;
+      addCartItem(cartItem.pizzaId, cartItem.size, cartItem.customization);
+      showToast({
+        message: `Added another ${lineItem.sizeLabel} ${lineItem.name}`,
+        tone: 'success',
+      });
+    },
+    [addCartItem, cartItemsById, showToast],
+  );
+  const handleDecrementCartItem = useCallback(
+    (lineItem: OrderLineItem) => {
+      decrementCartItem(lineItem.id);
+      showToast({
+        message:
+          lineItem.quantity <= 1
+            ? `Removed ${lineItem.name} from your cart`
+            : `Removed one ${lineItem.sizeLabel} ${lineItem.name}`,
+        tone: 'info',
+      });
+    },
+    [decrementCartItem, showToast],
+  );
+  const handleRemoveCartItem = useCallback(
+    (lineItem: OrderLineItem) => {
+      removeCartItem(lineItem.id);
+      showToast({
+        message: `Cleared ${lineItem.sizeLabel} ${lineItem.name} from your cart`,
+        tone: 'info',
+      });
+    },
+    [removeCartItem, showToast],
+  );
   const hasCart = cartDetails.length > 0;
   const formattedTotal = formatCurrency(cartTotal);
   const formattedCount = cartCount.toString().padStart(2, '0');
@@ -627,6 +675,8 @@ export const CheckoutPage = () => {
 
   const actionButtonBase =
     'inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.3em] uppercase transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-offset-neutral-950';
+  const itemActionButtonBase =
+    'inline-flex items-center gap-1 rounded-full border border-slate-300 bg-white px-3 py-1 text-[10px] font-semibold tracking-[0.25em] uppercase text-slate-600 transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/25 dark:bg-white/10 dark:text-white/70 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950';
 
   if (submittedOrder) {
     return (
@@ -1022,35 +1072,74 @@ export const CheckoutPage = () => {
           </div>
 
           {hasCart ? (
-            <ul className="space-y-3 text-sm text-slate-600 dark:text-white/70">
-              {cartDetails.map((item) => {
-                const customizationSummary = summarizeCustomization(item);
-                return (
-                  <li
-                    key={item.id}
-                    className="flex items-start justify-between gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5"
-                  >
-                    <div className="space-y-1">
-                      <p className="font-semibold text-slate-900 dark:text-white">
-                        {item.name}
-                      </p>
-                      <p className="text-xs tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
-                        {item.sizeLabel} • Qty {item.quantity} •{' '}
-                        {formatCurrency(item.unitPrice)}
-                      </p>
-                      {customizationSummary && (
-                        <p className="text-[11px] tracking-[0.25em] text-slate-400 uppercase dark:text-white/45">
-                          {customizationSummary}
+            <>
+              <ul className="space-y-3 text-sm text-slate-600 dark:text-white/70">
+                {cartDetails.map((item) => {
+                  const customizationSummary = summarizeCustomization(item);
+                  return (
+                    <li
+                      key={item.id}
+                      className="flex items-start justify-between gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5"
+                    >
+                      <div className="space-y-2">
+                        <p className="font-semibold text-slate-900 dark:text-white">
+                          {item.name}
                         </p>
-                      )}
-                    </div>
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
-                      {formatCurrency(item.lineTotal)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
+                        <p className="text-xs tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
+                          {item.sizeLabel} • Qty {item.quantity} •{' '}
+                          {formatCurrency(item.unitPrice)}
+                        </p>
+                        {customizationSummary && (
+                          <p className="text-[11px] tracking-[0.25em] text-slate-400 uppercase dark:text-white/45">
+                            {customizationSummary}
+                          </p>
+                        )}
+                        <div className="flex flex-wrap items-center gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => handleDecrementCartItem(item)}
+                            className={itemActionButtonBase}
+                          >
+                            <Minus className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>
+                              {item.quantity <= 1 ? 'Remove item' : 'Remove one'}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleIncrementCartItem(item)}
+                            className={itemActionButtonBase}
+                          >
+                            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>Add one</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveCartItem(item)}
+                            className={itemActionButtonBase}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>Remove all</span>
+                          </button>
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {formatCurrency(item.lineTotal)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 bg-white/60 px-5 py-4 text-xs tracking-[0.3em] text-slate-500 uppercase dark:border-white/20 dark:bg-white/5 dark:text-white/60">
+                <span>Need to tweak your order?</span>
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-[11px] font-semibold tracking-[0.35em] text-slate-700 transition hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:border-white/25 dark:bg-white/10 dark:text-white/80 dark:hover:bg-white/15 dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-neutral-950"
+                >
+                  Continue ordering
+                </Link>
+              </div>
+            </>
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white/60 px-6 py-8 text-center text-xs tracking-[0.3em] text-slate-400 uppercase dark:border-white/20 dark:bg-white/5 dark:text-white/40">
               <span>Cart is empty</span>
