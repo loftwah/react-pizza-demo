@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
 import clsx from 'clsx';
 import { useCartStore } from '../stores/cart';
@@ -17,6 +17,7 @@ type LineItemCustomiserProps = {
 };
 
 const MAX_EXTRA_QUANTITY = 3;
+const panelOpenState = new Map<string, boolean>();
 
 export const LineItemCustomiser = ({ item }: LineItemCustomiserProps) => {
   const extraQuantities = useMemo(() => {
@@ -34,7 +35,25 @@ export const LineItemCustomiser = ({ item }: LineItemCustomiserProps) => {
     });
     return quantities;
   }, [item.customization]);
-  const [isOpen, setIsOpen] = useState(() => extraQuantities.size > 0);
+  const fallbackPanelKey = useId();
+  const panelKey =
+    item.cartLineUid ?? item.id ?? `customiser-${fallbackPanelKey}`;
+  const defaultOpen = extraQuantities.size > 0;
+  const [isOpen, setIsOpen] = useState<boolean>(() => {
+    const stored = panelOpenState.get(panelKey);
+    if (stored !== undefined) {
+      return stored;
+    }
+    panelOpenState.set(panelKey, defaultOpen);
+    return defaultOpen;
+  });
+
+  useEffect(() => {
+    const stored = panelOpenState.get(panelKey);
+    if (stored !== isOpen) {
+      panelOpenState.set(panelKey, isOpen);
+    }
+  }, [panelKey, isOpen]);
   const updateCustomization = useCartStore(
     (state) => state.updateCustomization,
   );
