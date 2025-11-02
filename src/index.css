@@ -16,6 +16,8 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: theme('fontFamily.sans');
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
   background-color: #f7f6ff;
   background-image:
     radial-gradient(circle at top, rgba(58, 179, 255, 0.15), transparent 55%),
@@ -23,6 +25,8 @@ body {
   transition:
     background-color 0.3s ease,
     background-image 0.3s ease;
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
 }
 
 html.dark body {
@@ -146,5 +150,12 @@ html.dark .text-aurora {
   a {
     color: inherit !important;
     text-decoration: none !important;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
   }
 }

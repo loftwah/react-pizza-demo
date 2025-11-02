@@ -6,7 +6,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   Cell,
-  type TooltipProps,
+  type TooltipContentProps,
 } from 'recharts';
 import type { ChannelBreakdown } from '../../domain/analytics';
 import { formatPercent } from '../../pages/analytics-formatters';
@@ -24,20 +24,25 @@ const PALETTE = [
   '#f472b6',
 ];
 
-const tooltipFormatter: TooltipProps<number, string>['formatter'] = (
-  value,
-  name,
-  { payload },
-) => {
-  if (!payload) return value;
-  const share =
-    typeof payload.share === 'number'
-      ? formatPercent(payload.share)
-      : undefined;
-  return [
-    `${value?.toLocaleString?.() ?? value} orders${share ? ` • ${share}` : ''}`,
-    name,
-  ];
+const renderChannelTooltip = ({
+  active,
+  payload,
+}: TooltipContentProps<number, string>) => {
+  if (!active || !payload?.[0]) return null;
+  const datum = payload[0].payload as ChannelBreakdown;
+  const shareLabel =
+    typeof datum.share === 'number' ? formatPercent(datum.share) : null;
+  return (
+    <div className="rounded-lg border border-slate-200/70 bg-white/95 px-4 py-3 text-sm shadow-lg backdrop-blur dark:border-white/10 dark:bg-slate-900/95 dark:text-white/80">
+      <p className="font-semibold text-slate-900 dark:text-white">
+        {datum.channel}
+      </p>
+      <p className="mt-1 text-slate-600 dark:text-white/70">
+        {datum.orders.toLocaleString()} orders
+        {shareLabel ? ` • ${shareLabel}` : ''}
+      </p>
+    </div>
+  );
 };
 
 export const ChannelMixChart: FC<ChannelMixChartProps> = ({ data }) => {
@@ -69,25 +74,8 @@ export const ChannelMixChart: FC<ChannelMixChartProps> = ({ data }) => {
       <PieChart>
         <Tooltip
           cursor={{ fill: 'rgba(56, 189, 248, 0.12)' }}
-          formatter={tooltipFormatter}
-          labelFormatter={(label) => label}
           wrapperStyle={{ outline: 'none' }}
-          contentStyle={{
-            borderRadius: 12,
-            border: '1px solid rgba(148, 163, 184, 0.25)',
-            backgroundColor: 'rgba(255, 255, 255, 0.98)',
-            color: '#0f172a',
-            boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18)',
-            fontSize: 12,
-          }}
-          labelStyle={{
-            color: '#475569',
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            fontSize: 11,
-          }}
-          itemStyle={{ color: '#0f172a' }}
+          content={renderChannelTooltip}
         />
         <Pie
           data={chartData}
@@ -95,9 +83,11 @@ export const ChannelMixChart: FC<ChannelMixChartProps> = ({ data }) => {
           nameKey="label"
           cx="50%"
           cy="50%"
-          innerRadius="45%"
-          outerRadius="70%"
+          innerRadius="55%"
+          outerRadius="80%"
           paddingAngle={2}
+          startAngle={90}
+          endAngle={-270}
           cornerRadius={14}
         >
           {chartData.map((entry, index) => (

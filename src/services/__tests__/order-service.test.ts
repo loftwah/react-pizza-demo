@@ -182,14 +182,15 @@ describe('OrderService.run', () => {
     }
     const customization = {
       removedIngredients: ['Mozzarella'],
-      addedIngredients: [extra],
+      addedIngredients: [{ ...extra, quantity: 2 }],
     };
 
     const unitPrice = priceForConfiguration(pizza, 'medium', {
       removedIngredients: customization.removedIngredients,
-      addedIngredients: customization.addedIngredients.map(
-        (ingredient) => ingredient.id,
-      ),
+      addedIngredients: customization.addedIngredients.map((ingredient) => ({
+        id: ingredient.id,
+        quantity: ingredient.quantity ?? 1,
+      })),
     });
 
     input.cartDetails[0] = {
@@ -200,6 +201,7 @@ describe('OrderService.run', () => {
         removedIngredients: [...customization.removedIngredients],
         addedIngredients: customization.addedIngredients.map((ingredient) => ({
           ...ingredient,
+          quantity: ingredient.quantity ?? 1,
         })),
       },
     };
@@ -208,9 +210,10 @@ describe('OrderService.run', () => {
     const cart = useCartStore.getState();
     cart.addItem(pizza.id, 'medium', {
       removedIngredients: customization.removedIngredients,
-      addedIngredients: customization.addedIngredients.map(
-        (ingredient) => ingredient.id,
-      ),
+      addedIngredients: customization.addedIngredients.map((ingredient) => ({
+        id: ingredient.id,
+        quantity: ingredient.quantity ?? 1,
+      })),
     });
 
     const service = new OrderService();
@@ -228,8 +231,8 @@ describe('OrderService.run', () => {
     ]);
     expect(
       savedOrder?.items[0]?.customization?.addedIngredients.map(
-        (ingredient) => ingredient.id,
+        (ingredient) => [ingredient.id, ingredient.quantity],
       ),
-    ).toEqual(['truffle-oil']);
+    ).toEqual([['truffle-oil', 2]]);
   });
 });

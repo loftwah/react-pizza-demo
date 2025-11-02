@@ -53,7 +53,7 @@ describe('pizza domain helpers', () => {
 
   it('applies customization pricing when extras are selected', () => {
     const customization = normalizeCustomization({
-      addedIngredients: ['truffle-oil'],
+      addedIngredients: [{ id: 'truffle-oil', quantity: 1 }],
     });
     expect(priceForConfiguration(samplePizza, 'medium', customization)).toBe(
       14.7,
@@ -68,7 +68,7 @@ describe('pizza domain helpers', () => {
     );
     const modifiedKey = composeCartItemKey(samplePizza.id, 'medium', {
       removedIngredients: ['mozzarella'],
-      addedIngredients: ['truffle-oil'],
+      addedIngredients: [{ id: 'truffle-oil', quantity: 1 }],
     });
 
     expect(baseKey).toBe('margherita-medium');

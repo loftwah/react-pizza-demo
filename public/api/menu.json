@@ -4,7 +4,11 @@
     "displayName": "Pepperoni Classic",
     "description": "Tomato sugo, shredded mozzarella, pepperoni cups, oregano oil.",
     "basePrice": 16,
-    "toppings": ["Tomato", "Mozzarella", "Pepperoni"],
+    "toppings": [
+      "Tomato",
+      "Mozzarella",
+      "Pepperoni"
+    ],
     "vegetarian": false,
     "vegan": false,
     "spicy": false,
@@ -16,7 +20,12 @@
     "displayName": "Smoky BBQ Chicken",
     "description": "BBQ sauce base, roast chicken, charred corn, red onion, parsley.",
     "basePrice": 18,
-    "toppings": ["BBQ Sauce", "Chicken", "Corn", "Parsley"],
+    "toppings": [
+      "BBQ Sauce",
+      "Chicken",
+      "Corn",
+      "Parsley"
+    ],
     "vegetarian": false,
     "vegan": false,
     "spicy": false,
@@ -28,7 +37,12 @@
     "displayName": "Firecracker",
     "description": "Scorpion pepper oil, spicy salami, jalapeños, hot honey drizzle.",
     "basePrice": 19,
-    "toppings": ["Scorpion Oil", "Salami", "Jalapeño", "Hot Honey"],
+    "toppings": [
+      "Scorpion Oil",
+      "Salami",
+      "Jalapeño",
+      "Hot Honey"
+    ],
     "vegetarian": false,
     "vegan": false,
     "spicy": true,
@@ -40,7 +54,12 @@
     "displayName": "Green Garden",
     "description": "Basil pesto base, cherry tomato confit, marinated zucchini, ricotta.",
     "basePrice": 17,
-    "toppings": ["Pesto", "Tomato", "Zucchini", "Ricotta"],
+    "toppings": [
+      "Pesto",
+      "Tomato",
+      "Zucchini",
+      "Ricotta"
+    ],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -52,7 +71,11 @@
     "displayName": "Wild Mushroom",
     "description": "Garlic cream, roasted field mushrooms, truffle salt, chives.",
     "basePrice": 20,
-    "toppings": ["Garlic Cream", "Mushroom", "Truffle Salt"],
+    "toppings": [
+      "Garlic Cream",
+      "Mushroom",
+      "Truffle Salt"
+    ],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -64,7 +87,12 @@
     "displayName": "Pineapple Party",
     "description": "Tomato sugo, leg ham, fire-roasted pineapple, pickled chilli.",
     "basePrice": 18,
-    "toppings": ["Tomato", "Ham", "Pineapple", "Chilli"],
+    "toppings": [
+      "Tomato",
+      "Ham",
+      "Pineapple",
+      "Chilli"
+    ],
     "vegetarian": false,
     "vegan": false,
     "spicy": true,
@@ -76,7 +104,12 @@
     "displayName": "Sunrise Margherita",
     "description": "Slow-roasted tomatoes, stracciatella, basil oil, lemon zest.",
     "basePrice": 17,
-    "toppings": ["Tomato", "Stracciatella", "Basil Oil", "Lemon Zest"],
+    "toppings": [
+      "Tomato",
+      "Stracciatella",
+      "Basil Oil",
+      "Lemon Zest"
+    ],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -88,7 +121,12 @@
     "displayName": "Smoked Maple Bacon",
     "description": "Maple glaze, smoked bacon, roasted sweet potato, pickled onion.",
     "basePrice": 19,
-    "toppings": ["Maple", "Bacon", "Sweet Potato", "Pickled Onion"],
+    "toppings": [
+      "Maple",
+      "Bacon",
+      "Sweet Potato",
+      "Pickled Onion"
+    ],
     "vegetarian": false,
     "vegan": false,
     "spicy": false,
@@ -100,7 +138,12 @@
     "displayName": "Calabrian Scorcher",
     "description": "Nduja butter base, fennel sausage, charred peppers, chilli honey.",
     "basePrice": 21,
-    "toppings": ["Nduja", "Fennel Sausage", "Charred Peppers", "Chilli Honey"],
+    "toppings": [
+      "Nduja",
+      "Fennel Sausage",
+      "Charred Peppers",
+      "Chilli Honey"
+    ],
     "vegetarian": false,
     "vegan": false,
     "spicy": true,
@@ -129,7 +172,11 @@
     "displayName": "Home Alone Cheese Pizza",
     "description": "Crisp base, tomato sugo, melty mozzarella, olive oil gloss.",
     "basePrice": 17,
-    "toppings": ["Tomato Sugo", "Mozzarella", "Olive Oil Gloss"],
+    "toppings": [
+      "Tomato Sugo",
+      "Mozzarella",
+      "Olive Oil Gloss"
+    ],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -141,7 +188,11 @@
     "displayName": "Home Alone Vegan Cheese Pizza",
     "description": "Crisp base, tomato sugo, melty vegan mozzarella, olive oil gloss.",
     "basePrice": 17,
-    "toppings": ["Tomato Sugo", "Vegan Mozzarella", "Olive Oil Gloss"],
+    "toppings": [
+      "Tomato Sugo",
+      "Vegan Mozzarella",
+      "Olive Oil Gloss"
+    ],
     "vegetarian": true,
     "vegan": true,
     "spicy": false,
@@ -153,7 +204,12 @@
     "displayName": "White Chocolate Nutella Biscoff",
     "description": "Cinnamon crust, warm white chocolate ganache, Nutella ripple, crushed Biscoff biscuit.",
     "basePrice": 18,
-    "toppings": ["White Chocolate", "Nutella", "Biscoff Crumb", "Cinnamon"],
+    "toppings": [
+      "White Chocolate",
+      "Nutella",
+      "Biscoff Crumb",
+      "Cinnamon"
+    ],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -165,7 +221,11 @@
     "displayName": "Nutella Chocolate",
     "description": "Toasted base, Nutella spread, dark chocolate shards, strawberry compote drizzle.",
     "basePrice": 17,
-    "toppings": ["Nutella", "Dark Chocolate Shards", "Strawberry Compote"],
+    "toppings": [
+      "Nutella",
+      "Dark Chocolate Shards",
+      "Strawberry Compote"
+    ],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,

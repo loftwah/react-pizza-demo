@@ -2,11 +2,16 @@
   "name": "react-pizza-demo",
   "private": true,
   "version": "0.69.420",
+  "engines": {
+    "node": "24.x"
+  },
   "type": "module",
   "homepage": "https://pizza.deanlofts.xyz/",
   "scripts": {
+    "preinstall": "tsx scripts/check-node-version.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "prebuild": "npm run generate:mock-data",
     "lint": "eslint .",
     "test": "node scripts/run-vitest-with-polyfills.cjs run",
     "test:watch": "node scripts/run-vitest-with-polyfills.cjs",
@@ -20,7 +25,8 @@
     "doctor:orders": "./bin/doctor-orders.ts",
     "pipeline:debug": "./bin/pipeline-debug.ts",
     "smoke": "./bin/smoke",
-    "check:flags": "tsx scripts/check-flags.ts"
+    "check:flags": "tsx scripts/check-flags.ts",
+    "generate:mock-data": "tsx scripts/generate-mock-data.ts"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.1",

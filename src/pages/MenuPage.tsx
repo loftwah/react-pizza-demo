@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BadgeCheck,
   Clock,
@@ -39,6 +39,12 @@ const activeFilterStyles: Record<PizzaFilter, string> = {
 };
 
 type PersistedOrderStore = typeof useOrderHistory & {
+  persist?: {
+    hasHydrated?: () => boolean;
+  };
+};
+
+type PersistedCartStore = typeof useCartStore & {
   persist?: {
     hasHydrated?: () => boolean;
   };
@@ -105,6 +111,7 @@ export const MenuPage = () => {
   const { data: pizzas, isLoading, isFetching, error, refetch } = useMenu();
   const totalPrice = useCartStore((state) => state.totalPrice());
   const totalItems = useCartStore((state) => state.totalItems());
+  const cartItems = useCartStore((state) => state.items);
   const addItemToCart = useCartStore((state) => state.addItem);
   const hydrateFromOrder = useCartStore((state) => state.hydrateFromOrder);
   const orderHistory = useOrderHistory((state) => state.orders);
@@ -113,7 +120,10 @@ export const MenuPage = () => {
   const sharedOrderId = searchParams.get('order');
   const ordersHydrated =
     (useOrderHistory as PersistedOrderStore).persist?.hasHydrated?.() ?? true;
+  const cartHydrated =
+    (useCartStore as PersistedCartStore).persist?.hasHydrated?.() ?? true;
   const [isHydratingSharedOrder, setIsHydratingSharedOrder] = useState(false);
+  const cartHydrationAnnounced = useRef(false);
 
   useEffect(() => {
     const evaluateOpenStatus = () => {
@@ -169,6 +179,21 @@ export const MenuPage = () => {
     sharedOrderId,
     showToast,
   ]);
+
+  useEffect(() => {
+    if (cartHydrationAnnounced.current) return;
+    if (!cartHydrated) return;
+    cartHydrationAnnounced.current = true;
+    if (cartItems.length === 0) {
+      return;
+    }
+    showToast({
+      message: `Restored ${cartItems.length} item${
+        cartItems.length === 1 ? '' : 's'
+      } to your cart.`,
+      tone: 'info',
+    });
+  }, [cartHydrated, cartItems.length, showToast]);
 
   const filteredPizzas = useMemo(
     () => pizzas?.filter((pizza) => hasFilterMatch(pizza, filter)) ?? [],
@@ -254,7 +279,10 @@ export const MenuPage = () => {
           lovers or dial up the heat if you dare. Sizes scale flavour and price,
           so grab what matches your appetite.
         </p>
-        <div className="flex flex-wrap justify-center gap-2 text-xs tracking-[0.3em] uppercase sm:justify-start">
+        <nav
+          className="flex flex-wrap justify-center gap-2 text-xs tracking-[0.3em] uppercase sm:justify-start"
+          aria-label="Pizza filters"
+        >
           {filters.map(({ id, label, icon: Icon }) => (
             <motion.button
               key={id}
@@ -268,13 +296,22 @@ export const MenuPage = () => {
               )}
               whileTap={{ scale: 0.96 }}
               whileHover={{ y: -4 }}
+              aria-pressed={filter === id}
+              aria-label={
+                filter === id
+                  ? `${label} filter selected`
+                  : `Show ${label.toLowerCase()}`
+              }
             >
               <Icon className="h-4 w-4" aria-hidden="true" />
               <span>{label}</span>
             </motion.button>
           ))}
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-3 text-xs uppercase sm:justify-start">
+        </nav>
+        <div
+          className="flex flex-wrap items-center justify-center gap-3 text-xs uppercase sm:justify-start"
+          aria-label="Menu utilities"
+        >
           {isFeatureEnabled('surpriseMe') ? (
             <>
               <motion.button
@@ -362,7 +399,10 @@ export const MenuPage = () => {
       )}
 
       <aside className="flex flex-col items-center gap-3 self-center rounded-3xl border border-stone-200/70 bg-white/70 px-6 py-5 text-center text-xs tracking-[0.3em] text-slate-600 uppercase sm:items-end sm:self-end sm:text-right dark:border-white/20 dark:bg-white/10 dark:text-white/70">
-        <span>Your running total: {formatCurrency(totalPrice)}</span>
+        <span>
+          Your running total:{' '}
+          <span className="tabular-nums">{formatCurrency(totalPrice)}</span>
+        </span>
         {totalItems > 0 ? (
           <Link
             to="/checkout"

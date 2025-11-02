@@ -7,7 +7,7 @@ import {
   normalizeCustomization,
   priceForConfiguration,
 } from '../domain/pizza';
-import { isIngredientId } from '../domain/ingredients';
+import { isIngredientId, type IngredientId } from '../domain/ingredients';
 import type { OrderRecord } from './orders';
 
 export type CartItem = {
@@ -16,6 +16,7 @@ export type CartItem = {
   size: PizzaSize;
   quantity: number;
   customization?: PizzaCustomization;
+  lineUid: string;
 };
 
 type CartState = {
@@ -27,6 +28,10 @@ type CartState = {
   ) => void;
   removeItem: (itemId: string) => void;
   decrementItem: (itemId: string) => void;
+  updateCustomization: (
+    itemId: string,
+    customization: Partial<PizzaCustomization>,
+  ) => void;
   clear: () => void;
   totalItems: () => number;
   totalPrice: () => number;
@@ -60,10 +65,19 @@ const parseCartItemKey = (
 const mapOrderCustomization = (
   customization?: OrderRecord['items'][number]['customization'],
 ) => {
-  const addedIngredients =
-    customization?.addedIngredients
-      ?.map((ingredient) => ingredient.id)
-      .filter(isIngredientId) ?? [];
+  const addedIngredients: Array<{ id: IngredientId; quantity: number }> = [];
+  customization?.addedIngredients?.forEach((ingredient) => {
+    if (!isIngredientId(ingredient.id)) {
+      return;
+    }
+    const quantity = Number.isFinite(ingredient.quantity)
+      ? Math.max(0, Math.trunc(ingredient.quantity ?? 0))
+      : 0;
+    if (quantity <= 0) {
+      return;
+    }
+    addedIngredients.push({ id: ingredient.id, quantity });
+  });
   return normalizeCustomization({
     removedIngredients: customization?.removedIngredients ?? [],
     addedIngredients,
@@ -71,17 +85,26 @@ const mapOrderCustomization = (
 };
 
 const withHydratedCustomization = (item: CartItem): CartItem => {
+  const lineUid =
+    typeof item.lineUid === 'string' && item.lineUid.length > 0
+      ? item.lineUid
+      : createLineUid();
   if (item.customization) {
     return {
       ...item,
+      lineUid,
       customization: normalizeCustomization(item.customization),
     };
   }
   return {
     ...item,
+    lineUid,
     customization: normalizeCustomization(undefined),
   };
 };
+
+const createLineUid = () =>
+  `line-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -112,6 +135,7 @@ export const useCartStore = create<CartState>()(
                 size,
                 quantity: 1,
                 customization: normalizedCustomization,
+                lineUid: createLineUid(),
               },
             ],
           };
@@ -138,6 +162,57 @@ export const useCartStore = create<CartState>()(
                   }
                 : withHydratedCustomization(entry),
             ),
+          };
+        }),
+      updateCustomization: (itemId, customization) =>
+        set((state) => {
+          const index = state.items.findIndex((item) => item.id === itemId);
+          if (index === -1) {
+            return state;
+          }
+          const existing = state.items[index];
+          const normalized = normalizeCustomization(customization);
+          const nextId = createCartItemId(
+            existing.pizzaId,
+            existing.size,
+            normalized,
+          );
+          if (existing.id === nextId) {
+            const currentNormalized = normalizeCustomization(
+              existing.customization,
+            );
+            if (
+              JSON.stringify(currentNormalized) === JSON.stringify(normalized)
+            ) {
+              return state;
+            }
+          }
+          const remaining = state.items
+            .filter((_, currentIndex) => currentIndex !== index)
+            .map(withHydratedCustomization);
+          const duplicateIndex = remaining.findIndex(
+            (entry) => entry.id === nextId,
+          );
+          if (duplicateIndex >= 0) {
+            const duplicate = remaining[duplicateIndex];
+            const mergedQuantity =
+              Math.max(0, duplicate.quantity ?? 0) +
+              Math.max(0, existing.quantity ?? 0);
+            const nextItems = [...remaining];
+            nextItems[duplicateIndex] = withHydratedCustomization({
+              ...duplicate,
+              quantity: mergedQuantity,
+            });
+            return { items: nextItems };
+          }
+          const updatedItem = withHydratedCustomization({
+            ...existing,
+            id: nextId,
+            customization: normalized,
+            lineUid: existing.lineUid,
+          });
+          return {
+            items: [...remaining, updatedItem],
           };
         }),
       clear: () => set({ items: [] }),
@@ -172,6 +247,7 @@ export const useCartStore = create<CartState>()(
                 size: resolvedSize,
                 quantity,
                 customization,
+                lineUid: createLineUid(),
               }),
             );
           });
@@ -196,7 +272,7 @@ export const useCartStore = create<CartState>()(
     {
       name: 'loftwah-pizza-cart',
       partialize: (state) => ({ items: state.items }),
-      version: 2,
+      version: 3,
       migrate: (persistedState: unknown) => {
         if (
           persistedState &&
@@ -207,15 +283,35 @@ export const useCartStore = create<CartState>()(
             (persistedState as { items: unknown }).items,
           )
             ? ((persistedState as { items: unknown[] }).items ?? []).map(
-                (item) =>
-                  typeof item === 'object' && item !== null
-                    ? {
-                        ...item,
-                        customization: normalizeCustomization(
-                          (item as CartItem).customization,
-                        ),
-                      }
-                    : item,
+                (item) => {
+                  if (typeof item !== 'object' || item === null) {
+                    return item;
+                  }
+                  const candidate = item as Partial<CartItem>;
+                  const rawSize = (candidate as { size?: string }).size;
+                  const size = isPizzaSize(String(rawSize ?? ''))
+                    ? (rawSize as PizzaSize)
+                    : 'medium';
+                  return withHydratedCustomization({
+                    id: String(candidate.id ?? ''),
+                    pizzaId: String(candidate.pizzaId ?? ''),
+                    size,
+                    quantity: Math.max(
+                      1,
+                      Number.isFinite(candidate.quantity)
+                        ? Number(candidate.quantity)
+                        : 1,
+                    ),
+                    customization: normalizeCustomization(
+                      candidate.customization,
+                    ),
+                    lineUid:
+                      typeof candidate.lineUid === 'string' &&
+                      candidate.lineUid.length > 0
+                        ? candidate.lineUid
+                        : createLineUid(),
+                  });
+                },
               )
             : [];
           return { ...(persistedState as object), items };

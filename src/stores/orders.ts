@@ -18,6 +18,7 @@ export type OrderLineItem = {
   unitPrice: number;
   lineTotal: number;
   customization?: LineItemCustomization;
+  cartLineUid?: string;
 };
 
 export type OrderSubmissionReceipt = {

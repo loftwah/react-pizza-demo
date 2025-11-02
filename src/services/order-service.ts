@@ -3,6 +3,7 @@ import { getPizzaById } from '../domain/menu';
 import {
   getIngredientById,
   isIngredientId,
+  type IngredientId,
   type IngredientSelection,
 } from '../domain/ingredients';
 import {
@@ -31,6 +32,7 @@ const IngredientSelectionSchema = z.object({
   id: z.string().trim().min(1),
   name: z.string().trim().min(1),
   price: z.number().finite().nonnegative(),
+  quantity: z.number().int().positive().default(1),
   category: z.enum(['savoury', 'dessert']).optional(),
   dietary: z
     .object({
@@ -121,6 +123,12 @@ const sanitizeCustomization = (
     const price = Number.isFinite(sanitizedPrice)
       ? sanitizedPrice
       : catalogEntry.price;
+    const quantity = Number.isFinite(ingredient.quantity)
+      ? Math.max(0, Math.trunc(ingredient.quantity ?? 0))
+      : 0;
+    if (quantity <= 0) {
+      return;
+    }
     const category = ingredient.category ?? catalogEntry.category;
     const dietary = ingredient.dietary ?? catalogEntry.dietary;
     addedIngredients.push({
@@ -128,6 +136,7 @@ const sanitizeCustomization = (
       id: catalogEntry.id,
       name,
       price,
+      quantity,
       category,
       dietary,
     });
@@ -143,8 +152,18 @@ const toPizzaCustomization = (customization: OrderLineItem['customization']) =>
     ? normalizeCustomization({
         removedIngredients: customization.removedIngredients,
         addedIngredients: customization.addedIngredients
-          .map((ingredient) => ingredient.id)
-          .filter(isIngredientId),
+          .map((ingredient) =>
+            isIngredientId(ingredient.id)
+              ? {
+                  id: ingredient.id,
+                  quantity: ingredient.quantity ?? 1,
+                }
+              : null,
+          )
+          .filter(
+            (entry): entry is { id: IngredientId; quantity: number } =>
+              entry !== null,
+          ),
       })
     : undefined;
 

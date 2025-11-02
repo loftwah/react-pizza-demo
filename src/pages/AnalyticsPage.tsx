@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react';
 import {
   Activity,
   BadgeDollarSign,
-  ChefHat,
   Clock3,
   Download,
   Loader2,
@@ -40,6 +39,7 @@ import { MockOrderSparkline } from '../components/mock-order-sparkline';
 import { useOrderHistory } from '../stores/orders';
 import { HourlyOrdersChart } from '../components/charts/HourlyOrdersChart';
 import { ChannelMixChart } from '../components/charts/ChannelMixChart';
+import { getPizzaById } from '../domain/menu';
 
 const timeFormatter = new Intl.DateTimeFormat('en-AU', {
   hour: 'numeric',
@@ -61,7 +61,6 @@ const metricIcons: Record<string, LucideIcon> = {
   mockRevenueRuntime: BadgeDollarSign,
   avgBasket: ShoppingBag,
   deliveryOnTime: Clock3,
-  kitchenBacklog: ChefHat,
 };
 
 const metricBadgeTones: Record<AnalyticsMetric['trend'], string> = {
@@ -69,6 +68,8 @@ const metricBadgeTones: Record<AnalyticsMetric['trend'], string> = {
   down: 'bg-orange-500/15 text-orange-700 dark:bg-orange-400/20 dark:text-orange-50',
   steady: 'bg-slate-500/10 text-slate-600 dark:bg-white/10 dark:text-white/70',
 };
+
+const hiddenMetricIds = new Set(['kitchenBacklog']);
 
 const clampShareSafe = (value: number) =>
   Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0));
@@ -105,19 +106,21 @@ const escapeCsvCell = (value: unknown) => {
 const buildAnalyticsCsv = (snapshot: AnalyticsSnapshot): string => {
   const rows: string[] = [];
   rows.push('Section,Id,Label,Value,Unit,Change,Trend');
-  snapshot.metrics.forEach((metric) => {
-    rows.push(
-      [
-        escapeCsvCell('metrics'),
-        escapeCsvCell(metric.id),
-        escapeCsvCell(metric.label),
+  snapshot.metrics
+    .filter((metric) => !hiddenMetricIds.has(metric.id))
+    .forEach((metric) => {
+      rows.push(
+        [
+          escapeCsvCell('metrics'),
+          escapeCsvCell(metric.id),
+          escapeCsvCell(metric.label),
         escapeCsvCell(metric.value),
         escapeCsvCell(metric.unit),
         escapeCsvCell(metric.change),
         escapeCsvCell(metric.trend),
       ].join(','),
-    );
-  });
+      );
+    });
 
   rows.push('', 'Section,Pizza Id,Name,Orders,Share,Trend');
   snapshot.topPizzas.forEach((pizza) => {
@@ -331,7 +334,7 @@ export const AnalyticsPage = () => {
       });
     }
 
-    return merged;
+    return merged.filter((metric) => !hiddenMetricIds.has(metric.id));
   }, [
     data,
     orderInsights.averagePrep,
@@ -611,7 +614,7 @@ export const AnalyticsPage = () => {
                     <TrendIcon trend={metric.trend} />
                   </span>
                 </div>
-                <p className="font-display mt-5 text-3xl text-slate-900 dark:text-white">
+                <p className="tabular-nums font-display mt-5 text-3xl text-slate-900 dark:text-white">
                   {formatMetricValue(metric)}
                 </p>
                 <p className="mt-2 text-xs text-slate-500 dark:text-white/70">
@@ -651,7 +654,7 @@ export const AnalyticsPage = () => {
                   <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase dark:text-white/60">
                     Total mock orders
                   </p>
-                  <p className="font-display mt-3 text-2xl text-slate-900 dark:text-white">
+                  <p className="tabular-nums font-display mt-3 text-2xl text-slate-900 dark:text-white">
                     {orderInsights.totalOrders.toLocaleString()}
                   </p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
@@ -662,7 +665,7 @@ export const AnalyticsPage = () => {
                   <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase dark:text-white/60">
                     Lifetime mock revenue
                   </p>
-                  <p className="font-display mt-3 text-2xl text-slate-900 dark:text-white">
+                  <p className="tabular-nums font-display mt-3 text-2xl text-slate-900 dark:text-white">
                     {formatCurrency(orderInsights.totalRevenue)}
                   </p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
@@ -673,7 +676,7 @@ export const AnalyticsPage = () => {
                   <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase dark:text-white/60">
                     Avg prep estimate
                   </p>
-                  <p className="font-display mt-3 text-2xl text-slate-900 dark:text-white">
+                  <p className="tabular-nums font-display mt-3 text-2xl text-slate-900 dark:text-white">
                     {orderInsights.averagePrep !== null
                       ? `${orderInsights.averagePrep.toFixed(1)} min`
                       : 'Awaiting receipts'}
@@ -744,7 +747,9 @@ export const AnalyticsPage = () => {
                         <span className="font-mono tracking-wide">
                           {order.id}
                         </span>
-                        <span>{formatCurrency(order.total)}</span>
+                        <span className="tabular-nums">
+                          {formatCurrency(order.total)}
+                        </span>
                       </div>
                       <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
                         {createdAt ?? 'Created timestamp unavailable'}
@@ -858,45 +863,59 @@ export const AnalyticsPage = () => {
                 local velocity data.
               </p>
             ) : (
-              blendedTopPizzas.map((pizza) => (
-                <div
-                  key={pizza.pizzaId}
-                  className="flex items-center gap-4 rounded-2xl border border-slate-200/60 bg-slate-50 p-4 transition dark:border-white/10 dark:bg-white/10"
-                >
-                  <div className="font-display flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-lg text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
-                    {pizza.name
-                      .split(' ')
-                      .map((token) => token[0])
-                      .join('')
-                      .slice(0, 2)
-                      .toUpperCase()}
-                  </div>
-                  <div className="flex flex-1 flex-col">
-                    <div className="flex items-center justify-between text-sm font-semibold text-slate-700 dark:text-white/80">
-                      <span>{pizza.name}</span>
-                      <span>{pizza.orders.toLocaleString()} orders</span>
-                    </div>
-                    <div className="mt-2 h-3 rounded-full bg-white/70 dark:bg-white/20">
-                      <div
-                        className={clsx(
-                          'h-full rounded-full transition-all',
-                          pizza.trend === 'up'
-                            ? 'bg-emerald-500 dark:bg-emerald-400'
-                            : pizza.trend === 'down'
-                              ? 'bg-orange-500 dark:bg-orange-400'
-                              : 'bg-slate-400 dark:bg-white/40',
-                        )}
-                        style={{ width: `${Math.round(pizza.share * 100)}%` }}
-                        aria-hidden="true"
+              blendedTopPizzas.map((pizza) => {
+                const menuPizza = getPizzaById(pizza.pizzaId);
+                const imageSrc = menuPizza?.image;
+                const fallbackInitials = pizza.name
+                  .split(' ')
+                  .map((token) => token[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase();
+
+                return (
+                  <div
+                    key={pizza.pizzaId}
+                    className="flex items-center gap-4 rounded-2xl border border-slate-200/60 bg-slate-50 p-4 transition dark:border-white/10 dark:bg-white/10"
+                  >
+                    {imageSrc ? (
+                      <img
+                        src={imageSrc}
+                        alt={pizza.name}
+                        className="h-12 w-12 flex-shrink-0 rounded-2xl border border-slate-200 object-cover dark:border-white/15"
                       />
+                    ) : (
+                      <div className="font-display flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-lg text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+                        {fallbackInitials}
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col">
+                      <div className="flex items-center justify-between text-sm font-semibold text-slate-700 dark:text-white/80">
+                        <span>{pizza.name}</span>
+                        <span>{pizza.orders.toLocaleString()} orders</span>
+                      </div>
+                      <div className="mt-2 h-3 rounded-full bg-white/70 dark:bg-white/20">
+                        <div
+                          className={clsx(
+                            'h-full rounded-full transition-all',
+                            pizza.trend === 'up'
+                              ? 'bg-emerald-500 dark:bg-emerald-400'
+                              : pizza.trend === 'down'
+                                ? 'bg-orange-500 dark:bg-orange-400'
+                                : 'bg-slate-400 dark:bg-white/40',
+                          )}
+                          style={{ width: `${Math.round(pizza.share * 100)}%` }}
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <p className="mt-2 text-xs text-slate-500 dark:text-white/60">
+                        {formatPercent(pizza.share)} of orders · Trend{' '}
+                        {pizza.trend}
+                      </p>
                     </div>
-                    <p className="mt-2 text-xs text-slate-500 dark:text-white/60">
-                      {formatPercent(pizza.share)} of orders · Trend{' '}
-                      {pizza.trend}
-                    </p>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </article>

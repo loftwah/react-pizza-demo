@@ -21,8 +21,12 @@ import {
   priceForConfiguration,
   sizeLabels,
 } from '../domain/pizza';
-import type { IngredientDefinition, IngredientId } from '../domain/ingredients';
+import type {
+  IngredientDefinition,
+  IngredientId,
+} from '../domain/ingredients';
 import { useToast } from '../providers/toast-context';
+import { formatListPreview } from '../shared-utils/list-format';
 
 type PizzaCardProps = {
   pizza: Pizza;
@@ -38,10 +42,14 @@ const isIngredientAvailable = (
   ingredient: string,
 ): boolean => toppings.some((topping) => topping === ingredient);
 
+const MAX_EXTRA_QUANTITY = 3;
+
 const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
   const [selectedSize, setSelectedSize] = useState<PizzaSize>('medium');
   const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
-  const [addedIngredients, setAddedIngredients] = useState<IngredientId[]>([]);
+  const [addedIngredients, setAddedIngredients] = useState<
+    Partial<Record<IngredientId, number>>
+  >({});
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const decrementItem = useCartStore((state) => state.decrementItem);
@@ -67,7 +75,12 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
     () =>
       normalizeCustomization({
         removedIngredients,
-        addedIngredients,
+        addedIngredients: Object.entries(addedIngredients).map(
+          ([id, quantity]) => ({
+            id: id as IngredientId,
+            quantity,
+          }),
+        ),
       }),
     [removedIngredients, addedIngredients],
   );
@@ -100,13 +113,15 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
       ),
     [currentCustomization.removedIngredients, pizza.toppings],
   );
-  const addedSummary = useMemo(
-    () =>
-      currentCustomization.addedIngredients
-        .map((id) => extrasById.get(id)?.name ?? id)
-        .filter(Boolean),
-    [currentCustomization.addedIngredients, extrasById],
-  );
+  const addedSummary = useMemo(() => {
+    if (currentCustomization.addedIngredients.length === 0) return [];
+    return currentCustomization.addedIngredients
+      .map(({ id, quantity }) => {
+        const label = extrasById.get(id)?.name ?? id;
+        return quantity > 1 ? `${label} ×${quantity}` : label;
+      })
+      .filter(Boolean);
+  }, [currentCustomization.addedIngredients, extrasById]);
 
   const canCustomize =
     pizza.allowCustomization !== false &&
@@ -121,18 +136,26 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
     });
   };
 
-  const toggleExtraIngredient = (ingredientId: IngredientId) => {
+  const adjustExtraQuantity = (ingredientId: IngredientId, delta: number) => {
     setAddedIngredients((current) => {
-      if (current.includes(ingredientId)) {
-        return current.filter((value) => value !== ingredientId);
+      const next = { ...current };
+      const previous = next[ingredientId] ?? 0;
+      const updated = Math.max(
+        0,
+        Math.min(MAX_EXTRA_QUANTITY, previous + delta),
+      );
+      if (updated <= 0) {
+        delete next[ingredientId];
+      } else {
+        next[ingredientId] = updated;
       }
-      return [...current, ingredientId];
+      return next;
     });
   };
 
   const handleResetCustomization = () => {
     setRemovedIngredients([]);
-    setAddedIngredients([]);
+    setAddedIngredients({});
   };
 
   const handleAdd = () => {
@@ -255,6 +278,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                     }
                   }}
                   aria-pressed={isSelected}
+                  aria-label={`${label} for ${priceLabel}`}
                   className={clsx(
                     'flex-1 rounded-full border px-4 py-2 text-xs font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-white/40 dark:focus-visible:ring-offset-neutral-900',
                     isSelected
@@ -266,7 +290,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                     <span>{label}</span>
                     <span
                       className={clsx(
-                        'text-[10px] tracking-[0.3em] uppercase transition-colors',
+                        'tabular-nums text-[10px] tracking-[0.3em] uppercase transition-colors',
                         isSelected
                           ? 'text-white/85 dark:text-slate-700'
                           : 'text-slate-400 dark:text-white/50',
@@ -339,29 +363,47 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {availableExtras.map((ingredient) => {
-                          const isSelected = addedIngredients.includes(
-                            ingredient.id,
-                          );
+                          const quantity =
+                            addedIngredients[ingredient.id] ?? 0;
+                          const canIncrement = quantity < MAX_EXTRA_QUANTITY;
+                          const canDecrement = quantity > 0;
                           return (
-                            <button
+                            <div
                               key={ingredient.id}
-                              type="button"
-                              onClick={() =>
-                                toggleExtraIngredient(ingredient.id)
-                              }
-                              aria-pressed={isSelected}
-                              className={clsx(
-                                'rounded-full border px-3 py-1 text-[11px] font-semibold tracking-[0.2em] uppercase transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-950',
-                                isSelected
-                                  ? 'border-slate-900 bg-slate-900 text-white hover:border-slate-800 hover:bg-slate-900/90 focus-visible:ring-slate-900 dark:border-white dark:bg-white dark:text-slate-900 dark:hover:bg-white/90 dark:focus-visible:ring-white/70'
-                                  : 'border-slate-200/70 bg-white text-slate-600 hover:border-red-200 hover:bg-red-50 focus-visible:ring-slate-300 dark:border-white/20 dark:bg-white/10 dark:text-white/75 dark:hover:border-white/40 dark:hover:bg-white/15',
-                              )}
+                              className="flex items-center gap-2 rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/75"
                             >
                               <span>{ingredient.name}</span>
-                              <span className="ml-2 text-[10px] tracking-[0.3em] text-slate-400 uppercase dark:text-white/50">
+                              <span className="ml-2 tabular-nums text-[10px] tracking-[0.3em] text-slate-400 uppercase dark:text-white/50">
                                 +{formatCurrency(ingredient.price)}
                               </span>
-                            </button>
+                              <div className="ml-2 flex items-center gap-1 rounded-full border border-slate-200/70 bg-white/90 px-2 py-0.5 text-xs text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/70">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    adjustExtraQuantity(ingredient.id, -1)
+                                  }
+                                  disabled={!canDecrement}
+                                  className="flex h-5 w-5 items-center justify-center rounded-full border border-slate-200/60 text-slate-500 transition enabled:hover:bg-red-500/10 enabled:hover:text-red-600 disabled:opacity-40 dark:border-white/20 dark:text-white/70 dark:enabled:hover:bg-red-500/15 dark:enabled:hover:text-red-200"
+                                  aria-label={`Remove ${ingredient.name}`}
+                                >
+                                  −
+                                </button>
+                                <span className="w-5 text-center text-[11px] font-semibold tracking-[0.2em] text-slate-600 dark:text-white/80">
+                                  {quantity}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    adjustExtraQuantity(ingredient.id, 1)
+                                  }
+                                  disabled={!canIncrement}
+                                  className="flex h-5 w-5 items-center justify-center rounded-full border border-slate-200/60 text-slate-500 transition enabled:hover:bg-emerald-500/10 enabled:hover:text-emerald-600 disabled:opacity-40 dark:border-white/20 dark:text-white/70 dark:enabled:hover:bg-emerald-500/15 dark:enabled:hover:text-emerald-200"
+                                  aria-label={`Add ${ingredient.name}`}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
                           );
                         })}
                       </div>
@@ -380,8 +422,8 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                       <span>All toppings included</span>
                     )}
                     {upcharge > 0 && (
-                      <span className="text-slate-500 dark:text-white/60">
-                        Extras {formatCurrency(upcharge)} each
+                      <span className="tabular-nums text-slate-500 dark:text-white/60">
+                        Extras add {formatCurrency(upcharge)}
                       </span>
                     )}
                   </div>
@@ -390,10 +432,10 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
               {hasMods && (
                 <div className="mt-3 space-y-1 text-[11px] tracking-[0.2em] text-slate-400 uppercase dark:text-white/50">
                   {removedSummary.length > 0 && (
-                    <p>Hold: {removedSummary.join(', ')}</p>
+                    <p>Hold: {formatListPreview(removedSummary)}</p>
                   )}
                   {addedSummary.length > 0 && (
-                    <p>Add: {addedSummary.join(', ')}</p>
+                    <p>Add: {formatListPreview(addedSummary)}</p>
                   )}
                 </div>
               )}
@@ -401,7 +443,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
           )}
 
           <div className="mt-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <span className="text-lg font-semibold text-slate-900 dark:text-white">
+            <span className="tabular-nums min-w-[6ch] text-lg font-semibold text-slate-900 dark:text-white">
               {formatCurrency(unitPrice)}
             </span>
             <div className="flex w-full items-center justify-end gap-3 sm:w-auto">

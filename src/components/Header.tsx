@@ -175,7 +175,7 @@ export const Header = () => {
             to="/checkout"
             className={({ isActive }) =>
               clsx(
-                'flex items-center gap-2 rounded-full px-4 py-2 transition-colors',
+                'flex w-full items-center justify-center gap-2 rounded-full px-4 py-2 transition-colors sm:w-auto sm:justify-start',
                 isActive
                   ? 'bg-slate-900 text-white shadow shadow-slate-900/20 dark:bg-slate-100 dark:text-slate-900 dark:shadow-slate-100/20'
                   : 'text-slate-700 hover:bg-slate-900/5 dark:text-white/90 dark:hover:bg-white/15',
@@ -213,7 +213,7 @@ export const Header = () => {
           <Link
             to="/checkout"
             aria-label="View your cart and proceed to checkout"
-            className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-slate-700 uppercase transition hover:bg-white md:w-auto md:justify-end dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-stone-200/80 bg-white/70 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-slate-700 uppercase transition hover:bg-white sm:w-auto sm:justify-end md:justify-end dark:border-white/20 dark:bg-white/10 dark:text-white/85 dark:hover:bg-white/15"
           >
             <ShoppingCart className="h-4 w-4" aria-hidden="true" />
             <span
@@ -226,7 +226,7 @@ export const Header = () => {
             <span className="text-stone-400 transition-colors dark:text-white/40">
               •
             </span>
-            <span className="text-slate-500 dark:text-white/80">
+            <span className="tabular-nums text-slate-500 dark:text-white/80">
               {totalPrice ? `$${totalPrice.toFixed(2)}` : 'Empty'}
             </span>
           </Link>

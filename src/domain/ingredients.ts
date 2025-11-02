@@ -33,7 +33,9 @@ export type IngredientDefinition = {
   };
 };
 
-export type IngredientSelection = IngredientDefinition;
+export type IngredientSelection = IngredientDefinition & {
+  quantity: number;
+};
 
 const RAW_INGREDIENTS: IngredientDefinition[] = [
   {
@@ -191,13 +193,23 @@ export const isIngredientId = (value: string): value is IngredientId =>
   ingredientMap.has(value as IngredientId);
 
 export const resolveIngredientSelections = (
-  ids: IngredientId[],
-): IngredientSelection[] =>
-  ids
-    .map((id) => ingredientMap.get(id))
-    .filter((ingredient): ingredient is IngredientDefinition =>
-      Boolean(ingredient),
-    );
+  additions: { id: IngredientId; quantity: number }[],
+): IngredientSelection[] => {
+  const selections: IngredientSelection[] = [];
+  additions.forEach(({ id, quantity }) => {
+    const base = ingredientMap.get(id);
+    if (!base) return;
+    const normalizedQuantity = Number.isFinite(quantity)
+      ? Math.max(0, Math.trunc(quantity))
+      : 0;
+    if (normalizedQuantity <= 0) return;
+    selections.push({
+      ...base,
+      quantity: normalizedQuantity,
+    });
+  });
+  return selections;
+};
 
 export const filterExtrasForContext = ({
   category,

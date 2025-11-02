@@ -3,8 +3,8 @@ import {
   getIngredientById,
   isIngredientId,
   resolveIngredientSelections,
-  type IngredientDefinition,
   type IngredientId,
+  type IngredientSelection,
 } from './ingredients';
 
 export type PizzaSize = 'small' | 'medium' | 'large';
@@ -25,7 +25,7 @@ export const sizeMultipliers: Record<PizzaSize, number> = {
 
 export type PizzaCustomization = {
   removedIngredients: string[];
-  addedIngredients: IngredientId[];
+  addedIngredients: Array<{ id: IngredientId; quantity: number }>;
 };
 
 export const createDefaultCustomization = (): PizzaCustomization => ({
@@ -50,13 +50,41 @@ export const normalizeCustomization = (
         .filter(Boolean),
     ),
   );
-  const added = Array.from(
-    new Set(
-      (customization.addedIngredients ?? []).filter((ingredient) =>
-        isIngredientId(ingredient),
-      ),
-    ),
-  );
+  const additions = new Map<IngredientId, number>();
+  const rawAdditions =
+    customization.addedIngredients ??
+    (Array.isArray(
+      (customization as { addedIngredients?: IngredientId[] }).addedIngredients,
+    )
+      ? (
+          (customization as { addedIngredients?: IngredientId[] })
+            .addedIngredients ?? []
+        ).map((id) => (typeof id === 'string' ? { id, quantity: 1 } : id))
+      : []);
+
+  rawAdditions.forEach((entry) => {
+    if (!entry) return;
+    if (typeof entry === 'string') {
+      if (!isIngredientId(entry)) return;
+      additions.set(entry, (additions.get(entry) ?? 0) + 1);
+      return;
+    }
+    const { id, quantity } = entry as {
+      id?: IngredientId;
+      quantity?: number;
+    };
+    if (!id || !isIngredientId(id)) return;
+    const normalizedQuantity = Number.isFinite(quantity)
+      ? Math.max(0, Math.trunc(quantity ?? 0))
+      : 0;
+    if (normalizedQuantity <= 0) return;
+    additions.set(id, (additions.get(id) ?? 0) + normalizedQuantity);
+  });
+
+  const added = Array.from(additions.entries())
+    .map(([id, quantity]) => ({ id, quantity }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
   return {
     removedIngredients: removed,
     addedIngredients: added,
@@ -86,7 +114,10 @@ const buildCustomizationKey = (customization: PizzaCustomization) => {
       : 'base';
   const added =
     customization.addedIngredients.length > 0
-      ? [...customization.addedIngredients].sort().join('_')
+      ? customization.addedIngredients
+          .map(({ id, quantity }) => `${id}-${quantity}`)
+          .sort()
+          .join('_')
       : 'base';
   return `rm-${removed}__add-${added}`;
 };
@@ -106,7 +137,7 @@ export const composeCartItemKey = (
 
 export const resolveAddedIngredients = (
   customization?: Partial<PizzaCustomization>,
-): IngredientDefinition[] => {
+): IngredientSelection[] => {
   const normalized = normalizeCustomization(customization);
   return resolveIngredientSelections(normalized.addedIngredients);
 };
@@ -117,7 +148,7 @@ export const customizationUpcharge = (
   const ingredients = resolveAddedIngredients(customization);
   const upcharge = ingredients.reduce((sum, ingredient) => {
     const price = Number.isFinite(ingredient.price) ? ingredient.price : 0;
-    return sum + price;
+    return sum + price * ingredient.quantity;
   }, 0);
   return Math.round(upcharge * 100) / 100;
 };
@@ -192,7 +223,10 @@ export const resolveRemovedIngredients = (
 export const hydrateCustomizationDetails = (
   pizza: Pizza,
   customization?: Partial<PizzaCustomization>,
-) => {
+): {
+  removed: string[];
+  added: IngredientSelection[];
+} => {
   const normalized = normalizeCustomization(customization);
   const removed = resolveRemovedIngredients(pizza, normalized);
   const added = resolveAddedIngredients(normalized);

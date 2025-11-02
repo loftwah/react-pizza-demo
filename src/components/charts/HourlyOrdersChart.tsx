@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { FC } from 'react';
+import { motion } from 'framer-motion';
 import {
   Bar,
   BarChart,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ReferenceLine,
   type TooltipProps,
 } from 'recharts';
 import type { HourlyOrders } from '../../domain/analytics';
@@ -105,6 +107,12 @@ export const HourlyOrdersChart: FC<HourlyOrdersChartProps> = ({
     });
   }, [blended, snapshot, local]);
 
+  const peakTotal = useMemo(
+    () =>
+      data.reduce((peak, entry) => (entry.total > peak ? entry.total : peak), 0),
+    [data],
+  );
+
   if (data.length === 0) {
     return (
       <div className="flex h-64 flex-col justify-center gap-2 rounded-3xl border border-dashed border-slate-200/70 bg-slate-50 p-6 text-sm text-slate-500 dark:border-white/10 dark:bg-white/10 dark:text-white/70">
@@ -120,80 +128,99 @@ export const HourlyOrdersChart: FC<HourlyOrdersChartProps> = ({
   }
 
   return (
-    <ResponsiveContainer width="100%" height={280}>
-      <BarChart
-        data={data}
-        margin={{
-          top: 12,
-          right: 8,
-          left: -16,
-          bottom: 8,
-        }}
-      >
-        <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 6" />
-        <XAxis
-          dataKey="hour"
-          tick={{ fontSize: 12, fill: 'rgba(71, 85, 105, 0.9)' }}
-          axisLine={{ stroke: 'rgba(148, 163, 184, 0.6)' }}
-          tickLine={false}
-        />
-        <YAxis
-          allowDecimals={false}
-          tick={{ fontSize: 12, fill: 'rgba(71, 85, 105, 0.9)' }}
-          axisLine={{ stroke: 'rgba(148, 163, 184, 0.6)' }}
-          tickLine={false}
-          width={36}
-        />
-        <Tooltip
-          cursor={{ fill: 'rgba(56, 189, 248, 0.12)' }}
-          formatter={formatTooltip}
-          labelFormatter={labelFormatter}
-          wrapperStyle={{ outline: 'none' }}
-          contentStyle={{
-            borderRadius: 12,
-            border: '1px solid rgba(148, 163, 184, 0.25)',
-            backgroundColor: 'rgba(255, 255, 255, 0.98)',
-            color: '#0f172a',
-            boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18)',
-            fontSize: 12,
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <ResponsiveContainer width="100%" height={280}>
+        <BarChart
+          data={data}
+          margin={{
+            top: 12,
+            right: 8,
+            left: -16,
+            bottom: 8,
           }}
-          labelStyle={{
-            color: '#475569',
-            fontWeight: 600,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            fontSize: 11,
-          }}
-          itemStyle={{ color: '#0f172a' }}
-        />
-        <Legend
-          formatter={(value) =>
-            value === 'snapshot' ? 'Snapshot' : 'Local runtime'
-          }
-          wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
-        />
-        <Bar
-          dataKey="snapshot"
-          stackId="orders"
-          fill="rgba(148, 163, 184, 0.85)"
-          maxBarSize={42}
-          radius={[10, 10, 0, 0]}
-        />
-        <Bar
-          dataKey="local"
-          stackId="orders"
-          fill="url(#hourly-local-fill)"
-          maxBarSize={42}
-          radius={[10, 10, 0, 0]}
-        />
-        <defs>
-          <linearGradient id="hourly-local-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(56, 189, 248, 0.95)" />
-            <stop offset="100%" stopColor="rgba(45, 212, 191, 0.75)" />
-          </linearGradient>
-        </defs>
-      </BarChart>
-    </ResponsiveContainer>
+        >
+          <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 6" />
+          <XAxis
+            dataKey="hour"
+            tick={{ fontSize: 12, fill: 'rgba(71, 85, 105, 0.9)' }}
+            axisLine={{ stroke: 'rgba(148, 163, 184, 0.6)' }}
+            tickLine={false}
+          />
+          <YAxis
+            allowDecimals={false}
+            tick={{ fontSize: 12, fill: 'rgba(71, 85, 105, 0.9)' }}
+            axisLine={{ stroke: 'rgba(148, 163, 184, 0.6)' }}
+            tickLine={false}
+            width={36}
+          />
+          <Tooltip
+            cursor={{ fill: 'rgba(56, 189, 248, 0.12)' }}
+            formatter={formatTooltip}
+            labelFormatter={labelFormatter}
+            wrapperStyle={{ outline: 'none' }}
+            contentStyle={{
+              borderRadius: 12,
+              border: '1px solid rgba(148, 163, 184, 0.25)',
+              backgroundColor: 'rgba(255, 255, 255, 0.98)',
+              color: '#0f172a',
+              boxShadow: '0 12px 32px rgba(15, 23, 42, 0.18)',
+              fontSize: 12,
+            }}
+            labelStyle={{
+              color: '#475569',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              fontSize: 11,
+            }}
+            itemStyle={{ color: '#0f172a' }}
+          />
+          <Legend
+            formatter={(value) =>
+              value === 'snapshot' ? 'Snapshot' : 'Local runtime'
+            }
+            wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
+          />
+          {peakTotal > 0 ? (
+            <ReferenceLine
+              y={peakTotal}
+              stroke="rgba(239, 68, 68, 0.6)"
+              strokeDasharray="4 4"
+              label={{
+                value: 'Peak',
+                position: 'top',
+                fill: '#ef4444',
+                fontSize: 11,
+              }}
+            />
+          ) : null}
+          <Bar
+            dataKey="snapshot"
+            stackId="orders"
+            fill="rgba(148, 163, 184, 0.85)"
+            maxBarSize={42}
+            radius={[10, 10, 0, 0]}
+          />
+          <Bar
+            dataKey="local"
+            stackId="orders"
+            fill="url(#hourly-local-fill)"
+            maxBarSize={42}
+            radius={[10, 10, 0, 0]}
+          />
+          <defs>
+            <linearGradient id="hourly-local-fill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="rgba(56, 189, 248, 0.95)" />
+              <stop offset="100%" stopColor="rgba(45, 212, 191, 0.75)" />
+            </linearGradient>
+          </defs>
+        </BarChart>
+      </ResponsiveContainer>
+    </motion.div>
   );
 };
 
