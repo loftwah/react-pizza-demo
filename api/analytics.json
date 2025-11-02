@@ -48,14 +48,6 @@
       "unit": "percent",
       "change": 4,
       "trend": "up"
-    },
-    {
-      "id": "kitchenBacklog",
-      "label": "Kitchen backlog",
-      "value": 7,
-      "unit": "orders",
-      "change": -3,
-      "trend": "down"
     }
   ],
   "topPizzas": [
@@ -110,26 +102,86 @@
     }
   ],
   "hourlyOrders": [
-    { "hour": "11:00", "orders": 12 },
-    { "hour": "12:00", "orders": 29 },
-    { "hour": "13:00", "orders": 26 },
-    { "hour": "14:00", "orders": 18 },
-    { "hour": "15:00", "orders": 17 },
-    { "hour": "16:00", "orders": 22 },
-    { "hour": "17:00", "orders": 28 },
-    { "hour": "18:00", "orders": 34 },
-    { "hour": "19:00", "orders": 31 },
-    { "hour": "20:00", "orders": 24 },
-    { "hour": "21:00", "orders": 14 },
-    { "hour": "22:00", "orders": 9 }
+    {
+      "hour": "11:00",
+      "orders": 12
+    },
+    {
+      "hour": "12:00",
+      "orders": 29
+    },
+    {
+      "hour": "13:00",
+      "orders": 26
+    },
+    {
+      "hour": "14:00",
+      "orders": 18
+    },
+    {
+      "hour": "15:00",
+      "orders": 17
+    },
+    {
+      "hour": "16:00",
+      "orders": 22
+    },
+    {
+      "hour": "17:00",
+      "orders": 28
+    },
+    {
+      "hour": "18:00",
+      "orders": 34
+    },
+    {
+      "hour": "19:00",
+      "orders": 31
+    },
+    {
+      "hour": "20:00",
+      "orders": 24
+    },
+    {
+      "hour": "21:00",
+      "orders": 14
+    },
+    {
+      "hour": "22:00",
+      "orders": 9
+    }
   ],
   "channelBreakdown": [
-    { "channel": "In-store", "orders": 68, "share": 0.32 },
-    { "channel": "Mobile app", "orders": 55, "share": 0.26 },
-    { "channel": "Web", "orders": 41, "share": 0.19 },
-    { "channel": "Delivery partners", "orders": 29, "share": 0.14 },
-    { "channel": "Catering", "orders": 14, "share": 0.06 },
-    { "channel": "Pop-up events", "orders": 7, "share": 0.03 }
+    {
+      "channel": "In-store",
+      "orders": 68,
+      "share": 0.32
+    },
+    {
+      "channel": "Mobile app",
+      "orders": 55,
+      "share": 0.26
+    },
+    {
+      "channel": "Web",
+      "orders": 41,
+      "share": 0.19
+    },
+    {
+      "channel": "Delivery partners",
+      "orders": 29,
+      "share": 0.14
+    },
+    {
+      "channel": "Catering",
+      "orders": 14,
+      "share": 0.06
+    },
+    {
+      "channel": "Pop-up events",
+      "orders": 7,
+      "share": 0.03
+    }
   ],
   "insights": [
     "Dinner window peaked at 18:00 with 34 combined orders.",
