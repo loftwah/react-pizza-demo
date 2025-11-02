@@ -17,7 +17,11 @@ const samplePizza: Pizza = {
   id: 'margherita',
   displayName: 'Margherita',
   description: 'Classic tomato, mozzarella, and basil.',
-  basePrice: 12.5,
+  prices: {
+    small: 10.63,
+    medium: 12.5,
+    large: 16.88,
+  },
   toppings: ['mozzarella', 'basil'],
   vegetarian: true,
   vegan: false,

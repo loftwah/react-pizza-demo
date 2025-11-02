@@ -21,9 +21,10 @@ import {
   priceForConfiguration,
   sizeLabels,
 } from '../domain/pizza';
-import type {
-  IngredientDefinition,
-  IngredientId,
+import {
+  isIngredientId,
+  type IngredientDefinition,
+  type IngredientId,
 } from '../domain/ingredients';
 import { useToast } from '../providers/toast-context';
 import { formatListPreview } from '../shared-utils/list-format';
@@ -75,12 +76,19 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
     () =>
       normalizeCustomization({
         removedIngredients,
-        addedIngredients: Object.entries(addedIngredients).map(
-          ([id, quantity]) => ({
-            id: id as IngredientId,
+        addedIngredients: Object.entries(addedIngredients)
+          .filter((entry): entry is [IngredientId, number] => {
+            const [id, quantity] = entry;
+            return (
+              isIngredientId(id) &&
+              typeof quantity === 'number' &&
+              Number.isFinite(quantity)
+            );
+          })
+          .map(([id, quantity]) => ({
+            id,
             quantity,
-          }),
-        ),
+          })),
       }),
     [removedIngredients, addedIngredients],
   );

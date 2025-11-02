@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { getBaseUrl } from '../shared-utils/base-url';
 import { isDevEnvironment } from '../shared-utils/env';
-import { analyticsSeed } from '../data/mock-data';
+import analyticsJson from '../../public/api/analytics.json?raw';
 
 export type MetricTrend = 'up' | 'down' | 'steady';
 
@@ -107,13 +107,33 @@ const AnalyticsSnapshotSchema = z.object({
   recentEvents: z.array(AnalyticsEventSchema),
 });
 
-export const analyticsSnapshot: AnalyticsSnapshot = {
-  ...analyticsSeed,
-  topPizzas: analyticsSeed.topPizzas.map((pizza) => ({
-    ...pizza,
-    share: clampShare(pizza.share),
-  })),
+const loadStaticAnalytics = (): AnalyticsSnapshot => {
+  try {
+    const parsed = AnalyticsSnapshotSchema.parse(JSON.parse(analyticsJson));
+    return {
+      ...parsed,
+      topPizzas: parsed.topPizzas.map((pizza) => ({
+        ...pizza,
+        share: clampShare(pizza.share),
+      })),
+    };
+  } catch (error) {
+    if (isDevEnvironment()) {
+      console.warn('[analytics] Failed to load static analytics data', error);
+    }
+    return {
+      generatedAt: new Date(0).toISOString(),
+      metrics: [],
+      topPizzas: [],
+      hourlyOrders: [],
+      channelBreakdown: [],
+      insights: [],
+      recentEvents: [],
+    };
+  }
 };
+
+export const analyticsSnapshot: AnalyticsSnapshot = loadStaticAnalytics();
 
 (() => {
   const validation = AnalyticsSnapshotSchema.safeParse(analyticsSnapshot);

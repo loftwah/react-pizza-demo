@@ -17,12 +17,6 @@ export const sizeLabels: Record<PizzaSize, string> = {
   large: 'Large 16″',
 };
 
-export const sizeMultipliers: Record<PizzaSize, number> = {
-  small: 0.85,
-  medium: 1,
-  large: 1.35,
-};
-
 export type PizzaCustomization = {
   removedIngredients: string[];
   addedIngredients: Array<{ id: IngredientId; quantity: number }>;
@@ -157,12 +151,12 @@ export type Pizza = {
   id: string;
   displayName: string;
   description: string;
-  basePrice: number;
   toppings: string[];
   vegetarian: boolean;
   vegan?: boolean;
   spicy: boolean;
   image: string;
+  prices: Record<PizzaSize, number>;
   category?: PizzaCategory;
   allowCustomization?: boolean;
   sizeLabelsOverride?: Partial<Record<PizzaSize, string>>;
@@ -177,8 +171,21 @@ export const formatCurrency = (value: number) =>
     minimumFractionDigits: 2,
   }).format(value);
 
-export const priceForSize = (pizza: Pizza, size: PizzaSize) =>
-  Math.round(pizza.basePrice * sizeMultipliers[size] * 100) / 100;
+export const priceForSize = (pizza: Pizza, size: PizzaSize) => {
+  const amount = pizza.prices[size];
+  if (typeof amount === 'number' && Number.isFinite(amount)) {
+    return Math.round(amount * 100) / 100;
+  }
+  const fallbackOrder: PizzaSize[] = ['medium', 'small', 'large'];
+  const fallbackSize = fallbackOrder.find(
+    (option) =>
+      typeof pizza.prices[option] === 'number' &&
+      Number.isFinite(pizza.prices[option]),
+  );
+  const fallbackAmount =
+    (fallbackSize ? pizza.prices[fallbackSize] : undefined) ?? 0;
+  return Math.round(fallbackAmount * 100) / 100;
+};
 
 export const priceForConfiguration = (
   pizza: Pizza,

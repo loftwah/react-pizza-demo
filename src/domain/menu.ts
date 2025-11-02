@@ -2,22 +2,28 @@ import { z } from 'zod';
 import { getBaseUrl } from '../shared-utils/base-url';
 import { isDevEnvironment } from '../shared-utils/env';
 import type { Pizza } from './pizza';
-import { menuSeed } from '../data/mock-data';
+import menuJson from '../../public/api/menu.json?raw';
 
 const withBasePath = (file: string) => `${getBaseUrl()}${file}`;
 const imageWithBasePath = (image: string) =>
   image.startsWith('http') ? image : withBasePath(image.replace(/^\//, ''));
 
+const PriceTableSchema = z.object({
+  small: z.number().nonnegative(),
+  medium: z.number().nonnegative(),
+  large: z.number().nonnegative(),
+});
+
 const PizzaSchema = z.object({
   id: z.string().min(1),
   displayName: z.string().min(1),
   description: z.string().min(1),
-  basePrice: z.number().nonnegative(),
   toppings: z.array(z.string().min(1)),
   vegetarian: z.boolean(),
   vegan: z.boolean().optional(),
   spicy: z.boolean(),
   image: z.string().min(1),
+  prices: PriceTableSchema,
   category: z.enum(['savoury', 'dessert', 'drink']).optional(),
   allowCustomization: z.boolean().optional(),
   sizeLabelsOverride: z
@@ -31,10 +37,23 @@ const PizzaSchema = z.object({
 
 const MenuSchema = z.array(PizzaSchema);
 
-export const menu: Pizza[] = menuSeed.map((entry) => ({
-  ...entry,
-  image: imageWithBasePath(entry.image),
-}));
+const loadStaticMenu = (): Pizza[] => {
+  try {
+    const raw = JSON.parse(menuJson) as unknown;
+    const parsed = MenuSchema.parse(raw);
+    return parsed.map((pizza) => ({
+      ...pizza,
+      image: imageWithBasePath(pizza.image),
+    }));
+  } catch (error) {
+    if (isDevEnvironment()) {
+      console.warn('[menu] Failed to load static menu data', error);
+    }
+    return [];
+  }
+};
+
+export const menu: Pizza[] = loadStaticMenu();
 
 // Validate at module load; parse throws in dev if data drifts.
 (() => {

@@ -1,190 +1,54 @@
-export type IngredientId =
-  | 'extra-mozzarella'
-  | 'vegan-mozzarella'
-  | 'cashew-parmesan'
-  | 'fresh-basil'
-  | 'roasted-garlic'
-  | 'pickled-chilli'
-  | 'sicilian-olives'
-  | 'crispy-prosciutto'
-  | 'smoked-bacon'
-  | 'truffle-oil'
-  | 'caramelised-onion'
-  | 'charred-mushroom'
-  | 'wild-rocket'
-  | 'crispy-sage'
-  | 'macadamia-crumble'
-  | 'biscoff-crumb'
-  | 'toasted-marshmallow'
-  | 'strawberry-compote'
-  | 'dark-chocolate-shard'
-  | 'candied-hazelnut';
+import { z } from 'zod';
+import { isDevEnvironment } from '../shared-utils/env';
+import ingredientsJson from '../../public/api/ingredients.json?raw';
 
-export type IngredientCategory = 'savoury' | 'dessert';
+const IngredientCategorySchema = z.union([
+  z.literal('savoury'),
+  z.literal('dessert'),
+]);
 
-export type IngredientDefinition = {
-  id: IngredientId;
-  name: string;
-  price: number;
-  category: IngredientCategory;
-  dietary?: {
-    vegetarian?: boolean;
-    vegan?: boolean;
-  };
-};
+const IngredientSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  price: z.number().nonnegative(),
+  category: IngredientCategorySchema,
+  dietary: z
+    .object({
+      vegetarian: z.boolean().optional(),
+      vegan: z.boolean().optional(),
+    })
+    .optional(),
+});
+
+const IngredientListSchema = z.array(IngredientSchema);
+
+export type IngredientDefinition = z.infer<typeof IngredientSchema>;
+export type IngredientCategory = z.infer<typeof IngredientCategorySchema>;
+export type IngredientId = IngredientDefinition['id'];
 
 export type IngredientSelection = IngredientDefinition & {
   quantity: number;
 };
 
-const RAW_INGREDIENTS: IngredientDefinition[] = [
-  {
-    id: 'extra-mozzarella',
-    name: 'Extra mozzarella',
-    price: 2,
-    category: 'savoury',
-    dietary: { vegetarian: true },
-  },
-  {
-    id: 'vegan-mozzarella',
-    name: 'Vegan mozzarella',
-    price: 2.3,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'cashew-parmesan',
-    name: 'Cashew parmesan',
-    price: 2.4,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'fresh-basil',
-    name: 'Fresh basil',
-    price: 1.2,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'roasted-garlic',
-    name: 'Roasted garlic',
-    price: 1.3,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'pickled-chilli',
-    name: 'Pickled chilli',
-    price: 1.3,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'sicilian-olives',
-    name: 'Sicilian olives',
-    price: 1.4,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'crispy-prosciutto',
-    name: 'Crispy prosciutto',
-    price: 2.8,
-    category: 'savoury',
-    dietary: { vegetarian: false, vegan: false },
-  },
-  {
-    id: 'smoked-bacon',
-    name: 'Smoked bacon crumble',
-    price: 2.6,
-    category: 'savoury',
-    dietary: { vegetarian: false, vegan: false },
-  },
-  {
-    id: 'truffle-oil',
-    name: 'Truffle oil drizzle',
-    price: 2.2,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'caramelised-onion',
-    name: 'Caramelised onion',
-    price: 1.5,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'charred-mushroom',
-    name: 'Charred mushrooms',
-    price: 1.8,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'wild-rocket',
-    name: 'Wild rocket',
-    price: 1.4,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'crispy-sage',
-    name: 'Crispy sage',
-    price: 1.4,
-    category: 'savoury',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'macadamia-crumble',
-    name: 'Macadamia crumble',
-    price: 1.7,
-    category: 'dessert',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'biscoff-crumb',
-    name: 'Biscoff crumb',
-    price: 1.5,
-    category: 'dessert',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'toasted-marshmallow',
-    name: 'Toasted marshmallow',
-    price: 1.8,
-    category: 'dessert',
-    dietary: { vegetarian: true, vegan: false },
-  },
-  {
-    id: 'strawberry-compote',
-    name: 'Strawberry compote',
-    price: 1.6,
-    category: 'dessert',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'dark-chocolate-shard',
-    name: 'Dark chocolate shards',
-    price: 1.7,
-    category: 'dessert',
-    dietary: { vegetarian: true, vegan: true },
-  },
-  {
-    id: 'candied-hazelnut',
-    name: 'Candied hazelnut',
-    price: 1.9,
-    category: 'dessert',
-    dietary: { vegetarian: true, vegan: false },
-  },
-];
+const loadIngredientCatalog = (): IngredientDefinition[] => {
+  try {
+    const parsed = IngredientListSchema.parse(JSON.parse(ingredientsJson));
+    return parsed;
+  } catch (error) {
+    if (isDevEnvironment()) {
+      console.warn('[ingredients] Failed to load ingredient catalog', error);
+    }
+    return [];
+  }
+};
+
+const catalog = loadIngredientCatalog();
+
+export const ingredientCatalog: IngredientDefinition[] = [...catalog];
 
 const ingredientMap = new Map<IngredientId, IngredientDefinition>(
-  RAW_INGREDIENTS.map((ingredient) => [ingredient.id, ingredient]),
+  ingredientCatalog.map((ingredient) => [ingredient.id, ingredient]),
 );
-
-export const ingredientCatalog: IngredientDefinition[] = [...RAW_INGREDIENTS];
 
 export const getIngredientById = (id: IngredientId) =>
   ingredientMap.get(id) ?? null;
