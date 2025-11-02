@@ -16,6 +16,7 @@
     "test": "node scripts/run-vitest-with-polyfills.cjs run",
     "test:watch": "node scripts/run-vitest-with-polyfills.cjs",
     "test:coverage": "node scripts/run-vitest-with-polyfills.cjs run --coverage",
+    "test:e2e": "npm run build && PUBLIC_BASE_URL=/react-pizza-demo/ playwright test",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "preview": "vite preview",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.0",
     "@mdx-js/rollup": "^3.1.1",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/vite": "^4.1.16",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

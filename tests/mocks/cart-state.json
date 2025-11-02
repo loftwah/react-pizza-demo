@@ -1,0 +1,18 @@
+{
+  "state": {
+    "items": [
+      {
+        "id": "pepperoni-classic-medium",
+        "pizzaId": "pepperoni-classic",
+        "size": "medium",
+        "quantity": 2,
+        "customization": {
+          "removedIngredients": [],
+          "addedIngredients": []
+        },
+        "lineUid": "e2e-line-1"
+      }
+    ]
+  },
+  "version": 3
+}
