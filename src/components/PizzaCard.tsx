@@ -38,6 +38,42 @@ const sizeOrder: PizzaSize[] = ['small', 'medium', 'large'];
 const resolveSizeLabel = (pizza: Pizza, size: PizzaSize) =>
   pizza.sizeLabelsOverride?.[size] ?? sizeLabels[size];
 
+const SLUG_PREFIXES = [
+  'extra-',
+  'vegan-',
+  'double-',
+  'triple-',
+  'dairy-free-',
+  'gluten-free-',
+  'plant-based-',
+];
+
+const slugifyIngredientKey = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const expandSlugVariants = (slug: string) => {
+  const queue = [slug];
+  const variants = new Set<string>();
+  while (queue.length > 0) {
+    const current = queue.pop();
+    if (!current || variants.has(current)) continue;
+    variants.add(current);
+    SLUG_PREFIXES.forEach((prefix) => {
+      if (current.startsWith(prefix)) {
+        queue.push(current.slice(prefix.length));
+      }
+    });
+  }
+  return variants;
+};
+
+const resolveSlugVariants = (value: string) =>
+  expandSlugVariants(slugifyIngredientKey(value));
+
 const isIngredientAvailable = (
   toppings: string[],
   ingredient: string,
@@ -71,6 +107,71 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
       ),
     [availableExtras],
   );
+  const baseSlugVariants = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    pizza.toppings.forEach((topping) => {
+      map.set(topping, resolveSlugVariants(topping));
+    });
+    return map;
+  }, [pizza.toppings]);
+  const extraSlugVariants = useMemo(() => {
+    const map = new Map<IngredientId, Set<string>>();
+    availableExtras.forEach((extra) => {
+      const variants = new Set<string>();
+      resolveSlugVariants(extra.name).forEach((variant) =>
+        variants.add(variant),
+      );
+      resolveSlugVariants(extra.id).forEach((variant) => variants.add(variant));
+      map.set(extra.id, variants);
+    });
+    return map;
+  }, [availableExtras]);
+  const conflictingExtrasByBase = useMemo(() => {
+    const map = new Map<string, IngredientId[]>();
+    pizza.toppings.forEach((topping) => {
+      const baseVariants = baseSlugVariants.get(topping);
+      if (!baseVariants) return;
+      availableExtras.forEach((extra) => {
+        const extraVariants = extraSlugVariants.get(extra.id);
+        if (!extraVariants) return;
+        const hasOverlap = [...extraVariants].some((variant) =>
+          baseVariants.has(variant),
+        );
+        if (!hasOverlap) return;
+        const existing = map.get(topping) ?? [];
+        if (!existing.includes(extra.id)) {
+          map.set(topping, [...existing, extra.id]);
+        }
+      });
+    });
+    return map;
+  }, [availableExtras, baseSlugVariants, extraSlugVariants, pizza.toppings]);
+  const blockedExtraIds = useMemo(() => {
+    if (removedIngredients.length === 0) {
+      return new Set<IngredientId>();
+    }
+    const blocked = new Set<IngredientId>();
+    removedIngredients.forEach((ingredient) => {
+      const baseVariants = baseSlugVariants.get(ingredient);
+      if (!baseVariants) return;
+      availableExtras.forEach((extra) => {
+        const extraVariants = extraSlugVariants.get(extra.id);
+        if (!extraVariants) return;
+        const hasOverlap = [...extraVariants].some((variant) =>
+          baseVariants.has(variant),
+        );
+        if (hasOverlap) {
+          blocked.add(extra.id);
+        }
+      });
+    });
+    return blocked;
+  }, [
+    availableExtras,
+    baseSlugVariants,
+    extraSlugVariants,
+    removedIngredients,
+  ]);
 
   const currentCustomization = useMemo(
     () =>
@@ -139,6 +240,20 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
     setRemovedIngredients((current) => {
       if (current.includes(ingredient)) {
         return current.filter((value) => value !== ingredient);
+      }
+      const conflicts = conflictingExtrasByBase.get(ingredient);
+      if (conflicts && conflicts.length > 0) {
+        setAddedIngredients((currentAdded) => {
+          let mutated = false;
+          const next = { ...currentAdded };
+          conflicts.forEach((extraId) => {
+            if (next[extraId]) {
+              delete next[extraId];
+              mutated = true;
+            }
+          });
+          return mutated ? next : currentAdded;
+        });
       }
       return [...current, ingredient];
     });
@@ -369,21 +484,42 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                       <p className="text-[11px] font-semibold tracking-[0.28em] text-slate-400 uppercase dark:text-white/40">
                         Extra ingredients
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="space-y-2">
                         {availableExtras.map((ingredient) => {
                           const quantity = addedIngredients[ingredient.id] ?? 0;
-                          const canIncrement = quantity < MAX_EXTRA_QUANTITY;
+                          const isBlocked = blockedExtraIds.has(ingredient.id);
+                          const blockers = isBlocked
+                            ? removedIngredients.filter((base) =>
+                                (
+                                  conflictingExtrasByBase.get(base) ?? []
+                                ).includes(ingredient.id),
+                              )
+                            : [];
+                          const blockedMessage =
+                            blockers.length > 0
+                              ? `Restore ${formatListPreview(blockers)} to add this extra`
+                              : undefined;
+                          const canIncrement =
+                            !isBlocked && quantity < MAX_EXTRA_QUANTITY;
                           const canDecrement = quantity > 0;
                           return (
                             <div
                               key={ingredient.id}
-                              className="flex items-center gap-2 rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.2em] text-slate-600 uppercase dark:border-white/20 dark:bg-white/10 dark:text-white/75"
+                              aria-disabled={isBlocked || undefined}
+                              className={clsx(
+                                'flex w-full flex-col gap-3 rounded-[28px] border border-slate-200/70 bg-white px-4 py-3 text-[11px] font-semibold tracking-[0.2em] text-slate-600 uppercase sm:flex-row sm:items-center sm:justify-between dark:border-white/20 dark:bg-white/10 dark:text-white/75',
+                                isBlocked && 'opacity-60',
+                              )}
                             >
-                              <span>{ingredient.name}</span>
-                              <span className="ml-2 text-[10px] tracking-[0.3em] text-slate-400 uppercase tabular-nums dark:text-white/50">
-                                +{formatCurrency(ingredient.price)}
-                              </span>
-                              <div className="ml-2 flex items-center gap-1 rounded-full border border-slate-200/70 bg-white/90 px-2 py-0.5 text-xs text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/70">
+                              <div className="flex min-w-0 flex-1 flex-col gap-1 text-left leading-tight">
+                                <span className="break-words">
+                                  {ingredient.name}
+                                </span>
+                                <span className="text-[10px] tracking-[0.28em] text-slate-400 tabular-nums dark:text-white/50">
+                                  +{formatCurrency(ingredient.price)}
+                                </span>
+                              </div>
+                              <div className="flex shrink-0 items-center justify-end gap-1 rounded-full border border-slate-200/70 bg-white/90 px-2 py-0.5 text-xs text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/70">
                                 <button
                                   type="button"
                                   onClick={() =>
@@ -395,7 +531,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                                 >
                                   −
                                 </button>
-                                <span className="w-5 text-center text-[11px] font-semibold tracking-[0.2em] text-slate-600 dark:text-white/80">
+                                <span className="w-5 text-center text-[11px] font-semibold tracking-[0.2em] text-slate-600 uppercase dark:text-white/80">
                                   {quantity}
                                 </span>
                                 <button
@@ -406,6 +542,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                                   disabled={!canIncrement}
                                   className="flex h-5 w-5 items-center justify-center rounded-full border border-slate-200/60 text-slate-500 transition enabled:hover:bg-emerald-500/10 enabled:hover:text-emerald-600 disabled:opacity-40 dark:border-white/20 dark:text-white/70 dark:enabled:hover:bg-emerald-500/15 dark:enabled:hover:text-emerald-200"
                                   aria-label={`Add ${ingredient.name}`}
+                                  title={blockedMessage}
                                 >
                                   +
                                 </button>
