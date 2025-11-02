@@ -3,7 +3,6 @@
     "id": "pepperoni-classic",
     "displayName": "Pepperoni Classic",
     "description": "Tomato sugo, shredded mozzarella, pepperoni cups, oregano oil.",
-    "basePrice": 16,
     "toppings": [
       "Tomato",
       "Mozzarella",
@@ -13,13 +12,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/pepperoni-classic.jpg"
+    "image": "/pepperoni-classic.jpg",
+    "prices": {
+      "small": 13.6,
+      "medium": 16,
+      "large": 21.6
+    }
   },
   {
     "id": "smoky-bbq",
     "displayName": "Smoky BBQ Chicken",
     "description": "BBQ sauce base, roast chicken, charred corn, red onion, parsley.",
-    "basePrice": 18,
     "toppings": [
       "BBQ Sauce",
       "Chicken",
@@ -30,13 +33,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/smokey-bbq-chicken.jpg"
+    "image": "/smokey-bbq-chicken.jpg",
+    "prices": {
+      "small": 15.3,
+      "medium": 18,
+      "large": 24.3
+    }
   },
   {
     "id": "firecracker",
     "displayName": "Firecracker",
     "description": "Scorpion pepper oil, spicy salami, jalapeños, hot honey drizzle.",
-    "basePrice": 19,
     "toppings": [
       "Scorpion Oil",
       "Salami",
@@ -47,13 +54,17 @@
     "vegan": false,
     "spicy": true,
     "category": "savoury",
-    "image": "/firecracker.jpg"
+    "image": "/firecracker.jpg",
+    "prices": {
+      "small": 16.15,
+      "medium": 19,
+      "large": 25.65
+    }
   },
   {
     "id": "green-garden",
     "displayName": "Green Garden",
     "description": "Basil pesto base, cherry tomato confit, marinated zucchini, ricotta.",
-    "basePrice": 17,
     "toppings": [
       "Pesto",
       "Tomato",
@@ -64,13 +75,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/green-garden.jpg"
+    "image": "/green-garden.jpg",
+    "prices": {
+      "small": 14.45,
+      "medium": 17,
+      "large": 22.95
+    }
   },
   {
     "id": "wild-mushroom",
     "displayName": "Wild Mushroom",
     "description": "Garlic cream, roasted field mushrooms, truffle salt, chives.",
-    "basePrice": 20,
     "toppings": [
       "Garlic Cream",
       "Mushroom",
@@ -80,13 +95,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/wild-mushroom.jpg"
+    "image": "/wild-mushroom.jpg",
+    "prices": {
+      "small": 17,
+      "medium": 20,
+      "large": 27
+    }
   },
   {
     "id": "pineapple-party",
     "displayName": "Pineapple Party",
     "description": "Tomato sugo, leg ham, fire-roasted pineapple, pickled chilli.",
-    "basePrice": 18,
     "toppings": [
       "Tomato",
       "Ham",
@@ -97,13 +116,17 @@
     "vegan": false,
     "spicy": true,
     "category": "savoury",
-    "image": "/pineapple-party.jpg"
+    "image": "/pineapple-party.jpg",
+    "prices": {
+      "small": 15.3,
+      "medium": 18,
+      "large": 24.3
+    }
   },
   {
     "id": "sunrise-margherita",
     "displayName": "Sunrise Margherita",
     "description": "Slow-roasted tomatoes, stracciatella, basil oil, lemon zest.",
-    "basePrice": 17,
     "toppings": [
       "Tomato",
       "Stracciatella",
@@ -114,13 +137,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/sunrise-margherita.jpg"
+    "image": "/sunrise-margherita.jpg",
+    "prices": {
+      "small": 14.45,
+      "medium": 17,
+      "large": 22.95
+    }
   },
   {
     "id": "smoked-maple-bacon",
     "displayName": "Smoked Maple Bacon",
     "description": "Maple glaze, smoked bacon, roasted sweet potato, pickled onion.",
-    "basePrice": 19,
     "toppings": [
       "Maple",
       "Bacon",
@@ -131,13 +158,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/smoked-maple-bacon.jpg"
+    "image": "/smoked-maple-bacon.jpg",
+    "prices": {
+      "small": 16.15,
+      "medium": 19,
+      "large": 25.65
+    }
   },
   {
     "id": "calabrian-scorcher",
     "displayName": "Calabrian Scorcher",
     "description": "Nduja butter base, fennel sausage, charred peppers, chilli honey.",
-    "basePrice": 21,
     "toppings": [
       "Nduja",
       "Fennel Sausage",
@@ -148,13 +179,17 @@
     "vegan": false,
     "spicy": true,
     "category": "savoury",
-    "image": "/calabrian-scorcher.jpg"
+    "image": "/calabrian-scorcher.jpg",
+    "prices": {
+      "small": 17.85,
+      "medium": 21,
+      "large": 28.35
+    }
   },
   {
     "id": "forest-fable",
     "displayName": "Forest Fable (Vegan)",
     "description": "Porcini cashew cream, rosemary roast potatoes, caramelised shallot, crispy sage.",
-    "basePrice": 20,
     "toppings": [
       "Porcini Cashew Cream",
       "Rosemary Potatoes",
@@ -165,13 +200,17 @@
     "vegan": true,
     "spicy": false,
     "category": "savoury",
-    "image": "/forest-fable.jpg"
+    "image": "/forest-fable.jpg",
+    "prices": {
+      "small": 17,
+      "medium": 20,
+      "large": 27
+    }
   },
   {
     "id": "home-alone-cheese",
     "displayName": "Home Alone Cheese Pizza",
     "description": "Crisp base, tomato sugo, melty mozzarella, olive oil gloss.",
-    "basePrice": 17,
     "toppings": [
       "Tomato Sugo",
       "Mozzarella",
@@ -181,13 +220,17 @@
     "vegan": false,
     "spicy": false,
     "category": "savoury",
-    "image": "/home-alone-cheese.jpg"
+    "image": "/home-alone-cheese.jpg",
+    "prices": {
+      "small": 14.45,
+      "medium": 17,
+      "large": 22.95
+    }
   },
   {
     "id": "home-alone-vegan-cheese",
     "displayName": "Home Alone Vegan Cheese Pizza",
     "description": "Crisp base, tomato sugo, melty vegan mozzarella, olive oil gloss.",
-    "basePrice": 17,
     "toppings": [
       "Tomato Sugo",
       "Vegan Mozzarella",
@@ -197,13 +240,17 @@
     "vegan": true,
     "spicy": false,
     "category": "savoury",
-    "image": "/home-alone-cheese.jpg"
+    "image": "/home-alone-cheese.jpg",
+    "prices": {
+      "small": 14.45,
+      "medium": 17,
+      "large": 22.95
+    }
   },
   {
     "id": "white-chocolate-nutella-biscoff",
     "displayName": "White Chocolate Nutella Biscoff",
     "description": "Cinnamon crust, warm white chocolate ganache, Nutella ripple, crushed Biscoff biscuit.",
-    "basePrice": 18,
     "toppings": [
       "White Chocolate",
       "Nutella",
@@ -214,13 +261,17 @@
     "vegan": false,
     "spicy": false,
     "category": "dessert",
-    "image": "/white-chocolate-biscoff.jpg"
+    "image": "/white-chocolate-biscoff.jpg",
+    "prices": {
+      "small": 15.3,
+      "medium": 18,
+      "large": 24.3
+    }
   },
   {
     "id": "nutella-chocolate",
     "displayName": "Nutella Chocolate",
     "description": "Toasted base, Nutella spread, dark chocolate shards, strawberry compote drizzle.",
-    "basePrice": 17,
     "toppings": [
       "Nutella",
       "Dark Chocolate Shards",
@@ -230,13 +281,17 @@
     "vegan": false,
     "spicy": false,
     "category": "dessert",
-    "image": "/nutella-chocolate.jpg"
+    "image": "/nutella-chocolate.jpg",
+    "prices": {
+      "small": 14.45,
+      "medium": 17,
+      "large": 22.95
+    }
   },
   {
     "id": "loftwah-cola",
     "displayName": "Loftwah Cola",
     "description": "House-label cola with a crisp finish. Served chilled in share-friendly bottles.",
-    "basePrice": 4.5,
     "toppings": [],
     "vegetarian": true,
     "vegan": true,
@@ -248,6 +303,11 @@
       "medium": "600 ml",
       "large": "1 L"
     },
-    "image": "/loftwah-cola.jpg"
+    "image": "/loftwah-cola.jpg",
+    "prices": {
+      "small": 3.83,
+      "medium": 4.5,
+      "large": 6.08
+    }
   }
 ]
