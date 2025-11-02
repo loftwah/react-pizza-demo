@@ -9,4 +9,7 @@ useCartStore.getState().updateCustomization(itemId, {
   removedIngredients: [],
   addedIngredients: [{ id: 'extra-mozzarella', quantity: 2 }],
 });
-console.log('after update', JSON.stringify(useCartStore.getState().items, null, 2));
+console.log(
+  'after update',
+  JSON.stringify(useCartStore.getState().items, null, 2),
+);

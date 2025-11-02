@@ -114,11 +114,11 @@ const buildAnalyticsCsv = (snapshot: AnalyticsSnapshot): string => {
           escapeCsvCell('metrics'),
           escapeCsvCell(metric.id),
           escapeCsvCell(metric.label),
-        escapeCsvCell(metric.value),
-        escapeCsvCell(metric.unit),
-        escapeCsvCell(metric.change),
-        escapeCsvCell(metric.trend),
-      ].join(','),
+          escapeCsvCell(metric.value),
+          escapeCsvCell(metric.unit),
+          escapeCsvCell(metric.change),
+          escapeCsvCell(metric.trend),
+        ].join(','),
       );
     });
 
@@ -614,7 +614,7 @@ export const AnalyticsPage = () => {
                     <TrendIcon trend={metric.trend} />
                   </span>
                 </div>
-                <p className="tabular-nums font-display mt-5 text-3xl text-slate-900 dark:text-white">
+                <p className="font-display mt-5 text-3xl text-slate-900 tabular-nums dark:text-white">
                   {formatMetricValue(metric)}
                 </p>
                 <p className="mt-2 text-xs text-slate-500 dark:text-white/70">
@@ -654,7 +654,7 @@ export const AnalyticsPage = () => {
                   <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase dark:text-white/60">
                     Total mock orders
                   </p>
-                  <p className="tabular-nums font-display mt-3 text-2xl text-slate-900 dark:text-white">
+                  <p className="font-display mt-3 text-2xl text-slate-900 tabular-nums dark:text-white">
                     {orderInsights.totalOrders.toLocaleString()}
                   </p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
@@ -665,7 +665,7 @@ export const AnalyticsPage = () => {
                   <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase dark:text-white/60">
                     Lifetime mock revenue
                   </p>
-                  <p className="tabular-nums font-display mt-3 text-2xl text-slate-900 dark:text-white">
+                  <p className="font-display mt-3 text-2xl text-slate-900 tabular-nums dark:text-white">
                     {formatCurrency(orderInsights.totalRevenue)}
                   </p>
                   <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
@@ -676,7 +676,7 @@ export const AnalyticsPage = () => {
                   <p className="text-xs font-semibold tracking-[0.25em] text-slate-500 uppercase dark:text-white/60">
                     Avg prep estimate
                   </p>
-                  <p className="tabular-nums font-display mt-3 text-2xl text-slate-900 dark:text-white">
+                  <p className="font-display mt-3 text-2xl text-slate-900 tabular-nums dark:text-white">
                     {orderInsights.averagePrep !== null
                       ? `${orderInsights.averagePrep.toFixed(1)} min`
                       : 'Awaiting receipts'}

@@ -3,11 +3,7 @@
     "id": "pepperoni-classic",
     "displayName": "Pepperoni Classic",
     "description": "Tomato sugo, shredded mozzarella, pepperoni cups, oregano oil.",
-    "toppings": [
-      "Tomato",
-      "Mozzarella",
-      "Pepperoni"
-    ],
+    "toppings": ["Tomato", "Mozzarella", "Pepperoni"],
     "vegetarian": false,
     "vegan": false,
     "spicy": false,
@@ -23,12 +19,7 @@
     "id": "smoky-bbq",
     "displayName": "Smoky BBQ Chicken",
     "description": "BBQ sauce base, roast chicken, charred corn, red onion, parsley.",
-    "toppings": [
-      "BBQ Sauce",
-      "Chicken",
-      "Corn",
-      "Parsley"
-    ],
+    "toppings": ["BBQ Sauce", "Chicken", "Corn", "Parsley"],
     "vegetarian": false,
     "vegan": false,
     "spicy": false,
@@ -44,12 +35,7 @@
     "id": "firecracker",
     "displayName": "Firecracker",
     "description": "Scorpion pepper oil, spicy salami, jalapeños, hot honey drizzle.",
-    "toppings": [
-      "Scorpion Oil",
-      "Salami",
-      "Jalapeño",
-      "Hot Honey"
-    ],
+    "toppings": ["Scorpion Oil", "Salami", "Jalapeño", "Hot Honey"],
     "vegetarian": false,
     "vegan": false,
     "spicy": true,
@@ -65,12 +51,7 @@
     "id": "green-garden",
     "displayName": "Green Garden",
     "description": "Basil pesto base, cherry tomato confit, marinated zucchini, ricotta.",
-    "toppings": [
-      "Pesto",
-      "Tomato",
-      "Zucchini",
-      "Ricotta"
-    ],
+    "toppings": ["Pesto", "Tomato", "Zucchini", "Ricotta"],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -86,11 +67,7 @@
     "id": "wild-mushroom",
     "displayName": "Wild Mushroom",
     "description": "Garlic cream, roasted field mushrooms, truffle salt, chives.",
-    "toppings": [
-      "Garlic Cream",
-      "Mushroom",
-      "Truffle Salt"
-    ],
+    "toppings": ["Garlic Cream", "Mushroom", "Truffle Salt"],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -106,12 +83,7 @@
     "id": "pineapple-party",
     "displayName": "Pineapple Party",
     "description": "Tomato sugo, leg ham, fire-roasted pineapple, pickled chilli.",
-    "toppings": [
-      "Tomato",
-      "Ham",
-      "Pineapple",
-      "Chilli"
-    ],
+    "toppings": ["Tomato", "Ham", "Pineapple", "Chilli"],
     "vegetarian": false,
     "vegan": false,
     "spicy": true,
@@ -127,12 +99,7 @@
     "id": "sunrise-margherita",
     "displayName": "Sunrise Margherita",
     "description": "Slow-roasted tomatoes, stracciatella, basil oil, lemon zest.",
-    "toppings": [
-      "Tomato",
-      "Stracciatella",
-      "Basil Oil",
-      "Lemon Zest"
-    ],
+    "toppings": ["Tomato", "Stracciatella", "Basil Oil", "Lemon Zest"],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -148,12 +115,7 @@
     "id": "smoked-maple-bacon",
     "displayName": "Smoked Maple Bacon",
     "description": "Maple glaze, smoked bacon, roasted sweet potato, pickled onion.",
-    "toppings": [
-      "Maple",
-      "Bacon",
-      "Sweet Potato",
-      "Pickled Onion"
-    ],
+    "toppings": ["Maple", "Bacon", "Sweet Potato", "Pickled Onion"],
     "vegetarian": false,
     "vegan": false,
     "spicy": false,
@@ -169,12 +131,7 @@
     "id": "calabrian-scorcher",
     "displayName": "Calabrian Scorcher",
     "description": "Nduja butter base, fennel sausage, charred peppers, chilli honey.",
-    "toppings": [
-      "Nduja",
-      "Fennel Sausage",
-      "Charred Peppers",
-      "Chilli Honey"
-    ],
+    "toppings": ["Nduja", "Fennel Sausage", "Charred Peppers", "Chilli Honey"],
     "vegetarian": false,
     "vegan": false,
     "spicy": true,
@@ -211,11 +168,7 @@
     "id": "home-alone-cheese",
     "displayName": "Home Alone Cheese Pizza",
     "description": "Crisp base, tomato sugo, melty mozzarella, olive oil gloss.",
-    "toppings": [
-      "Tomato Sugo",
-      "Mozzarella",
-      "Olive Oil Gloss"
-    ],
+    "toppings": ["Tomato Sugo", "Mozzarella", "Olive Oil Gloss"],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -231,11 +184,7 @@
     "id": "home-alone-vegan-cheese",
     "displayName": "Home Alone Vegan Cheese Pizza",
     "description": "Crisp base, tomato sugo, melty vegan mozzarella, olive oil gloss.",
-    "toppings": [
-      "Tomato Sugo",
-      "Vegan Mozzarella",
-      "Olive Oil Gloss"
-    ],
+    "toppings": ["Tomato Sugo", "Vegan Mozzarella", "Olive Oil Gloss"],
     "vegetarian": true,
     "vegan": true,
     "spicy": false,
@@ -248,15 +197,35 @@
     }
   },
   {
+    "id": "citrus-cloud",
+    "displayName": "Citrus Cloud",
+    "description": "Meringue base, lemon glaze topping, fresh blueberries, strawberries, and kiwi slices. Finished with generous dollops of strawberry ice cream, topped with strawberry syrup, and surrounded by whipped cream around the edge. A light, zesty, and indulgent Loftwah creation - part pavlova, part pizza, all vibe.",
+    "toppings": [
+      "Meringue Base",
+      "Lemon Glaze",
+      "Blueberries",
+      "Strawberries",
+      "Kiwi",
+      "Strawberry Ice Cream",
+      "Strawberry Syrup",
+      "Whipped Cream"
+    ],
+    "vegetarian": true,
+    "vegan": false,
+    "spicy": false,
+    "category": "dessert",
+    "image": "/citrus-cloud.jpg",
+    "prices": {
+      "small": 15.3,
+      "medium": 18,
+      "large": 24.3
+    }
+  },
+  {
     "id": "white-chocolate-nutella-biscoff",
     "displayName": "White Chocolate Nutella Biscoff",
     "description": "Cinnamon crust, warm white chocolate ganache, Nutella ripple, crushed Biscoff biscuit.",
-    "toppings": [
-      "White Chocolate",
-      "Nutella",
-      "Biscoff Crumb",
-      "Cinnamon"
-    ],
+    "toppings": ["White Chocolate", "Nutella", "Biscoff Crumb", "Cinnamon"],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -272,11 +241,7 @@
     "id": "nutella-chocolate",
     "displayName": "Nutella Chocolate",
     "description": "Toasted base, Nutella spread, dark chocolate shards, strawberry compote drizzle.",
-    "toppings": [
-      "Nutella",
-      "Dark Chocolate Shards",
-      "Strawberry Compote"
-    ],
+    "toppings": ["Nutella", "Dark Chocolate Shards", "Strawberry Compote"],
     "vegetarian": true,
     "vegan": false,
     "spicy": false,
@@ -305,9 +270,101 @@
     },
     "image": "/loftwah-cola.jpg",
     "prices": {
-      "small": 3.83,
-      "medium": 4.5,
-      "large": 6.08
+      "small": 4,
+      "medium": 5,
+      "large": 6
+    }
+  },
+  {
+    "id": "loftwah-iced-coffee",
+    "displayName": "Loftwah Iced Coffee",
+    "description": "Slow-steeped cold brew poured over crushed ice with vanilla cream ripple and cocoa dust.",
+    "toppings": ["Cold Brew Coffee", "Vanilla Cream", "Cocoa Dust"],
+    "vegetarian": true,
+    "vegan": false,
+    "spicy": false,
+    "category": "drink",
+    "allowCustomization": false,
+    "sizeLabelsOverride": {
+      "small": "375 ml",
+      "medium": "600 ml",
+      "large": "1 L"
+    },
+    "image": "/loftwah-iced-coffee.jpg",
+    "prices": {
+      "small": 5.45,
+      "medium": 6.5,
+      "large": 8.1
+    }
+  },
+  {
+    "id": "loftwah-water",
+    "displayName": "Loftwah Sparkling Water",
+    "description": "Chilled Tasmanian spring water, lightly sparkling with a twist of crisp citrus aroma.",
+    "toppings": ["Sparkling Spring Water", "Citrus Mist"],
+    "vegetarian": true,
+    "vegan": true,
+    "spicy": false,
+    "category": "drink",
+    "allowCustomization": false,
+    "sizeLabelsOverride": {
+      "small": "375 ml",
+      "medium": "600 ml",
+      "large": "1 L"
+    },
+    "image": "/loftwah-water.jpg",
+    "prices": {
+      "small": 2.55,
+      "medium": 3.1,
+      "large": 4.05
+    }
+  },
+  {
+    "id": "loftwah-raspberry",
+    "displayName": "Loftwah Raspberry Fizz",
+    "description": "Sparkling raspberry soda infused with native peppermint, balanced with a lime zest finish.",
+    "toppings": ["Raspberry Soda", "Native Peppermint", "Lime Zest"],
+    "vegetarian": true,
+    "vegan": true,
+    "spicy": false,
+    "category": "drink",
+    "allowCustomization": false,
+    "sizeLabelsOverride": {
+      "small": "375 ml",
+      "medium": "600 ml",
+      "large": "1 L"
+    },
+    "image": "/loftwah-raspberry.jpg",
+    "prices": {
+      "small": 4.05,
+      "medium": 4.9,
+      "large": 6.3
+    }
+  },
+  {
+    "id": "loftwah-lemon",
+    "displayName": "Loftwah Lemon Cooler",
+    "description": "Fresh-pressed lemons shaken with sparkling mineral water and a hint of vanilla sugar.",
+    "toppings": [
+      "Sparkling Mineral Water",
+      "Fresh Lemon Juice",
+      "Vanilla Sugar"
+    ],
+    "vegetarian": true,
+    "vegan": true,
+    "spicy": false,
+    "category": "drink",
+    "allowCustomization": false,
+    "sizeLabelsOverride": {
+      "small": "375 ml",
+      "medium": "600 ml",
+      "large": "1 L"
+    },
+    "image": "/loftwah-lemon.jpg",
+    "prices": {
+      "small": 4.05,
+      "medium": 4.9,
+      "large": 6.3
     }
   }
 ]

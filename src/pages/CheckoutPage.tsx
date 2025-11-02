@@ -155,9 +155,7 @@ export const CheckoutPage = () => {
   }, [items]);
   const cartItemsById = useMemo(
     () =>
-      new Map<string, CartItem>(
-        items.map((item) => [item.id, item] as const),
-      ),
+      new Map<string, CartItem>(items.map((item) => [item.id, item] as const)),
     [items],
   );
   const handleIncrementCartItem = useCallback(
@@ -930,7 +928,7 @@ export const CheckoutPage = () => {
                           </p>
                         )}
                       </div>
-                      <span className="tabular-nums min-w-[5em] text-right text-sm font-semibold text-slate-900 dark:text-white">
+                      <span className="min-w-[5em] text-right text-sm font-semibold text-slate-900 tabular-nums dark:text-white">
                         {formatCurrency(item.lineTotal)}
                       </span>
                     </li>
@@ -939,7 +937,7 @@ export const CheckoutPage = () => {
               </ul>
               <div className="flex items-center justify-between rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100">
                 <span>Total</span>
-                <span className="tabular-nums min-w-[5em] text-right">
+                <span className="min-w-[5em] text-right tabular-nums">
                   {formatCurrency(submittedOrder.total)}
                 </span>
               </div>
@@ -969,7 +967,7 @@ export const CheckoutPage = () => {
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="tabular-nums min-w-[5em] text-right text-sm font-semibold text-slate-900 dark:text-white">
+                          <span className="min-w-[5em] text-right text-sm font-semibold text-slate-900 tabular-nums dark:text-white">
                             {formatCurrency(order.total)}
                           </span>
                           <button
@@ -1088,7 +1086,7 @@ export const CheckoutPage = () => {
                   return (
                     <li
                       key={item.cartLineUid ?? item.id ?? `line-${index}`}
-                      className="grid gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-white/5 sm:grid-cols-[1fr_auto]"
+                      className="grid gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 sm:grid-cols-[1fr_auto] dark:border-white/15 dark:bg-white/5"
                     >
                       <div className="min-w-0 space-y-2">
                         <p className="font-semibold text-slate-900 dark:text-white">
@@ -1101,7 +1099,7 @@ export const CheckoutPage = () => {
                           </span>
                         </p>
                         {customizationSummary && (
-                          <p className="max-w-full break-words text-[11px] tracking-[0.15em] text-slate-400 uppercase dark:text-white/45">
+                          <p className="max-w-full text-[11px] tracking-[0.15em] break-words text-slate-400 uppercase dark:text-white/45">
                             {customizationSummary}
                           </p>
                         )}
@@ -1113,7 +1111,9 @@ export const CheckoutPage = () => {
                           >
                             <Minus className="h-3.5 w-3.5" aria-hidden="true" />
                             <span>
-                              {item.quantity <= 1 ? 'Remove item' : 'Remove one'}
+                              {item.quantity <= 1
+                                ? 'Remove item'
+                                : 'Remove one'}
                             </span>
                           </button>
                           <button
@@ -1129,13 +1129,16 @@ export const CheckoutPage = () => {
                             onClick={() => handleRemoveCartItem(item)}
                             className={itemActionButtonBase}
                           >
-                          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                          <span>Remove all</span>
-                        </button>
+                            <Trash2
+                              className="h-3.5 w-3.5"
+                              aria-hidden="true"
+                            />
+                            <span>Remove all</span>
+                          </button>
                         </div>
                         <LineItemCustomiser item={item} />
                       </div>
-                      <span className="tabular-nums min-w-[5em] text-right text-sm font-semibold text-slate-900 dark:text-white sm:self-start sm:text-right">
+                      <span className="min-w-[5em] text-right text-sm font-semibold text-slate-900 tabular-nums sm:self-start sm:text-right dark:text-white">
                         {formatCurrency(item.lineTotal)}
                       </span>
                     </li>
@@ -1167,7 +1170,7 @@ export const CheckoutPage = () => {
           {hasCart && (
             <div className="flex items-center justify-between rounded-2xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-200/40 dark:bg-red-500/15 dark:text-red-100">
               <span>Total</span>
-              <span className="tabular-nums min-w-[5em] text-right">
+              <span className="min-w-[5em] text-right tabular-nums">
                 {formattedTotal}
               </span>
             </div>
@@ -1194,7 +1197,7 @@ export const CheckoutPage = () => {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span>Lifetime revenue</span>
-                  <span className="tabular-nums text-sm font-semibold tracking-normal text-slate-800 dark:text-white">
+                  <span className="text-sm font-semibold tracking-normal text-slate-800 tabular-nums dark:text-white">
                     {formatCurrency(orderSummary.totalRevenue)}
                   </span>
                 </div>
@@ -1222,7 +1225,7 @@ export const CheckoutPage = () => {
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="tabular-nums min-w-[5em] text-right text-sm font-semibold text-slate-900 dark:text-white">
+                      <span className="min-w-[5em] text-right text-sm font-semibold text-slate-900 tabular-nums dark:text-white">
                         {formatCurrency(order.total)}
                       </span>
                       <button

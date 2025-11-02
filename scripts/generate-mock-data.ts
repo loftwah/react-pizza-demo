@@ -8,8 +8,7 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..');
 const apiDir = path.join(repoRoot, 'public', 'api');
 
-const formatJson = (value: unknown) =>
-  `${JSON.stringify(value, null, 2)}\n`;
+const formatJson = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
 
 const loadAnalytics = async (filePath: string) => {
   try {

@@ -298,7 +298,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                     <span>{label}</span>
                     <span
                       className={clsx(
-                        'tabular-nums text-[10px] tracking-[0.3em] uppercase transition-colors',
+                        'text-[10px] tracking-[0.3em] uppercase tabular-nums transition-colors',
                         isSelected
                           ? 'text-white/85 dark:text-slate-700'
                           : 'text-slate-400 dark:text-white/50',
@@ -371,17 +371,16 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {availableExtras.map((ingredient) => {
-                          const quantity =
-                            addedIngredients[ingredient.id] ?? 0;
+                          const quantity = addedIngredients[ingredient.id] ?? 0;
                           const canIncrement = quantity < MAX_EXTRA_QUANTITY;
                           const canDecrement = quantity > 0;
                           return (
                             <div
                               key={ingredient.id}
-                              className="flex items-center gap-2 rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/75"
+                              className="flex items-center gap-2 rounded-full border border-slate-200/70 bg-white px-3 py-1 text-[11px] font-semibold tracking-[0.2em] text-slate-600 uppercase dark:border-white/20 dark:bg-white/10 dark:text-white/75"
                             >
                               <span>{ingredient.name}</span>
-                              <span className="ml-2 tabular-nums text-[10px] tracking-[0.3em] text-slate-400 uppercase dark:text-white/50">
+                              <span className="ml-2 text-[10px] tracking-[0.3em] text-slate-400 uppercase tabular-nums dark:text-white/50">
                                 +{formatCurrency(ingredient.price)}
                               </span>
                               <div className="ml-2 flex items-center gap-1 rounded-full border border-slate-200/70 bg-white/90 px-2 py-0.5 text-xs text-slate-600 dark:border-white/20 dark:bg-white/10 dark:text-white/70">
@@ -430,7 +429,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
                       <span>All toppings included</span>
                     )}
                     {upcharge > 0 && (
-                      <span className="tabular-nums text-slate-500 dark:text-white/60">
+                      <span className="text-slate-500 tabular-nums dark:text-white/60">
                         Extras add {formatCurrency(upcharge)}
                       </span>
                     )}
@@ -451,7 +450,7 @@ const PizzaCardInner = ({ pizza }: PizzaCardProps) => {
           )}
 
           <div className="mt-auto flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <span className="tabular-nums min-w-[6ch] text-lg font-semibold text-slate-900 dark:text-white">
+            <span className="min-w-[6ch] text-lg font-semibold text-slate-900 tabular-nums dark:text-white">
               {formatCurrency(unitPrice)}
             </span>
             <div className="flex w-full items-center justify-end gap-3 sm:w-auto">

@@ -7,4 +7,4 @@ services:
     command: >
       sh -c "npm ci && npm run build && npm run preview -- --host 0.0.0.0"
     ports:
-      - "4173:4173"
+      - '4173:4173'

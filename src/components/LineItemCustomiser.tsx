@@ -35,7 +35,9 @@ export const LineItemCustomiser = ({ item }: LineItemCustomiserProps) => {
     return quantities;
   }, [item.customization]);
   const [isOpen, setIsOpen] = useState(() => extraQuantities.size > 0);
-  const updateCustomization = useCartStore((state) => state.updateCustomization);
+  const updateCustomization = useCartStore(
+    (state) => state.updateCustomization,
+  );
   const pizza = item.pizzaId ? getPizzaById(item.pizzaId) : null;
 
   const availableExtras = useMemo(
@@ -105,7 +107,7 @@ export const LineItemCustomiser = ({ item }: LineItemCustomiserProps) => {
       >
         <span className="flex min-h-[1.5em] flex-1 items-center justify-between gap-3">
           <span>{isOpen ? 'Hide extras' : 'Edit extras'}</span>
-          <span className="flex items-center gap-2 text-[9px] font-medium normal-case tracking-[0.25em] text-slate-400 dark:text-white/45">
+          <span className="flex items-center gap-2 text-[9px] font-medium tracking-[0.25em] text-slate-400 normal-case dark:text-white/45">
             <span className="flex min-w-[1.5rem] items-center justify-center rounded-full border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-semibold tracking-[0.2em] text-slate-500 dark:border-white/25 dark:bg-white/10 dark:text-white/60">
               {extrasCount}
             </span>
@@ -124,13 +126,13 @@ export const LineItemCustomiser = ({ item }: LineItemCustomiserProps) => {
             return (
               <div
                 key={extra.id}
-                className="grid min-w-0 items-center gap-3 rounded-xl bg-white/90 px-3 py-2 dark:bg-white/10 sm:grid-cols-[minmax(0,1fr)_auto]"
+                className="grid min-w-0 items-center gap-3 rounded-xl bg-white/90 px-3 py-2 sm:grid-cols-[minmax(0,1fr)_auto] dark:bg-white/10"
               >
                 <div className="min-w-0">
                   <span className="font-semibold text-slate-800 dark:text-white">
                     {extra.name}
                   </span>
-                  <span className="tabular-nums text-[10px] tracking-[0.25em] text-slate-400 uppercase dark:text-white/40">
+                  <span className="text-[10px] tracking-[0.25em] text-slate-400 uppercase tabular-nums dark:text-white/40">
                     {formatCurrency(extra.price)}
                   </span>
                 </div>

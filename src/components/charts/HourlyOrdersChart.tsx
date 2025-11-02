@@ -109,7 +109,10 @@ export const HourlyOrdersChart: FC<HourlyOrdersChartProps> = ({
 
   const peakTotal = useMemo(
     () =>
-      data.reduce((peak, entry) => (entry.total > peak ? entry.total : peak), 0),
+      data.reduce(
+        (peak, entry) => (entry.total > peak ? entry.total : peak),
+        0,
+      ),
     [data],
   );
 

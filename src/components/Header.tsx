@@ -226,7 +226,7 @@ export const Header = () => {
             <span className="text-stone-400 transition-colors dark:text-white/40">
               •
             </span>
-            <span className="tabular-nums text-slate-500 dark:text-white/80">
+            <span className="text-slate-500 tabular-nums dark:text-white/80">
               {totalPrice ? `$${totalPrice.toFixed(2)}` : 'Empty'}
             </span>
           </Link>
