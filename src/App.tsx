@@ -2,10 +2,12 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MenuPage } from './pages/MenuPage';
-import { CheckoutPage } from './pages/CheckoutPage';
+import CheckoutPageDesktop from './pages/CheckoutPage.desktop';
+import CheckoutPageMobile from './pages/CheckoutPage.mobile';
 import About from './pages/About.mdx';
 import AnalyticsPage from './pages/AnalyticsPage';
 import { isFeatureEnabled } from './config/features';
+import { useIsMobile } from './hooks/useIsMobile';
 
 const NotFound = () => (
   <div className="flex flex-1 flex-col items-center justify-center gap-4 text-center">
@@ -63,6 +65,11 @@ const CheckoutPageErrorFallback = ({ error }: { error: Error }) => (
   </div>
 );
 
+const CheckoutRouter = () => {
+  const isMobile = useIsMobile();
+  return isMobile ? <CheckoutPageMobile /> : <CheckoutPageDesktop />;
+};
+
 const analyticsEnabled = isFeatureEnabled('analyticsDashboard');
 
 const App = () => (
@@ -84,7 +91,7 @@ const App = () => (
           <ErrorBoundary
             fallback={(error) => <CheckoutPageErrorFallback error={error} />}
           >
-            <CheckoutPage />
+            <CheckoutRouter />
           </ErrorBoundary>
         }
       />

@@ -1026,7 +1026,7 @@ export const CheckoutPage = () => {
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-4 sm:px-6">
+    <section className="mx-auto flex w-full max-w-4xl flex-col gap-9 px-3 sm:gap-10 sm:px-6 lg:px-8">
       <header className="space-y-3 text-center lg:text-left">
         <p className="text-xs font-semibold tracking-[0.35em] text-slate-400 uppercase dark:text-white/40">
           Mock checkout flow
@@ -1041,8 +1041,8 @@ export const CheckoutPage = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-[1.1fr,0.9fr]">
-        <article className="flex w-full flex-col gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-6 shadow-[0_40px_120px_-50px_rgba(15,23,42,0.2)] sm:p-8 dark:border-white/15 dark:bg-white/10">
+      <div className="grid gap-6 lg:gap-8">
+        <article className="flex w-full flex-col gap-4 rounded-2xl border border-stone-200/70 bg-white/95 p-3 shadow-[0_28px_96px_-60px_rgba(15,23,42,0.25)] sm:gap-6 sm:rounded-[2.25rem] sm:p-6 lg:rounded-[2.5rem] lg:bg-white/80 lg:p-8 dark:border-white/15 dark:bg-white/10">
           <div className="flex flex-col gap-2">
             <span className="text-xs tracking-[0.35em] text-slate-400 uppercase dark:text-white/40">
               Cart snapshot
@@ -1057,7 +1057,7 @@ export const CheckoutPage = () => {
             </p>
           </div>
 
-          <div className="grid gap-3 rounded-2xl border border-stone-200/70 bg-white/60 px-5 py-4 text-xs tracking-[0.3em] text-slate-400 uppercase sm:grid-cols-3 dark:border-white/15 dark:bg-white/10 dark:text-white/40">
+          <div className="grid gap-3 rounded-2xl border border-stone-200/70 bg-white/80 px-3 py-4 text-xs tracking-[0.3em] text-slate-400 uppercase sm:grid-cols-3 sm:px-5 dark:border-white/15 dark:bg-white/10 dark:text-white/40">
             <div className="flex flex-col gap-1">
               <span>Status</span>
               <span className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -1086,7 +1086,7 @@ export const CheckoutPage = () => {
                   return (
                     <li
                       key={item.cartLineUid ?? item.id ?? `line-${index}`}
-                      className="grid gap-3 rounded-2xl border border-stone-200/70 bg-white/70 px-4 py-3 sm:grid-cols-[1fr_auto] dark:border-white/15 dark:bg-white/5"
+                      className="grid gap-3 rounded-2xl border border-stone-200/70 bg-white/85 px-3 py-3 sm:grid-cols-[1fr_auto] sm:px-4 dark:border-white/15 dark:bg-white/5"
                     >
                       <div className="min-w-0 space-y-2">
                         <p className="font-semibold text-slate-900 dark:text-white">
@@ -1188,7 +1188,7 @@ export const CheckoutPage = () => {
                   Clear
                 </button>
               </div>
-              <div className="grid gap-3 rounded-2xl border border-slate-200/60 bg-white/70 p-4 text-[11px] tracking-[0.3em] text-slate-500 uppercase sm:grid-cols-3 dark:border-white/15 dark:bg-white/10 dark:text-white/50">
+              <div className="grid gap-3 rounded-2xl border border-slate-200/60 bg-white/90 px-3 py-4 text-[11px] tracking-[0.3em] text-slate-500 uppercase sm:grid-cols-3 sm:px-4 dark:border-white/15 dark:bg-white/10 dark:text-white/50">
                 <div className="flex flex-col gap-1">
                   <span>Total orders</span>
                   <span className="text-sm font-semibold tracking-normal text-slate-800 dark:text-white">
@@ -1256,7 +1256,7 @@ export const CheckoutPage = () => {
         </article>
 
         <form
-          className="flex w-full flex-col gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-6 shadow-[0_30px_100px_-60px_rgba(15,23,42,0.25)] sm:p-8 dark:border-white/15 dark:bg-white/10"
+          className="flex w-full flex-col gap-4 rounded-2xl border border-stone-200/70 bg-white/95 p-3 shadow-[0_24px_90px_-55px_rgba(15,23,42,0.28)] sm:gap-6 sm:rounded-[2.25rem] sm:p-6 lg:rounded-[2.5rem] lg:bg-white/80 lg:p-8 dark:border-white/15 dark:bg-white/10"
           onSubmit={handleSubmit}
           noValidate
           aria-describedby="checkout-helper"
@@ -1274,7 +1274,7 @@ export const CheckoutPage = () => {
             </p>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
             <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-white/80">
               <span className="text-xs tracking-[0.3em] text-slate-400 uppercase dark:text-white/40">
                 Name
@@ -1315,7 +1315,7 @@ export const CheckoutPage = () => {
             />
           </label>
 
-          <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/60 px-5 py-4 text-xs text-slate-500 dark:border-white/15 dark:bg-white/5 dark:text-white/60">
+          <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/70 bg-white/80 px-3 py-4 text-xs text-slate-500 sm:px-5 dark:border-white/15 dark:bg-white/5 dark:text-white/60">
             <p id="checkout-helper">
               Submitting creates a shareable confirmation. We immediately clear
               the cart so you can run again for another persona or scenario.
