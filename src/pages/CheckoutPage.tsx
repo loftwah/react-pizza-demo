@@ -1041,8 +1041,8 @@ export const CheckoutPage = () => {
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
-        <article className="flex flex-col gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-8 shadow-[0_40px_120px_-50px_rgba(15,23,42,0.2)] dark:border-white/15 dark:bg-white/10">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-[1.1fr,0.9fr]">
+        <article className="flex w-full flex-col gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-6 shadow-[0_40px_120px_-50px_rgba(15,23,42,0.2)] sm:p-8 dark:border-white/15 dark:bg-white/10">
           <div className="flex flex-col gap-2">
             <span className="text-xs tracking-[0.35em] text-slate-400 uppercase dark:text-white/40">
               Cart snapshot
@@ -1256,7 +1256,7 @@ export const CheckoutPage = () => {
         </article>
 
         <form
-          className="flex flex-col gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-8 shadow-[0_30px_100px_-60px_rgba(15,23,42,0.25)] dark:border-white/15 dark:bg-white/10"
+          className="flex w-full flex-col gap-6 rounded-[2.5rem] border border-stone-200/70 bg-white/80 p-6 shadow-[0_30px_100px_-60px_rgba(15,23,42,0.25)] sm:p-8 dark:border-white/15 dark:bg-white/10"
           onSubmit={handleSubmit}
           noValidate
           aria-describedby="checkout-helper"
