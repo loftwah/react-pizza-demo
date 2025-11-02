@@ -305,7 +305,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "pepperoni-classic",
     "displayName": "Pepperoni Classic",
-    "description": "Tomato sugo, shredded mozzarella, pepperoni cups, oregano oil.",
+    "description": "Stone-fired tomato sugo layered with bubbling mozzarella and pepperoni cups that crisp at the edges. A drizzle of oregano oil seals that classic, crowd-pleasing bite.",
     "toppings": ["Tomato", "Mozzarella", "Pepperoni"],
     "vegetarian": false,
     "vegan": false,
@@ -321,7 +321,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "smoky-bbq",
     "displayName": "Smoky BBQ Chicken",
-    "description": "BBQ sauce base, roast chicken, charred corn, red onion, parsley.",
+    "description": "Smoky-sweet BBQ base cradles tender roast chicken, charred corn, and ribbons of red onion. Fresh parsley keeps every slice lively.",
     "toppings": ["BBQ Sauce", "Chicken", "Corn", "Parsley"],
     "vegetarian": false,
     "vegan": false,
@@ -337,7 +337,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "firecracker",
     "displayName": "Firecracker",
-    "description": "Scorpion pepper oil, spicy salami, jalapeños, hot honey drizzle.",
+    "description": "Scorpion pepper oil and spicy salami launch a slow-building heat, balanced by tangy jalapeños. A final hot honey drizzle leaves a sweet spark.",
     "toppings": ["Scorpion Oil", "Salami", "Jalapeño", "Hot Honey"],
     "vegetarian": false,
     "vegan": false,
@@ -353,7 +353,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "green-garden",
     "displayName": "Green Garden",
-    "description": "Basil pesto base, cherry tomato confit, marinated zucchini, ricotta.",
+    "description": "Basil pesto carries confit cherry tomatoes and marinated zucchini ribbons across a crisp base. Soft ricotta dollops turn it into a garden party.",
     "toppings": ["Pesto", "Tomato", "Zucchini", "Ricotta"],
     "vegetarian": true,
     "vegan": false,
@@ -369,7 +369,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "wild-mushroom",
     "displayName": "Wild Mushroom",
-    "description": "Garlic cream, roasted field mushrooms, truffle salt, chives.",
+    "description": "Silky garlic cream sets the stage for roasted field mushrooms and a whisper of truffle salt. Fresh chives lift the earthiness in every bite.",
     "toppings": ["Garlic Cream", "Mushroom", "Truffle Salt"],
     "vegetarian": true,
     "vegan": false,
@@ -385,7 +385,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "pineapple-party",
     "displayName": "Pineapple Party",
-    "description": "Tomato sugo, leg ham, fire-roasted pineapple, pickled chilli.",
+    "description": "Tomato sugo meets leg ham and fire-roasted pineapple for a sweet-meets-smoky duet. Pickled chilli adds a playful zing to the finish.",
     "toppings": ["Tomato", "Ham", "Pineapple", "Chilli"],
     "vegetarian": false,
     "vegan": false,
@@ -401,7 +401,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "sunrise-margherita",
     "displayName": "Sunrise Margherita",
-    "description": "Slow-roasted tomatoes, stracciatella, basil oil, lemon zest.",
+    "description": "Slow-roasted tomatoes, stracciatella, and basil oil melt into a sun-warmed crust. A touch of lemon zest keeps this margherita bright and breezy.",
     "toppings": ["Tomato", "Stracciatella", "Basil Oil", "Lemon Zest"],
     "vegetarian": true,
     "vegan": false,
@@ -417,7 +417,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "smoked-maple-bacon",
     "displayName": "Smoked Maple Bacon",
-    "description": "Maple glaze, smoked bacon, roasted sweet potato, pickled onion.",
+    "description": "Maple glaze hugs smoked bacon and caramelised sweet potato chunks. Pickled onion slices cut through with just enough tang.",
     "toppings": ["Maple", "Bacon", "Sweet Potato", "Pickled Onion"],
     "vegetarian": false,
     "vegan": false,
@@ -433,7 +433,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "calabrian-scorcher",
     "displayName": "Calabrian Scorcher",
-    "description": "Nduja butter base, fennel sausage, charred peppers, chilli honey.",
+    "description": "Nduja-spiked butter and fennel sausage bring a savoury blaze from the first bite. Charred peppers and chilli honey chase it with smoky sweetness.",
     "toppings": ["Nduja", "Fennel Sausage", "Charred Peppers", "Chilli Honey"],
     "vegetarian": false,
     "vegan": false,
@@ -449,7 +449,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "forest-fable",
     "displayName": "Forest Fable (Vegan)",
-    "description": "Porcini cashew cream, rosemary roast potatoes, caramelised shallot, crispy sage.",
+    "description": "Porcini cashew cream lays down a lush, umami base for rosemary roast potatoes. Caramelised shallots and crispy sage add campfire comfort.",
     "toppings": [
       "Porcini Cashew Cream",
       "Rosemary Potatoes",
@@ -470,7 +470,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "home-alone-cheese",
     "displayName": "Home Alone Cheese Pizza",
-    "description": "Crisp base, tomato sugo, melty mozzarella, olive oil gloss.",
+    "description": "A golden base brushed with tomato sugo and bubbling mozzarella for pure movie-night comfort. Finished with a kiss of olive oil so every bite stays glossy.",
     "toppings": ["Tomato Sugo", "Mozzarella", "Olive Oil Gloss"],
     "vegetarian": true,
     "vegan": false,
@@ -486,7 +486,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "home-alone-vegan-cheese",
     "displayName": "Home Alone Vegan Cheese Pizza",
-    "description": "Crisp base, tomato sugo, melty vegan mozzarella, olive oil gloss.",
+    "description": "Classic tomato sugo and stretchy vegan mozzarella deliver the nostalgic slice without compromise. A final olive oil gloss keeps it just as indulgent.",
     "toppings": ["Tomato Sugo", "Vegan Mozzarella", "Olive Oil Gloss"],
     "vegetarian": true,
     "vegan": true,
@@ -527,7 +527,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "white-chocolate-nutella-biscoff",
     "displayName": "White Chocolate Nutella Biscoff",
-    "description": "Cinnamon crust, warm white chocolate ganache, Nutella ripple, crushed Biscoff biscuit.",
+    "description": "Cinnamon-dusted crust carries warm white chocolate ganache with a Nutella ripple. Crushed Biscoff biscuits bring caramel crunch to every slice.",
     "toppings": ["White Chocolate", "Nutella", "Biscoff Crumb", "Cinnamon"],
     "vegetarian": true,
     "vegan": false,
@@ -543,7 +543,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "nutella-chocolate",
     "displayName": "Nutella Chocolate",
-    "description": "Toasted base, Nutella spread, dark chocolate shards, strawberry compote drizzle.",
+    "description": "Toasted dough slathered in Nutella and scattered with dark chocolate shards. A drizzle of strawberry compote keeps it velvety and bright.",
     "toppings": ["Nutella", "Dark Chocolate Shards", "Strawberry Compote"],
     "vegetarian": true,
     "vegan": false,
@@ -559,7 +559,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "loftwah-cola",
     "displayName": "Loftwah Cola",
-    "description": "House-label cola with a crisp finish. Served chilled in share-friendly bottles.",
+    "description": "Small-batch cola with gentle caramel notes and a crisp sparkle. Served ice-cold in share-friendly bottles for easy sipping.",
     "toppings": [],
     "vegetarian": true,
     "vegan": true,
@@ -581,7 +581,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "loftwah-iced-coffee",
     "displayName": "Loftwah Iced Coffee",
-    "description": "Slow-steeped cold brew poured over crushed ice with vanilla cream ripple and cocoa dust.",
+    "description": "Slow-steeped cold brew cascades over crushed ice, tempered by a vanilla cream ripple. Cocoa dust on top gives a cafe finish.",
     "toppings": ["Cold Brew Coffee", "Vanilla Cream", "Cocoa Dust"],
     "vegetarian": true,
     "vegan": false,
@@ -603,7 +603,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "loftwah-water",
     "displayName": "Loftwah Sparkling Water",
-    "description": "Chilled Tasmanian spring water, lightly sparkling with a twist of crisp citrus aroma.",
+    "description": "Tasmanian spring water with gentle bubbles and a whisper of citrus aroma. Clean, quenching refreshment for any slice.",
     "toppings": ["Sparkling Spring Water", "Citrus Mist"],
     "vegetarian": true,
     "vegan": true,
@@ -625,7 +625,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "loftwah-raspberry",
     "displayName": "Loftwah Raspberry Fizz",
-    "description": "Sparkling raspberry soda infused with native peppermint, balanced with a lime zest finish.",
+    "description": "Sparkling raspberry soda infused with native peppermint for a cool lift. Lime zest keeps the finish bright and zippy.",
     "toppings": ["Raspberry Soda", "Native Peppermint", "Lime Zest"],
     "vegetarian": true,
     "vegan": true,
@@ -647,7 +647,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
   {
     "id": "loftwah-lemon",
     "displayName": "Loftwah Lemon Cooler",
-    "description": "Fresh-pressed lemons shaken with sparkling mineral water and a hint of vanilla sugar.",
+    "description": "Fresh-pressed lemon juice shaken through sparkling mineral water with a hint of vanilla sugar. Sunshine in a glass, balanced and refreshing.",
     "toppings": [
       "Sparkling Mineral Water",
       "Fresh Lemon Juice",
