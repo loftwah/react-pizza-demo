@@ -1,12 +1,13 @@
 # Loftwah React Pizza Shop: Step-by-Step Build Guide (ELI5 Edition for Beginner Pros)
 
-Hey there! If you're a new professional developer (maybe you got this running with some AI help, but now you want to *really* understand it), this guide is for you. We'll build the app from scratch, explaining everything like you're 5—but with pro tips to get you up to speed fast. No fluff: What we're adding, why it matters, how it works (with code snippets + simple breakdowns), and what to do next (like "npm install? Build?").
+Hey there! If you're a new professional developer (maybe you got this running with some AI help, but now you want to _really_ understand it), this guide is for you. We'll build the app from scratch, explaining everything like you're 5—but with pro tips to get you up to speed fast. No fluff: What we're adding, why it matters, how it works (with code snippets + simple breakdowns), and what to do next (like "npm install? Build?").
 
 Think of this as your "React Cookbook": Follow along, code it, and you'll know how to turn a blank Vite app into a full pizza shop demo. You'll learn core React, tools, and patterns—enough for real jobs. If something's confusing, pause and Google "React [term]" or ask AI for a quick example.
 
 **Pro Tip**: Open your code editor + terminal. Run commands as we go. If stuck, `npm run dev` and check the browser/console for errors—they tell you what's wrong!
 
-Assumptions: 
+Assumptions:
+
 - You have Node.js (version 24+—we'll check this later). If not, download from nodejs.org.
 - You're comfy with basics like "npm install" (adds packages) and editing files.
 - Time: 2-4 hours. Test each step!
@@ -18,6 +19,7 @@ Assumptions:
 This is "zero": A simple app to show Vite works. It's like building a house—first the frame.
 
 In your terminal:
+
 ```bash
 npm create vite@latest loftwah-pizza -- --template react-ts  # Creates folder with basics
 cd loftwah-pizza  # Go inside
@@ -26,55 +28,73 @@ npm run dev  # Starts server—opens browser to http://localhost:5173 (logos + b
 ```
 
 ### What's Inside Now? (Simple Breakdown)
+
 Vite is like a super-fast "cook" for your code: Bundles JS/TS, handles images, reloads changes instantly.
 
 Key files (open them!):
+
 - `index.html`: The "front door"—has `<div id="root"></div>` where React puts everything. Script points to `main.tsx`.
 - `src/main.tsx`: Starts React. Like turning on the lights.
-  ```tsx
-  import React from 'react'  // The "brain" for building UIs (components, state)
-  import ReactDOM from 'react-dom/client'  // "Puts" React stuff in the browser DOM (HTML)
-  import App from './App'  // Your main page (we'll edit this)
-  import './index.css'  // Styles (empty now—like a blank outfit)
 
-  ReactDOM.createRoot(document.getElementById('root')!).render(  // Finds #root div, puts App inside
-    <React.StrictMode>  // "Safety net"—in dev, checks for mistakes (like bad state use)
-      <App />  // Runs your App component
-    </React.StrictMode>
-  )
-  ```
-  - Why? This is how React "starts." `createRoot` is new in React 18—faster, supports future features.
-- `src/App.tsx`: Your first page (like a blank canvas). Has a counter to test.
   ```tsx
-  import { useState } from 'react'  // "Memory" hook—remembers stuff between clicks
-  import reactLogo from './assets/react.svg'  // Image import—Vite optimizes it
-  import './App.css'  // Styles for this file only
+  import React from 'react'; // The "brain" for building UIs (components, state)
+  import ReactDOM from 'react-dom/client'; // "Puts" React stuff in the browser DOM (HTML)
+  import App from './App'; // Your main page (we'll edit this)
+  import './index.css'; // Styles (empty now—like a blank outfit)
+
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    // Finds #root div, puts App inside
+    <React.StrictMode>
+      {' '}
+      // "Safety net"—in dev, checks for mistakes (like bad state use)
+      <App /> // Runs your App component
+    </React.StrictMode>,
+  );
+  ```
+
+  - Why? This is how React "starts." `createRoot` is new in React 18—faster, supports future features.
+
+- `src/App.tsx`: Your first page (like a blank canvas). Has a counter to test.
+
+  ```tsx
+  import { useState } from 'react'; // "Memory" hook—remembers stuff between clicks
+  import reactLogo from './assets/react.svg'; // Image import—Vite optimizes it
+  import './App.css'; // Styles for this file only
 
   function App() {
-    const [count, setCount] = useState(0)  // count starts at 0; setCount changes it + updates screen
+    const [count, setCount] = useState(0); // count starts at 0; setCount changes it + updates screen
 
-    return (  // What to show: Like HTML, but with {variables}
-      <div className="App">  // className = CSS class (Tailwind later)
-        <h1>Vite + React</h1>  // Heading
-        <button onClick={() => setCount(count + 1)}>  // Click event—updates count
-          count is {count}  // Shows live value
+    return (
+      // What to show: Like HTML, but with {variables}
+      <div className="App">
+        {' '}
+        // className = CSS class (Tailwind later)
+        <h1>Vite + React</h1> // Heading
+        <button onClick={() => setCount(count + 1)}>
+          {' '}
+          // Click event—updates count count is {count} // Shows live value
         </button>
       </div>
-    )
+    );
   }
 
-  export default App  // "Share" this component for imports
+  export default App; // "Share" this component for imports
   ```
-  - Why useState? React "remembers" without globals. Change count → screen updates automatically (re-render).
-- `vite.config.ts`: Vite's "recipe."
-  ```ts
-  import { defineConfig } from 'vite'  // Vite's setup function
-  import react from '@vitejs/plugin-react'  // Makes React work (JSX, fast reload)
 
-  export default defineConfig({  // Your config
-    plugins: [react()],  // Add React support
-  })
+  - Why useState? React "remembers" without globals. Change count → screen updates automatically (re-render).
+
+- `vite.config.ts`: Vite's "recipe."
+
+  ```ts
+  import { defineConfig } from 'vite'; // Vite's setup function
+  import react from '@vitejs/plugin-react'; // Makes React work (JSX, fast reload)
+
+  export default defineConfig({
+    // Your config
+    plugins: [react()], // Add React support
+  });
   ```
+
   - Why plugins? Vite is modular—add features like React without bloat.
 
 **Test It**: Browser shows logos + button. Click: Count goes up. Edit `App.tsx` (change h1): Saves + reloads instantly (HMR = hot module replacement—saves time!).
@@ -93,7 +113,7 @@ npm i -D tailwindcss postcss autoprefixer @mdx-js/react @mdx-js/rollup vitest pl
 npx tailwindcss init -p  # Makes tailwind.config.js + postcss.config.js (styles setup)
 ```
 
-- **What Each Does (ELI5)**: 
+- **What Each Does (ELI5)**:
   - react-router-dom: Switches pages without reload (like tabs in app).
   - @tanstack/react-query: Gets data from "API" (mock for us) + remembers it.
   - zustand: "Box" for shared info (cart items—everyone can see/change).
@@ -103,6 +123,7 @@ npx tailwindcss init -p  # Makes tailwind.config.js + postcss.config.js (styles 
   - Dev ones: Tailwind (quick styles), MDX (mix text + code), Vitest/Playwright (tests), Testing Library (click/test like user).
 
 Update `package.json` scripts (edit file):
+
 ```json
 "scripts": {
   "dev": "vite",
@@ -124,20 +145,24 @@ Update `package.json` scripts (edit file):
 Tailwind = "Lego blocks" for styles: Use classes like "bg-red p-4" instead of CSS files.
 
 Edit `tailwind.config.js` (created by init):
+
 ```js
 module.exports = {
-  content: ['./src/**/*.{ts,tsx,mdx}'],  // Tailwind "looks" here for classes to keep (no bloat)
-  theme: {  // Your custom look
-    extend: {  // Add to defaults
-      colors: { 'brand-red': '#e53e3e' },  // Pizza theme color—use as text-brand-red
-      fontFamily: { display: ['Your Cool Font', 'sans-serif'] },  // Google Fonts later
+  content: ['./src/**/*.{ts,tsx,mdx}'], // Tailwind "looks" here for classes to keep (no bloat)
+  theme: {
+    // Your custom look
+    extend: {
+      // Add to defaults
+      colors: { 'brand-red': '#e53e3e' }, // Pizza theme color—use as text-brand-red
+      fontFamily: { display: ['Your Cool Font', 'sans-serif'] }, // Google Fonts later
     },
   },
-  plugins: [],  // Empty for now
-}
+  plugins: [], // Empty for now
+};
 ```
 
 Replace `src/index.css` (global styles):
+
 ```css
 @tailwind base;  // Basic resets (fonts, margins zero)
 @tailwind components;  // Your custom "recipes" (add later, e.g., @layer components { .btn { ... } })
@@ -163,31 +188,47 @@ No npm install/build needed here (already did init). Just edit + refresh.
 Like adding doors to rooms: Switch "pages" without leaving the app.
 
 `main.tsx` update (wrap App):
+
 ```tsx
-import { BrowserRouter } from 'react-router-dom'  // "Fake" browser history for single-page app
+import { BrowserRouter } from 'react-router-dom'; // "Fake" browser history for single-page app
 
 // Inside render:
-<BrowserRouter>  // Enables links/routes
+<BrowserRouter>
+  {' '}
+  // Enables links/routes
   <App />
-</BrowserRouter>
+</BrowserRouter>;
 ```
 
 `App.tsx` (remove counter; add routes):
+
 ```tsx
-import { Routes, Route } from 'react-router-dom'  // "If URL is X, show Y"
+import { Routes, Route } from 'react-router-dom'; // "If URL is X, show Y"
 
 function App() {
   return (
-    <Routes>  // Big switch statement for URLs
-      <Route path="/" element={<div className="p-4">Menu Page (pizzas coming soon!)</div>} />  // Home
-      <Route path="/about" element={<div className="p-4">About Us</div>} />  // New "page"
-      <Route path="*" element={<div className="p-4 text-red-500">404 - Page Not Found</div>} />  // Wildcard for bad URLs
+    <Routes>
+      {' '}
+      // Big switch statement for URLs
+      <Route
+        path="/"
+        element={<div className="p-4">Menu Page (pizzas coming soon!)</div>}
+      />{' '}
+      // Home
+      <Route path="/about" element={<div className="p-4">About Us</div>} /> //
+      New "page"
+      <Route
+        path="*"
+        element={<div className="p-4 text-red-500">404 - Page Not Found</div>}
+      />{' '}
+      // Wildcard for bad URLs
     </Routes>
-  )
+  );
 }
 ```
 
 Create `src/components/Header.tsx` (shared nav—add to top of App return):
+
 ```tsx
 import { NavLink } from 'react-router-dom'  // Link with "active" superpowers
 import clsx from 'clsx'  // "Mix" classes easily
@@ -195,7 +236,7 @@ import clsx from 'clsx'  // "Mix" classes easily
 export const Header = () => (  // Function component—no state yet
   <header className="bg-white p-4 border-b shadow">  // Tailwind: white bg, padding, border
     <nav className="flex gap-4">  // Horizontal links
-      <NavLink 
+      <NavLink
         to="/"  // URL to go to
         className={({ isActive }) => clsx(  // clsx: if active, add classes
           'px-4 py-2 rounded',  // Base
@@ -227,6 +268,7 @@ No install/build—already installed router. Refresh dev server if needed.
 Like a light switch for the app.
 
 Create `src/providers/theme-context.ts` (global "share" for theme):
+
 ```ts
 import { createContext, useContext, useState, useEffect } from 'react'  // Context = "broadcast" to all kids
 
@@ -258,6 +300,7 @@ export const useTheme = () => useContext(ThemeContext)  // Easy hook to "listen"
 ```
 
 `main.tsx` update (wrap BrowserRouter):
+
 ```tsx
 <ThemeProvider>
   <BrowserRouter> ... </BrowserRouter>
@@ -265,6 +308,7 @@ export const useTheme = () => useContext(ThemeContext)  // Easy hook to "listen"
 ```
 
 `Header.tsx` add button:
+
 ```tsx
 const { toggleTheme } = useTheme()  // Listen here
 <button onClick={toggleTheme} className="ml-auto p-2 bg-gray-200 rounded">Toggle Theme</button>
@@ -287,6 +331,7 @@ No install—React built-in. Refresh dev.
 Like "toast" notifications on your phone—short messages (e.g., "Added to cart!").
 
 Create `src/providers/toast-context.tsx` (similar to theme):
+
 ```ts
 const ToastContext = createContext({ showToast: () => {} as (toast: { message: string, tone: 'success' | 'info' | 'error' }) => void })
 
@@ -320,6 +365,7 @@ export const useToast = () => useContext(ToastContext)
 ```
 
 `main.tsx` wrap (inside ThemeProvider):
+
 ```tsx
 <ToastProvider>
   <BrowserRouter> ... </BrowserRouter>
@@ -339,6 +385,7 @@ Test: Add button in App to showToast. Click: Pop-up appears/disappears.
 Like "ordering food"—fetch menu, show loading if slow.
 
 `main.tsx` wrap (outermost):
+
 ```tsx
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -350,6 +397,7 @@ const queryClient = new QueryClient()  // "Manager" for fetches
 ```
 
 Create `src/domain/menu.ts` (data "home"):
+
 ```ts
 export type Pizza = { id: string; displayName: string; prices: Record<PizzaSize, number>; image: string; description: string; ... }  // Shape of pizza (TS safety)
 
@@ -373,15 +421,18 @@ export const fetchMenu = async () => {  // "API" call (mock)
 ```
 
 Create `src/hooks/useMenu.ts` (reusable "getter"):
-```ts
-import { useQuery } from '@tanstack/react-query'
 
-export const useMenu = () => useQuery({  // "Ask for data"
-  queryKey: ['menu'],  // Name for cache (same key = share cache)
-  queryFn: fetchMenu,  // The "doer" function
-  initialData: menuSnapshot,  // Start with this—no "loading" flash
-  staleTime: 5 * 60 * 1000,  // Keep fresh 5 mins—no re-fetch
-})
+```ts
+import { useQuery } from '@tanstack/react-query';
+
+export const useMenu = () =>
+  useQuery({
+    // "Ask for data"
+    queryKey: ['menu'], // Name for cache (same key = share cache)
+    queryFn: fetchMenu, // The "doer" function
+    initialData: menuSnapshot, // Start with this—no "loading" flash
+    staleTime: 5 * 60 * 1000, // Keep fresh 5 mins—no re-fetch
+  });
 ```
 
 **How It Works**: useQuery "asks" + caches. If net slow, shows initialData. Auto retries if error.
@@ -395,6 +446,7 @@ Test: In MenuPage (next step), use { data, isLoading }.
 Zustand = simple "store" for shared stuff (no big Redux setup).
 
 Create `src/stores/cart.ts`:
+
 ```ts
 import { create } from 'zustand'  // Make store
 import { persist } from 'zustand/middleware'  // Save to localStorage (survives refresh)
@@ -444,41 +496,58 @@ Test: In console (F12), `import { useCartStore } from './src/stores/cart'; useCa
 Replace home in App routes with MenuPage.
 
 Create `src/pages/MenuPage.tsx`:
+
 ```tsx
-import { useMenu } from '../hooks/useMenu'  // Data hook
-import PizzaCard from '../components/PizzaCard'  // Per item
+import { useMenu } from '../hooks/useMenu'; // Data hook
+import PizzaCard from '../components/PizzaCard'; // Per item
 
 export const MenuPage = () => {
-  const { data: menu, isLoading } = useMenu()  // Get data; handle loading
+  const { data: menu, isLoading } = useMenu(); // Get data; handle loading
 
-  const [isOpen, setIsOpen] = useState(true)  // Local for shop hours
+  const [isOpen, setIsOpen] = useState(true); // Local for shop hours
 
-  useEffect(() => {  // Side effect: Check time
+  useEffect(() => {
+    // Side effect: Check time
     const checkOpen = () => {
-      const hour = new Date().getHours()  // Now's hour
-      setIsOpen(hour >= 11 && hour < 22)  // Open 11am-10pm
-    }
-    checkOpen()  // Run now
-    const interval = setInterval(checkOpen, 60 * 1000)  // Every min
-    return () => clearInterval(interval)  // Cleanup (no leaks)
-  }, [])  // Run once
+      const hour = new Date().getHours(); // Now's hour
+      setIsOpen(hour >= 11 && hour < 22); // Open 11am-10pm
+    };
+    checkOpen(); // Run now
+    const interval = setInterval(checkOpen, 60 * 1000); // Every min
+    return () => clearInterval(interval); // Cleanup (no leaks)
+  }, []); // Run once
 
-  if (isLoading) return <div className="p-4 text-center">Loading pizzas...</div>  // Spinner alternative
+  if (isLoading)
+    return <div className="p-4 text-center">Loading pizzas...</div>; // Spinner alternative
 
   return (
-    <section className="p-4">  // Container
-      {!isOpen && <div className="bg-yellow-200 p-4 mb-4">We're closed! Come back tomorrow.</div>}  // Banner
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">  // Responsive: 1 col mobile, 3 desktop
-        {menu.map(pizza => (  // Loop + key for efficiency
-          <PizzaCard key={pizza.id} pizza={pizza} />  // Pass data
-        ))}
+    <section className="p-4">
+      {' '}
+      // Container
+      {!isOpen && (
+        <div className="mb-4 bg-yellow-200 p-4">
+          We're closed! Come back tomorrow.
+        </div>
+      )}{' '}
+      // Banner
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {' '}
+        // Responsive: 1 col mobile, 3 desktop
+        {menu.map(
+          (
+            pizza, // Loop + key for efficiency
+          ) => (
+            <PizzaCard key={pizza.id} pizza={pizza} /> // Pass data
+          ),
+        )}
       </div>
     </section>
-  )
-}
+  );
+};
 ```
 
 Create `src/components/PizzaCard.tsx` (the star):
+
 ```tsx
 import { useState } from 'react'
 import { Flame, Leaf } from 'lucide-react'  // Icons
@@ -528,35 +597,38 @@ Test: Add pizzas to menu array. Browser shows grid. Click add: Toast pops, cart 
 ## Step 10: Build Checkout (The Cash Register)
 
 Create `src/pages/CheckoutPage.tsx` (add to routes):
+
 ```tsx
-import { useIsMobile } from '../hooks/useIsMobile'  // Detect screen
+import { useIsMobile } from '../hooks/useIsMobile'; // Detect screen
 
 export const CheckoutPage = () => {
-  const isMobile = useIsMobile()  // True if <480px (media query)
-  return isMobile ? <CheckoutPageMobile /> : <CheckoutPageDesktop />  // Pick version
-}
+  const isMobile = useIsMobile(); // True if <480px (media query)
+  return isMobile ? <CheckoutPageMobile /> : <CheckoutPageDesktop />; // Pick version
+};
 ```
 
 `useIsMobile.ts`:
+
 ```ts
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 export const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia('(max-width: 480px)')  // Listen to size
-    setIsMobile(media.matches)
-    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    media.addEventListener('change', listener)
-    return () => media.removeEventListener('change', listener)  // Cleanup
-  }, [])
+    const media = window.matchMedia('(max-width: 480px)'); // Listen to size
+    setIsMobile(media.matches);
+    const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener); // Cleanup
+  }, []);
 
-  return isMobile
-}
+  return isMobile;
+};
 ```
 
 `CheckoutPageMobile.tsx` (simple form):
+
 ```tsx
 import { useState } from 'react'
 import { useCartStore } from '../stores/cart'
@@ -608,15 +680,17 @@ export const CheckoutPageMobile = () => {
 Desktop version: Wider form + history side panel.
 
 Create `order-service.ts` (mock submit):
+
 ```ts
-export class OrderService {  // "Processor"
+export class OrderService {
+  // "Processor"
   async run(input) {
     // Mock steps: validate, "send" to API (fetch /api/order-response.json with delay), save
     const res = await retryWithBackoff(async () => {
-      await new Promise(r => setTimeout(r, 500))  // Fake work
-      return { ok: true, value: { id: 'LP-' + Date.now(), ...input } }  // Fake order
-    })
-    return res  // Result pattern
+      await new Promise((r) => setTimeout(r, 500)); // Fake work
+      return { ok: true, value: { id: 'LP-' + Date.now(), ...input } }; // Fake order
+    });
+    return res; // Result pattern
   }
 }
 ```
@@ -631,31 +705,35 @@ Test: Add to cart, go /checkout, submit: Toast + confirmation.
 
 Like a blog in your app.
 
-First, add plugin (npm already installed @mdx-js/*):
+First, add plugin (npm already installed @mdx-js/\*):
 Edit `vite.config.ts`:
+
 ```ts
-import mdx from '@mdx-js/rollup'  // New import
+import mdx from '@mdx-js/rollup'; // New import
 
 export default defineConfig({
-  plugins: [react(), mdx()],  // Add to array—Vite "runs" it for .mdx files
-})
+  plugins: [react(), mdx()], // Add to array—Vite "runs" it for .mdx files
+});
 ```
 
 Create `src/types/mdx.d.ts` (TS support):
+
 ```ts
-declare module '*.mdx' {  // Tell TS ".mdx" = component
-  const MDXComponent: (props) => JSX.Element
-  export default MDXComponent
+declare module '*.mdx' {
+  // Tell TS ".mdx" = component
+  const MDXComponent: (props) => JSX.Element;
+  export default MDXComponent;
 }
 ```
 
 Create `src/pages/About.mdx`:
+
 ```mdx
-# About Loftwah Pizza  // Markdown heading
+# About Loftwah Pizza // Markdown heading
 
-We love pizza!  // Text
+We love pizza! // Text
 
-import PizzaCard from '../components/PizzaCard'  // Embed React!
+import PizzaCard from '../components/PizzaCard'; // Embed React!
 
 <PizzaCard pizza={{ id: 'example', ... }} />  // Live component
 ```
@@ -663,6 +741,7 @@ import PizzaCard from '../components/PizzaCard'  // Embed React!
 Update routes: `<Route path="/about" element={<About />} />` (import About from './pages/About.mdx')
 
 **How to Add Plugin (Footprint + Steps)**:
+
 - Footprint: Adds ~5MB to node_modules (small); builds .mdx to JS.
 - Do I npm install again? No—if you already ran npm i @mdx-js/rollup. If new, yes: `npm i -D @mdx-js/rollup`.
 - Build again? No—just `npm run dev` restarts with plugin. Test build: `npm run build` (checks for errors).
@@ -678,9 +757,10 @@ Test: /about shows heading + pizza card.
 Create `src/hooks/useAnalytics.ts` (similar to useMenu).
 
 `src/pages/AnalyticsPage.tsx`:
+
 ```tsx
-const { data } = useAnalytics()  // Metrics
-const insights = computeOrderInsights(useOrderHistory.getState().orders)  // From orders.ts
+const { data } = useAnalytics(); // Metrics
+const insights = computeOrderInsights(useOrderHistory.getState().orders); // From orders.ts
 
 // Show cards: <div>Total Orders: {insights.totalOrders}</div>
 // Add charts: Create components like HourlyOrdersChart.tsx (use canvas or lib like recharts—npm i recharts if needed)
@@ -693,6 +773,7 @@ const insights = computeOrderInsights(useOrderHistory.getState().orders)  // Fro
 ## Step 15: Add Tests and Debug Tools (Catch Bugs Early)
 
 Update `vite.config.ts` for Vitest:
+
 ```ts
 test: {
   globals: true,  // Default vars
@@ -704,17 +785,20 @@ test: {
 Create `src/test/setup.ts`: Empty for now.
 
 Add test: `src/components/__tests__/PizzaCard.test.tsx`
-```tsx
-import { describe, it, expect } from 'vitest'  // Test funcs
-import { render, screen } from '@testing-library/react'  // Fake render
-import PizzaCard from '../PizzaCard'  // Your component
 
-describe('PizzaCard', () => {  // Group
-  it('shows name', () => {  // Test case
-    render(<PizzaCard pizza={{ displayName: 'Test Pizza' }} />)  // "Draw" it
-    expect(screen.getByText('Test Pizza')).toBeInTheDocument()  // Check
-  })
-})
+```tsx
+import { describe, it, expect } from 'vitest'; // Test funcs
+import { render, screen } from '@testing-library/react'; // Fake render
+import PizzaCard from '../PizzaCard'; // Your component
+
+describe('PizzaCard', () => {
+  // Group
+  it('shows name', () => {
+    // Test case
+    render(<PizzaCard pizza={{ displayName: 'Test Pizza' }} />); // "Draw" it
+    expect(screen.getByText('Test Pizza')).toBeInTheDocument(); // Check
+  });
+});
 ```
 
 Run `npm test`—passes if name shows.

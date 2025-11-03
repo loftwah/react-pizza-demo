@@ -15,12 +15,15 @@ test.describe('Checkout extras panel', () => {
   test('stays open after removing a quantity from a line item', async ({
     page,
   }) => {
-    await page.addInitScript(({ storageKey, cartState }) => {
-      window.localStorage.setItem(storageKey, cartState);
-    }, {
-      storageKey: cartStorageKey,
-      cartState: JSON.stringify(cartFixture),
-    });
+    await page.addInitScript(
+      ({ storageKey, cartState }) => {
+        window.localStorage.setItem(storageKey, cartState);
+      },
+      {
+        storageKey: cartStorageKey,
+        cartState: JSON.stringify(cartFixture),
+      },
+    );
 
     await page.goto('./checkout');
 
@@ -34,7 +37,9 @@ test.describe('Checkout extras panel', () => {
 
     await page.getByRole('button', { name: /remove one/i }).click();
 
-    await expect(page.getByRole('button', { name: /hide extras/i })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /hide extras/i }),
+    ).toBeVisible();
     await expect(page.getByText(/reset extras/i)).toBeVisible();
   });
 });

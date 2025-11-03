@@ -24,9 +24,7 @@ const resetCartStore = () => {
   );
 };
 
-const createLineItem = (
-  overrides?: Partial<OrderLineItem>,
-): OrderLineItem => ({
+const createLineItem = (overrides?: Partial<OrderLineItem>): OrderLineItem => ({
   id: 'pepperoni-classic-medium',
   cartLineUid: 'line-test-123',
   pizzaId: basePizza.id,
@@ -83,8 +81,12 @@ describe('LineItemCustomiser', () => {
       </>,
     );
 
-    const firstToggle = screen.getAllByRole('button', { name: /edit extras/i })[0];
-    const secondToggle = screen.getAllByRole('button', { name: /edit extras/i })[1];
+    const firstToggle = screen.getAllByRole('button', {
+      name: /edit extras/i,
+    })[0];
+    const secondToggle = screen.getAllByRole('button', {
+      name: /edit extras/i,
+    })[1];
 
     await user.click(firstToggle);
 

@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Copy, Minus, Plus, Share2, Trash2, Volume2, VolumeX } from 'lucide-react';
+import {
+  Copy,
+  Minus,
+  Plus,
+  Share2,
+  Trash2,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
 import clsx from 'clsx';
 import { z } from 'zod';
 import { useCartStore, type CartItem } from '../stores/cart';
@@ -94,7 +102,9 @@ export const CheckoutPageMobile = () => {
     (useOrderHistory as PersistedHistoryStore).persist?.hasHydrated?.() ?? true;
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [submittedOrder, setSubmittedOrder] = useState<OrderRecord | null>(null);
+  const [submittedOrder, setSubmittedOrder] = useState<OrderRecord | null>(
+    null,
+  );
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const cartDetails = useMemo<OrderLineItem[]>(() => {
@@ -148,7 +158,9 @@ export const CheckoutPageMobile = () => {
 
   useEffect(() => {
     if (!sharedOrderId || !ordersHydrated) return;
-    const matchingOrder = orderHistory.find((order) => order.id === sharedOrderId);
+    const matchingOrder = orderHistory.find(
+      (order) => order.id === sharedOrderId,
+    );
     if (matchingOrder) {
       setSubmittedOrder(matchingOrder);
       showToast({
@@ -353,7 +365,9 @@ export const CheckoutPageMobile = () => {
 
   const handleCopySummary = useCallback(async () => {
     if (!submittedOrder) return;
-    await copyToClipboard(buildOrderSummary(submittedOrder, shareLink ?? undefined));
+    await copyToClipboard(
+      buildOrderSummary(submittedOrder, shareLink ?? undefined),
+    );
     showToast({
       message: 'Order summary copied.',
       tone: 'success',
@@ -415,7 +429,10 @@ export const CheckoutPageMobile = () => {
 
         <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-white/15 dark:bg-white/10">
           {submittedOrder.items.map((item) => (
-            <div key={item.id} className="flex items-start justify-between gap-3 text-sm">
+            <div
+              key={item.id}
+              className="flex items-start justify-between gap-3 text-sm"
+            >
               <div>
                 <p className="font-medium text-slate-900 dark:text-white">
                   {item.quantity}× {item.name}
@@ -539,7 +556,7 @@ export const CheckoutPageMobile = () => {
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
-                <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold tracking-[0.2em] uppercase text-red-500 dark:bg-red-500/20 dark:text-red-200">
+                <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-red-500 uppercase dark:bg-red-500/20 dark:text-red-200">
                   {formatCurrency(line.unitPrice)} each
                 </span>
               </div>
@@ -569,25 +586,25 @@ export const CheckoutPageMobile = () => {
           name="customer"
           placeholder="Name"
           required
-          className="w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 dark:border-white/20 dark:bg-white/5 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-300/40"
+          className="w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:ring-2 focus:ring-red-300 focus:outline-none dark:border-white/20 dark:bg-white/5 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-300/40"
         />
         <input
           name="contact"
           placeholder="Phone or email"
           required
-          className="w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 dark:border-white/20 dark:bg-white/5 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-300/40"
+          className="w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:ring-2 focus:ring-red-300 focus:outline-none dark:border-white/20 dark:bg-white/5 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-300/40"
         />
         <textarea
           name="instructions"
           placeholder="Special notes (optional)"
           rows={2}
-          className="w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-300 dark:border-white/20 dark:bg-white/5 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-300/40"
+          className="w-full rounded-2xl border border-slate-200 p-3 text-sm text-slate-900 shadow-sm transition focus:border-red-400 focus:ring-2 focus:ring-red-300 focus:outline-none dark:border-white/20 dark:bg-white/5 dark:text-white dark:focus:border-red-300 dark:focus:ring-red-300/40"
         />
         <button
           type="submit"
           disabled={isProcessing || cartDetails.length === 0}
           className={clsx(
-            'w-full h-12 rounded-full text-sm font-semibold tracking-[0.2em] uppercase text-white transition focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-red-300 dark:focus-visible:ring-offset-neutral-950',
+            'h-12 w-full rounded-full text-sm font-semibold tracking-[0.2em] text-white uppercase transition focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:focus-visible:ring-red-300 dark:focus-visible:ring-offset-neutral-950',
             isProcessing || cartDetails.length === 0
               ? 'bg-slate-400 dark:bg-slate-600'
               : 'bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-400',

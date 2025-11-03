@@ -92,7 +92,7 @@ export const Header = () => {
           {cartAnnouncement}
         </span>
       )}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 px-2 py-4 sm:px-6 sm:gap-6 md:grid-cols-[auto_1fr_auto]">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 px-2 py-4 sm:gap-6 sm:px-6 md:grid-cols-[auto_1fr_auto]">
         <NavLink
           to="/"
           className="order-1 flex items-center gap-3 justify-self-center md:justify-self-start"
