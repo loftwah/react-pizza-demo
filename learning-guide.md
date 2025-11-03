@@ -1,14 +1,18 @@
 # Loftwah React Pizza Shop: Step-by-Step Build Guide (ELI5 Edition for Beginner Pros)
 
-Hey there! If you're a new professional developer (maybe you got this running with some AI help, but now you want to _really_ understand it), this guide is for you. We'll build the app from scratch, explaining everything like you're 5—but with pro tips to get you up to speed fast. No fluff: What we're adding, why it matters, how it works (with code snippets + simple breakdowns), and what to do next (like "npm install? Build?").
+Hey there! If you're a new professional developer (maybe you got this running with some AI help, but now you want to *really* understand it), this guide is for you. We'll build the app from scratch, explaining everything like you're 5—but with pro tips to get you up to speed fast. No fluff: What we're adding, why it matters, how it works (with code snippets + simple breakdowns), and what to do next (like "npm install? Build?").
 
 Think of this as your "React Cookbook": Follow along, code it, and you'll know how to turn a blank Vite app into a full pizza shop demo. You'll learn core React, tools, and patterns—enough for real jobs. If something's confusing, pause and Google "React [term]" or ask AI for a quick example.
 
 **Pro Tip**: Open your code editor + terminal. Run commands as we go. If stuck, `npm run dev` and check the browser/console for errors—they tell you what's wrong!
 
-Assumptions:
-
-- You have Node.js (version 24+—we'll check this later). If not, download from nodejs.org.
+Assumptions: 
+- You have Node.js Active LTS (>=20—safer for learners; repo prefers 24). Check `node -v`. If wrong, install nvm (nvm-sh.com), then:
+  ```bash
+  nvm install --lts
+  nvm use --lts
+  node -v  # Should be 20+
+  ```
 - You're comfy with basics like "npm install" (adds packages) and editing files.
 - Time: 2-4 hours. Test each step!
 
@@ -19,7 +23,6 @@ Assumptions:
 This is "zero": A simple app to show Vite works. It's like building a house—first the frame.
 
 In your terminal:
-
 ```bash
 npm create vite@latest loftwah-pizza -- --template react-ts  # Creates folder with basics
 cd loftwah-pizza  # Go inside
@@ -28,78 +31,70 @@ npm run dev  # Starts server—opens browser to http://localhost:5173 (logos + b
 ```
 
 ### What's Inside Now? (Simple Breakdown)
-
 Vite is like a super-fast "cook" for your code: Bundles JS/TS, handles images, reloads changes instantly.
 
 Key files (open them!):
-
 - `index.html`: The "front door"—has `<div id="root"></div>` where React puts everything. Script points to `main.tsx`.
 - `src/main.tsx`: Starts React. Like turning on the lights.
-
   ```tsx
-  import React from 'react'; // The "brain" for building UIs (components, state)
-  import ReactDOM from 'react-dom/client'; // "Puts" React stuff in the browser DOM (HTML)
-  import App from './App'; // Your main page (we'll edit this)
-  import './index.css'; // Styles (empty now—like a blank outfit)
+  import React from 'react';  // The "brain" for building UIs (components, state)
+  import ReactDOM from 'react-dom/client';  // "Puts" React stuff in the browser DOM (HTML)
+  import App from './App';  // Your main page (we'll edit this)
+  import './index.css';  // Styles (empty now—like a blank outfit)
 
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    // Finds #root div, puts App inside
-    <React.StrictMode>
-      {' '}
-      // "Safety net"—in dev, checks for mistakes (like bad state use)
-      <App /> // Runs your App component
+  ReactDOM.createRoot(document.getElementById('root')!).render(  // Finds #root div, puts App inside
+    <React.StrictMode>  {/* "Safety net"—in dev, checks for mistakes (like bad state use) */}
+      <App />  {/* Runs your App component */}
     </React.StrictMode>,
   );
   ```
-
   - Why? This is how React "starts." `createRoot` is new in React 18—faster, supports future features.
-
 - `src/App.tsx`: Your first page (like a blank canvas). Has a counter to test.
-
   ```tsx
-  import { useState } from 'react'; // "Memory" hook—remembers stuff between clicks
-  import reactLogo from './assets/react.svg'; // Image import—Vite optimizes it
-  import './App.css'; // Styles for this file only
+  import { useState } from 'react';  // "Memory" hook—remembers stuff between clicks
+  import reactLogo from './assets/react.svg';  // Image import—Vite optimizes it
+  import viteLogo from '/vite.svg';  // Public asset (no src/ prefix)
+  import './App.css';  // Styles for this file only
 
   function App() {
-    const [count, setCount] = useState(0); // count starts at 0; setCount changes it + updates screen
+    const [count, setCount] = useState(0);  // count starts at 0; setCount changes it + updates screen
 
-    return (
-      // What to show: Like HTML, but with {variables}
-      <div className="App">
-        {' '}
-        // className = CSS class (Tailwind later)
-        <h1>Vite + React</h1> // Heading
-        <button onClick={() => setCount(count + 1)}>
-          {' '}
-          // Click event—updates count count is {count} // Shows live value
-        </button>
-      </div>
+    return (  // What to show: Like HTML, but with {variables}
+      <>
+        <div>  {/* Fragment: group without extra DOM */}
+          <a href="https://vitejs.dev" target="_blank" rel="noreferrer">  {/* Links: standard HTML; rel for safety */}
+            <img src={viteLogo} className="logo" alt="Vite logo" />  {/* Dynamic src + class; alt for a11y (screen readers) */}
+          </a>
+          {/* Similar for React logo */}
+        </div>
+        <h1>Vite + React</h1>
+        <div className="card">
+          <button onClick={() => setCount((count) => count + 1)}>  {/* Click event—arrow fn updates state */}
+            count is {count}  {/* Shows live value */}
+          </button>
+          <p>Edit <code>src/App.tsx</code> and save to test HMR</p>  {/* HMR: hot module reload (fast updates) */}
+        </div>
+      </>,
     );
   }
 
-  export default App; // "Share" this component for imports
+  export default App;  // "Share" this component for imports
   ```
-
   - Why useState? React "remembers" without globals. Change count → screen updates automatically (re-render).
-
 - `vite.config.ts`: Vite's "recipe."
-
   ```ts
-  import { defineConfig } from 'vite'; // Vite's setup function
-  import react from '@vitejs/plugin-react'; // Makes React work (JSX, fast reload)
+  import { defineConfig } from 'vite';  // Vite's setup function
+  import react from '@vitejs/plugin-react';  // Makes React work (JSX, fast reload)
 
   export default defineConfig({
-    // Your config
-    plugins: [react()], // Add React support
+    plugins: [react()],  // Add React support
   });
   ```
-
   - Why plugins? Vite is modular—add features like React without bloat.
 
 **Test It**: Browser shows logos + button. Click: Count goes up. Edit `App.tsx` (change h1): Saves + reloads instantly (HMR = hot module replacement—saves time!).
 
-**Pro Tip**: Errors? Check console (F12). TS complains if types wrong (e.g., setCount('string')—boom, error before run).
+**Pro Tip**: Errors? Check console (F12). TS complains if types wrong (e.g., setCount('string')—boom, error before run). For a11y (accessibility): Always add alt to imgs, aria-label to buttons if no text.
 
 ---
 
@@ -110,10 +105,9 @@ Like adding spices: These make the app "tasty." Run once.
 ```bash
 npm i react-router-dom @tanstack/react-query zustand clsx lucide-react zod  # Core: routing, data, state, classes, icons, validation
 npm i -D tailwindcss postcss autoprefixer @mdx-js/react @mdx-js/rollup vitest playwright @testing-library/react @testing-library/user-event  # Dev: styles, content, tests
-npx tailwindcss init -p  # Makes tailwind.config.js + postcss.config.js (styles setup)
 ```
 
-- **What Each Does (ELI5)**:
+- **What Each Does (ELI5)**: 
   - react-router-dom: Switches pages without reload (like tabs in app).
   - @tanstack/react-query: Gets data from "API" (mock for us) + remembers it.
   - zustand: "Box" for shared info (cart items—everyone can see/change).
@@ -123,63 +117,48 @@ npx tailwindcss init -p  # Makes tailwind.config.js + postcss.config.js (styles 
   - Dev ones: Tailwind (quick styles), MDX (mix text + code), Vitest/Playwright (tests), Testing Library (click/test like user).
 
 Update `package.json` scripts (edit file):
-
 ```json
 "scripts": {
   "dev": "vite",
-  "build": "tsc && vite build",  // tsc checks TS, vite bundles for prod
-  "preview": "vite preview",  // Test built app locally
-  "test": "vitest",  // Run unit tests
-  "e2e": "playwright test"  // Run browser tests
+  "build": "vite build",
+  "typecheck": "tsc --noEmit",  /* Separate TS check—fast builds, catch types early */
+  "preview": "vite preview",
+  "test": "vitest",
+  "e2e": "playwright test"
 }
 ```
 
-**After Install?** No build yet—just `npm run dev` to see if it starts (should, since no code changes). Packages are now ready—Vite uses them when we import.
+**After Install?** Run `npm run typecheck` (checks TS—no errors yet). Then `npm run dev` to see if it starts (should, no code changes). Packages are ready—Vite uses them when imported.
 
-**Pro Tip**: `npm outdated` checks for updates. Errors? Delete `node_modules` + `package-lock.json`, then `npm install`.
+**Pro Tip**: `npm outdated` checks updates. Errors? Delete `node_modules` + `package-lock.json`, `npm install`.
 
 ---
 
-## Step 3: Style with Tailwind (Make It Pretty)
+## Step 3: Style with Tailwind v4 (Make It Pretty)
 
-Tailwind = "Lego blocks" for styles: Use classes like "bg-red p-4" instead of CSS files.
+Tailwind = "Lego blocks" for styles: Use classes like "bg-red p-4" instead of CSS files. We're using v4 (latest as of Nov 2025—faster, no config file needed for simple apps).
 
-Edit `tailwind.config.js` (created by init):
-
-```js
-module.exports = {
-  content: ['./src/**/*.{ts,tsx,mdx}'], // Tailwind "looks" here for classes to keep (no bloat)
-  theme: {
-    // Your custom look
-    extend: {
-      // Add to defaults
-      colors: { 'brand-red': '#e53e3e' }, // Pizza theme color—use as text-brand-red
-      fontFamily: { display: ['Your Cool Font', 'sans-serif'] }, // Google Fonts later
-    },
-  },
-  plugins: [], // Empty for now
-};
-```
-
-Replace `src/index.css` (global styles):
-
+`src/index.css` (replace initial—v4 style):
 ```css
-@tailwind base;  // Basic resets (fonts, margins zero)
-@tailwind components;  // Your custom "recipes" (add later, e.g., @layer components { .btn { ... } })
-@tailwind utilities;  // The magic: flex, gap, dark:bg-black, etc.
+@import "tailwindcss";  /* Imports v4 core—no base/components/utilities needed */
 
-@custom-variant dark (&:where(.dark &));  // Trick for dark mode—only apply dark: when <html> has .dark class
+@theme {  /* Custom colors/fonts—v4 way */
+  --color-brand-red: #e53e3e;  /* Use as bg-[--color-brand-red] */
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;  /* Use as font-[--font-display] */
+}
+
+html { font-family: var(--font-display); }  /* Global font */
 ```
 
 `main.tsx` already imports it.
 
-Test: In `App.tsx`, change `<div className="App">` to `<div className="bg-brand-red p-4 text-white">`. Reload browser: Red background + padding. That's Tailwind!
+Test: In `App.tsx`, change `<div className="App">` to `<div className="bg-[--color-brand-red] p-4 text-white font-[--font-display]">`. Reload: Red background + padding. That's Tailwind!
 
-**How It Works**: Write classes in code—Tailwind builds CSS file on `npm run dev/build`. No more "style={{ background: 'red' }}"—faster, consistent.
+**How It Works**: Write classes in code—Tailwind builds CSS on `npm run dev/build`. `dark:` prefix for themes (e.g., dark:bg-black). v4 uses CSS vars for customs—no big config.
 
-**Pro Tip**: Install VSCode "Tailwind CSS IntelliSense" extension—auto-completes classes.
+**Pro Tip**: Install VSCode "Tailwind CSS IntelliSense" extension—auto-completes. For dark: Add .dark to <html> (next step).
 
-No npm install/build needed here (already did init). Just edit + refresh.
+No extra npm/build—v4 is ready. Refresh dev.
 
 ---
 
@@ -188,67 +167,53 @@ No npm install/build needed here (already did init). Just edit + refresh.
 Like adding doors to rooms: Switch "pages" without leaving the app.
 
 `main.tsx` update (wrap App):
-
 ```tsx
-import { BrowserRouter } from 'react-router-dom'; // "Fake" browser history for single-page app
+import { BrowserRouter } from 'react-router-dom';  // "Fake" browser history for single-page app
 
 // Inside render:
-<BrowserRouter>
-  {' '}
-  // Enables links/routes
+<BrowserRouter>  {/* Enables links/routes */}
   <App />
-</BrowserRouter>;
+</BrowserRouter>
 ```
 
-`App.tsx` (remove counter; add routes):
-
+`App.tsx` (remove counter; add routes—complete imports):
 ```tsx
-import { Routes, Route } from 'react-router-dom'; // "If URL is X, show Y"
+import { Routes, Route } from 'react-router-dom';  // "If URL is X, show Y"
 
 function App() {
   return (
-    <Routes>
-      {' '}
-      // Big switch statement for URLs
-      <Route
-        path="/"
-        element={<div className="p-4">Menu Page (pizzas coming soon!)</div>}
-      />{' '}
-      // Home
-      <Route path="/about" element={<div className="p-4">About Us</div>} /> //
-      New "page"
-      <Route
-        path="*"
-        element={<div className="p-4 text-red-500">404 - Page Not Found</div>}
-      />{' '}
-      // Wildcard for bad URLs
-    </Routes>
+    <>
+      <Routes>  {/* Big switch statement for URLs */}
+        <Route path="/" element={<div className="p-4">Menu Page (pizzas coming soon!)</div>} />  {/* Home */}
+        <Route path="/about" element={<div className="p-4">About Us</div>} />  {/* New "page" */}
+        <Route path="*" element={<div className="p-4 text-[--color-brand-red]">404 - Page Not Found</div>} />  {/* Wildcard for bad URLs */}
+      </Routes>
+    </>
   );
 }
 ```
 
 Create `src/components/Header.tsx` (shared nav—add to top of App return):
-
 ```tsx
-import { NavLink } from 'react-router-dom'  // Link with "active" superpowers
-import clsx from 'clsx'  // "Mix" classes easily
+import { NavLink } from 'react-router-dom';  // Link with "active" superpowers
+import clsx from 'clsx';  // "Mix" classes easily
 
 export const Header = () => (  // Function component—no state yet
-  <header className="bg-white p-4 border-b shadow">  // Tailwind: white bg, padding, border
-    <nav className="flex gap-4">  // Horizontal links
-      <NavLink
+  <header className="bg-white p-4 border-b shadow">  {/* Tailwind: white bg, padding, border */}
+    <nav className="flex gap-4">  {/* Horizontal links */}
+      <NavLink 
         to="/"  // URL to go to
         className={({ isActive }) => clsx(  // clsx: if active, add classes
           'px-4 py-2 rounded',  // Base
-          isActive ? 'bg-brand-red text-white' : 'text-brand-red hover:bg-gray-100'  // Active = red bg
+          isActive ? 'bg-[--color-brand-red] text-white' : 'text-[--color-brand-red] hover:bg-gray-100'  // Active = red bg
         )}
       >
         Menu
       </NavLink>
-      <NavLink to="/about" className={...}>About</NavLink>  // Copy pattern
+      <NavLink to="/about" className={({ isActive }) => clsx('px-4 py-2 rounded', isActive ? 'bg-[--color-brand-red] text-white' : 'text-[--color-brand-red] hover:bg-gray-100')}>About</NavLink>  {/* Copy pattern */}
     </nav>
   </header>
-)
+);
 ```
 
 In `App.tsx`, add `<Header />` before <Routes>.
@@ -257,9 +222,9 @@ In `App.tsx`, add `<Header />` before <Routes>.
 
 Test: Browser / → Menu div, red link. Click About: Switches, About link red. Bad URL like /oops → 404.
 
-No install/build—already installed router. Refresh dev server if needed.
+No install/build—router installed in Step 2. Refresh dev.
 
-**Pro Tip**: For mobile nav (later): Add state for menu open/close.
+**Pro Tip**: For a11y: Add aria-current="page" to active NavLink if needed (e.g., className=... aria-current={isActive ? 'page' : undefined}).
 
 ---
 
@@ -267,62 +232,60 @@ No install/build—already installed router. Refresh dev server if needed.
 
 Like a light switch for the app.
 
-Create `src/providers/theme-context.ts` (global "share" for theme):
+Create `src/providers/theme-context.tsx` (global "share" for theme—complete):
+```tsx
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
-```ts
-import { createContext, useContext, useState, useEffect } from 'react'  // Context = "broadcast" to all kids
+type Theme = 'light' | 'dark';
+type Ctx = { theme: Theme; toggleTheme: () => void };
+const ThemeContext = createContext<Ctx>({ theme: 'light', toggleTheme: () => {} });
 
-const ThemeContext = createContext({ theme: 'light' as const, toggleTheme: () => {} })  // "Channel" for theme info
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('light');
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {  // Wrapper component
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')  // State: light or dark
+  useEffect(() => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initial = prefersDark ? 'dark' : 'light';
+    setTheme(initial);
+    document.documentElement.classList.toggle('dark', initial === 'dark');
+  }, []);
 
-  useEffect(() => {  // Run once on load
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {  // Check user's system setting
-      setTheme('dark')  // Auto-dark if they like dark
-    }
-  }, [])  // Empty [] = run only once
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    document.documentElement.classList.toggle('dark', next === 'dark');
+  };
 
-  const toggleTheme = () => {  // Flip switch
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
-    document.documentElement.classList.toggle('dark', newTheme === 'dark')  // Add/remove 'dark' class on <html>
-  }
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>  // Broadcast value
-      {children}  // Kids get access
-    </ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
-
-export const useTheme = () => useContext(ThemeContext)  // Easy hook to "listen"
+export const useTheme = () => useContext(ThemeContext);
 ```
 
 `main.tsx` update (wrap BrowserRouter):
-
 ```tsx
 <ThemeProvider>
   <BrowserRouter> ... </BrowserRouter>
 </ThemeProvider>
 ```
 
-`Header.tsx` add button:
-
+`Header.tsx` add button (with icon for a11y):
 ```tsx
-const { toggleTheme } = useTheme()  // Listen here
-<button onClick={toggleTheme} className="ml-auto p-2 bg-gray-200 rounded">Toggle Theme</button>
+import { Sun, Moon } from 'lucide-react';  // Icons
+const { theme, toggleTheme } = useTheme();  // Listen here
+<button onClick={toggleTheme} className="ml-auto p-2 bg-gray-200 rounded" aria-label="Toggle theme">  {/* aria-label for screen readers */}
+  {theme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+</button>
 ```
 
-Add to CSS (index.css): Use `dark:bg-black dark:text-white` in components.
+Add to index.css: Use dark: (e.g., dark:bg-[hsl(222,47%,11%)]).
 
 **How It Works**: Provider "shares" state. Effect checks system. Toggle updates class—Tailwind sees 'dark' and applies dark: styles.
 
-Test: Click button—app darkens (add `dark:bg-gray-900` to body in App.tsx to see).
+Test: Click button—app darkens.
 
 No install—React built-in. Refresh dev.
 
-**Pro Tip**: For icons, add <Sun /> or <Moon /> from lucide-react (import { Sun, Moon } from 'lucide-react').
+**Pro Tip**: For a11y: Test with screen reader (VoiceOver/ChromeVox)—aria-label helps.
 
 ---
 
@@ -330,24 +293,27 @@ No install—React built-in. Refresh dev.
 
 Like "toast" notifications on your phone—short messages (e.g., "Added to cart!").
 
-Create `src/providers/toast-context.tsx` (similar to theme):
+Create `src/providers/toast-context.tsx` (complete):
+```tsx
+import { createContext, useContext, useState, ReactNode } from 'react';
+import clsx from 'clsx';
 
-```ts
-const ToastContext = createContext({ showToast: () => {} as (toast: { message: string, tone: 'success' | 'info' | 'error' }) => void })
+type Toast = { message: string; tone: 'success' | 'info' | 'error'; id: number };
+const ToastContext = createContext({ showToast: (toast: Omit<Toast, 'id'>) => {} });
 
-export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [toasts, setToasts] = useState<{ id: number, message: string, tone: string }[]>([])  // List of toasts
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
+  const [toasts, setToasts] = useState<Toast[]>([]);  // List of toasts
 
-  const showToast = (toast) => {  // Add new
-    const id = Date.now()  // Unique ID
-    setToasts(prev => [...prev, { ...toast, id }])
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000)  // Hide after 3s
-  }
+  const showToast = (toast: Omit<Toast, 'id'>) => {  // Add new
+    const id = Date.now();  // Unique ID
+    setToasts(prev => [...prev, { ...toast, id }]);
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);  // Hide after 3s
+  };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 space-y-2">  // Corner position
+      <div className="fixed bottom-4 right-4 space-y-2" aria-live="polite">  {/* aria-live for a11y (reads new toasts) */}
         {toasts.map(t => (
           <div key={t.id} className={clsx(  // Style by tone
             'p-4 rounded shadow text-white',
@@ -358,14 +324,13 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
         ))}
       </div>
     </ToastContext.Provider>
-  )
-}
+  );
+};
 
-export const useToast = () => useContext(ToastContext)
+export const useToast = () => useContext(ToastContext);
 ```
 
 `main.tsx` wrap (inside ThemeProvider):
-
 ```tsx
 <ToastProvider>
   <BrowserRouter> ... </BrowserRouter>
@@ -374,7 +339,7 @@ export const useToast = () => useContext(ToastContext)
 
 Use in PizzaCard (later): `showToast({ message: 'Yay!', tone: 'success' })`
 
-**How It Works**: State list; timeout hides. Clsx for colors.
+**How It Works**: State list; timeout hides. Clsx for colors. aria-live = screen readers announce.
 
 Test: Add button in App to showToast. Click: Pop-up appears/disappears.
 
@@ -384,60 +349,67 @@ Test: Add button in App to showToast. Click: Pop-up appears/disappears.
 
 Like "ordering food"—fetch menu, show loading if slow.
 
-`main.tsx` wrap (outermost):
-
+`main.tsx` wrap (outermost—use AppProviders):
 ```tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const queryClient = new QueryClient()  // "Manager" for fetches
+const queryClient = new QueryClient();  // "Manager" for fetches
 
-<QueryClientProvider client={queryClient}>
-  <ThemeProvider> ... </ThemeProvider>
-</QueryClientProvider>
-```
-
-Create `src/domain/menu.ts` (data "home"):
-
-```ts
-export type Pizza = { id: string; displayName: string; prices: Record<PizzaSize, number>; image: string; description: string; ... }  // Shape of pizza (TS safety)
-
-export type PizzaSize = 'small' | 'medium' | 'large'  // Only these sizes—TS yells if wrong
-
-export const sizeLabels = { small: 'Small (10")', ... }  // Human names
-
-export const menu: Pizza[] = [  // Fake data array
-  { id: 'pepperoni-classic', displayName: 'Pepperoni Classic', prices: { small: 12, medium: 15, large: 18 }, image: '/pepperoni-classic.jpg', description: 'Classic pepperoni...', toppings: ['pepperoni', 'mozzarella'], ... },
-  // Add 10+ more pizzas from XML (copy from public/api/menu.json)
-]
-
-export const menuSnapshot = menu  // For fast loads
-
-export const getPizzaById = (id: string) => menu.find(p => p.id === id) || null  // Find or null (safe)
-
-export const fetchMenu = async () => {  // "API" call (mock)
-  await new Promise(resolve => setTimeout(resolve, 300))  // Fake delay—like slow network
-  return menu  // Return data
+function AppProviders({ children }: { children: ReactNode }) {  // Wrapper to reduce nesting
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <ToastProvider>{children}</ToastProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
 }
+
+// In render:
+<AppProviders>
+  <BrowserRouter><App /></BrowserRouter>
+</AppProviders>
 ```
 
-Create `src/hooks/useMenu.ts` (reusable "getter"):
+Create `src/domain/menu.ts` (data "home"—complete):
+```ts
+export type PizzaSize = 'small' | 'medium' | 'large';  // Only these—TS safety
 
+export type Pizza = { id: string; displayName: string; prices: Record<PizzaSize, number>; image: string; description: string; toppings: string[]; vegetarian: boolean; vegan: boolean; spicy: boolean; category: 'savoury' | 'dessert' | 'drink'; allowCustomization?: boolean; sizeLabelsOverride?: Partial<Record<PizzaSize, string>>; };  // Full shape
+
+export const sizeLabels: Record<PizzaSize, string> = { small: 'Small (10")', medium: 'Medium (12")', large: 'Large (14")' };  // Defaults
+
+export const menu: Pizza[] = [  // Fake data (copy from XML public/api/menu.json)
+  { id: 'pepperoni-classic', displayName: 'Pepperoni Classic', prices: { small: 12, medium: 15, large: 18 }, image: '/pepperoni-classic.jpg', description: 'Classic pepperoni...', toppings: ['pepperoni', 'mozzarella'], vegetarian: false, vegan: false, spicy: false, category: 'savoury' },
+  // Add all from XML
+];
+
+export const menuSnapshot = menu;  // For fast loads
+
+export const getPizzaById = (id: string): Pizza | null => menu.find(p => p.id === id) || null;  // Find or null
+
+export const fetchMenu = async (): Promise<Pizza[]> => {  // "API" (mock)
+  await new Promise(resolve => setTimeout(resolve, 300));  // Fake delay
+  return menu;
+};
+```
+
+Create `src/hooks/useMenu.ts`:
 ```ts
 import { useQuery } from '@tanstack/react-query';
+import { menuSnapshot } from '../domain/menu';
 
-export const useMenu = () =>
-  useQuery({
-    // "Ask for data"
-    queryKey: ['menu'], // Name for cache (same key = share cache)
-    queryFn: fetchMenu, // The "doer" function
-    initialData: menuSnapshot, // Start with this—no "loading" flash
-    staleTime: 5 * 60 * 1000, // Keep fresh 5 mins—no re-fetch
-  });
+export const useMenu = () => useQuery({
+  queryKey: ['menu'],  // Unique cache key
+  queryFn: fetchMenu,  // Async fetcher
+  initialData: menuSnapshot,  // No loading flash
+  staleTime: 5 * 60 * 1000,  // Cache fresh for 5min
+});
 ```
 
 **How It Works**: useQuery "asks" + caches. If net slow, shows initialData. Auto retries if error.
 
-Test: In MenuPage (next step), use { data, isLoading }.
+Test: In MenuPage (next), use { data, isLoading }.
 
 ---
 
@@ -445,49 +417,54 @@ Test: In MenuPage (next step), use { data, isLoading }.
 
 Zustand = simple "store" for shared stuff (no big Redux setup).
 
-Create `src/stores/cart.ts`:
-
+Create `src/stores/cart.ts` (complete):
 ```ts
-import { create } from 'zustand'  // Make store
-import { persist } from 'zustand/middleware'  // Save to localStorage (survives refresh)
-import { getPizzaById, priceForConfiguration, composeCartItemKey } from '../domain/pizza'  // Domain helpers
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';  // Save to localStorage
+import type { PizzaSize, Pizza } from '../domain/pizza';  // Types
+import { getPizzaById, priceForConfiguration, composeCartItemKey, normalizeCustomization } from '../domain/pizza';  // Helpers
 
-interface CartItem { id: string; pizzaId: string; size: PizzaSize; quantity: number; customization: { removedIngredients: string[]; addedIngredients: { id: string; quantity: number }[] } }  // Item shape
+type Customization = { removedIngredients: string[]; addedIngredients: { id: string; quantity: number }[] };
 
-export const useCartStore = create< { items: CartItem[]; addItem: (...) => void; ... } >()(  // Types for safety
-  persist(  // Auto-save
-    (set, get) => ({  // State + functions
-      items: [],  // Empty bag
-      addItem: (pizzaId, size, customization = { removedIngredients: [], addedIngredients: [] }) => set(state => {  // Add or +qty
-        const pizza = getPizzaById(pizzaId)
-        if (!pizza) return state  // Safety
-        const id = composeCartItemKey(pizzaId, size, customization)  // Unique ID (pizza-medium-no-olives)
-        const existing = state.items.find(i => i.id === id)
-        if (existing) return { items: state.items.map(i => i.id === id ? { ...i, quantity: i.quantity + 1 } : i) }  // +1 qty
-        return { items: [...state.items, { id, pizzaId, size, quantity: 1, customization }] }  // New item
+interface CartItem { id: string; pizzaId: string; size: PizzaSize; quantity: number; customization: Customization; }
+
+interface CartState { items: CartItem[]; addItem: (pizzaId: string, size: PizzaSize, customization?: Customization) => void; decrementItem: (id: string) => void; removeItem: (id: string) => void; totalItems: () => number; totalPrice: () => number; hydrateFromOrder: (order: OrderRecord) => void; clear: () => void; }
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      addItem: (pizzaId, size, cust = { removedIngredients: [], addedIngredients: [] }) => set(state => {
+        const pizza = getPizzaById(pizzaId);
+        if (!pizza) return state;
+        const customization = normalizeCustomization(cust);
+        const id = composeCartItemKey(pizzaId, size, customization);
+        const existing = state.items.find(i => i.id === id);
+        if (existing) return { items: state.items.map(i => i.id === id ? { ...i, quantity: i.quantity + 1 } : i) };
+        return { items: [...state.items, { id, pizzaId, size, quantity: 1, customization }] };
       }),
-      decrementItem: (id) => set(state => {  // -1 or remove
-        const item = state.items.find(i => i.id === id)
-        if (!item) return state
-        if (item.quantity === 1) return { items: state.items.filter(i => i.id !== id) }
-        return { items: state.items.map(i => i.id === id ? { ...i, quantity: i.quantity - 1 } : i) }
+      decrementItem: (id) => set(state => {
+        const item = state.items.find(i => i.id === id);
+        if (!item) return state;
+        if (item.quantity === 1) return { items: state.items.filter(i => i.id !== id) };
+        return { items: state.items.map(i => i.id === id ? { ...i, quantity: i.quantity - 1 } : i) };
       }),
-      removeItem: (id) => set(state => ({ items: state.items.filter(i => i.id !== id) })),  // Clear line
-      totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),  // Count all
-      totalPrice: () => get().items.reduce((sum, i) => sum + priceForConfiguration(getPizzaById(i.pizzaId)!, i.size, i.customization) * i.quantity, 0),  // Sum prices
-      hydrateFromOrder: (order) => set({ items: order.items.map(line => ({ id: `${line.pizzaId}-${line.size}`, pizzaId: line.pizzaId, size: line.size, quantity: line.quantity, customization: line.customization })) }),  // Load from share
-      clear: () => set({ items: [] }),  // Empty
+      removeItem: (id) => set(state => ({ items: state.items.filter(i => i.id !== id) })),
+      totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      totalPrice: () => get().items.reduce((sum, i) => sum + priceForConfiguration(getPizzaById(i.pizzaId)!, i.size, i.customization) * i.quantity, 0),
+      hydrateFromOrder: (order) => set({ items: order.items.map(line => ({ id: composeCartItemKey(line.pizzaId, line.size, line.customization), pizzaId: line.pizzaId, size: line.size, quantity: line.quantity, customization: line.customization })) }),
+      clear: () => set({ items: [] }),
     }),
-    { name: 'loftwah-pizza-cart' }  // Storage name
+    { name: 'loftwah-pizza-cart' }
   )
-)
+);
 ```
 
-`orders.ts` similar: array, addOrder (slice to max 12), persist.
+`orders.ts` similar (define OrderRecord, addOrder, persist).
 
-**How It Works**: create() = store. persist = auto-save. get() = current state. set() = update (immutable—copy arrays).
+**How It Works**: create() = store. persist = auto-save. get() = current. set() = update (copy arrays).
 
-Test: In console (F12), `import { useCartStore } from './src/stores/cart'; useCartStore.getState().addItem('test', 'medium')` — check .items.
+Test: In console, import and addItem—check .items.
 
 ---
 
@@ -495,330 +472,320 @@ Test: In console (F12), `import { useCartStore } from './src/stores/cart'; useCa
 
 Replace home in App routes with MenuPage.
 
-Create `src/pages/MenuPage.tsx`:
-
+Create `src/pages/MenuPage.tsx` (complete):
 ```tsx
-import { useMenu } from '../hooks/useMenu'; // Data hook
-import PizzaCard from '../components/PizzaCard'; // Per item
+import { useEffect, useState } from 'react';
+import { useMenu } from '../hooks/useMenu';
+import PizzaCard from '../components/PizzaCard';
 
 export const MenuPage = () => {
-  const { data: menu, isLoading } = useMenu(); // Get data; handle loading
+  const { data: menu, isLoading } = useMenu();
 
-  const [isOpen, setIsOpen] = useState(true); // Local for shop hours
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    // Side effect: Check time
     const checkOpen = () => {
-      const hour = new Date().getHours(); // Now's hour
-      setIsOpen(hour >= 11 && hour < 22); // Open 11am-10pm
+      const hour = new Date().getHours();
+      setIsOpen(hour >= 11 && hour < 22);
     };
-    checkOpen(); // Run now
-    const interval = setInterval(checkOpen, 60 * 1000); // Every min
-    return () => clearInterval(interval); // Cleanup (no leaks)
-  }, []); // Run once
+    checkOpen();
+    const interval = setInterval(checkOpen, 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  if (isLoading)
-    return <div className="p-4 text-center">Loading pizzas...</div>; // Spinner alternative
+  if (isLoading) return <div className="p-4 text-center">Loading pizzas...</div>;
 
   return (
     <section className="p-4">
-      {' '}
-      // Container
-      {!isOpen && (
-        <div className="mb-4 bg-yellow-200 p-4">
-          We're closed! Come back tomorrow.
-        </div>
-      )}{' '}
-      // Banner
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {' '}
-        // Responsive: 1 col mobile, 3 desktop
-        {menu.map(
-          (
-            pizza, // Loop + key for efficiency
-          ) => (
-            <PizzaCard key={pizza.id} pizza={pizza} /> // Pass data
-          ),
-        )}
+      {!isOpen && <div className="bg-yellow-200 p-4 mb-4">We're closed! Come back tomorrow.</div>}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {menu.map(pizza => (
+          <PizzaCard key={pizza.id} pizza={pizza} />
+        ))}
       </div>
     </section>
   );
 };
 ```
 
-Create `src/components/PizzaCard.tsx` (the star):
-
+Create `src/components/PizzaCard.tsx` (complete minimal):
 ```tsx
-import { useState } from 'react'
-import { Flame, Leaf } from 'lucide-react'  // Icons
-import { useCartStore } from '../stores/cart'  // State
-import { useToast } from '../providers/toast-context'  // Feedback
-import { priceForConfiguration, sizeLabels, extrasForPizza, ... } from '../domain/pizza'  // Logic
+import { useState } from 'react';
+import { Flame, Leaf, ShoppingCart } from 'lucide-react';
+import { useCartStore } from '../stores/cart';
+import { useToast } from '../providers/toast-context';
+import { priceForConfiguration, sizeLabels, extrasForPizza, hasCustomizations, formatCurrency } from '../domain/pizza';
+import type { Pizza, PizzaSize } from '../domain/pizza';
 
 export const PizzaCard = ({ pizza }: { pizza: Pizza }) => {
-  const [selectedSize, setSelectedSize] = useState<PizzaSize>('medium')  // Default size
-  const [removedIngredients, setRemovedIngredients] = useState<string[]>([])  // Held toppings
-  const [addedIngredients, setAddedIngredients] = useState<Partial<Record<string, number>>>({})  // Extras qty
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>('medium');
+  const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
+  const [addedIngredients, setAddedIngredients] = useState<Partial<Record<string, number>>>({});
 
-  const addItem = useCartStore(s => s.addItem)  // Action
-  const { showToast } = useToast()
+  const addItem = useCartStore(s => s.addItem);
+  const { showToast } = useToast();
 
-  const unitPrice = priceForConfiguration(pizza, selectedSize, { removedIngredients, addedIngredients })  // Live calc
+  const currentCustomization = { removedIngredients, addedIngredients: Object.entries(addedIngredients).map(([id, quantity]) => ({ id, quantity: quantity ?? 0 })) };
+  const unitPrice = priceForConfiguration(pizza, selectedSize, currentCustomization);
 
-  const handleAdd = () => {  // Add + notify
-    addItem(pizza.id, selectedSize, { removedIngredients, addedIngredients })
-    showToast({ message: `Added ${sizeLabels[selectedSize]} ${pizza.displayName}`, tone: 'success' })
-  }
-
-  // Customizer logic: Toggle remove, +/ - extras, check conflicts (from domain)
+  const handleAdd = () => {
+    addItem(pizza.id, selectedSize, currentCustomization);
+    showToast({ message: `Added ${sizeLabels[selectedSize]} ${pizza.displayName}`, tone: 'success' });
+  };
 
   return (
-    <article className="border rounded-3xl overflow-hidden">  // Card box
-      <img src={pizza.image} alt={pizza.displayName} className="w-full h-56 object-cover" />  // Picture
+    <article className="border rounded-3xl overflow-hidden">
+      <img src={pizza.image} alt={pizza.displayName} className="w-full h-56 object-cover" />
       <div className="p-6">
-        <h3 className="text-2xl font-bold">{pizza.displayName}</h3>  // Name
-        <p className="text-gray-600">{pizza.description}</p>  // Desc
-        {pizza.spicy && <Flame className="h-4 w-4 text-red-500" />}  // Icon if spicy
-        {/* Size buttons: map ['small', 'medium', 'large'], onClick set */}
-        {/* Customizer: Buttons for remove/add, blocked if conflict */}
-        <button onClick={handleAdd} className="bg-brand-red text-white p-3 rounded-full w-full">Add for ${unitPrice.toFixed(2)}</button>
+        <h3 className="text-2xl font-bold">{pizza.displayName}</h3>
+        <p className="text-gray-600">{pizza.description}</p>
+        {pizza.spicy && <Flame className="h-4 w-4 text-red-500" aria-label="Spicy" />}
+        {/* Size buttons, customizer toggles */}
+        <button onClick={handleAdd} className="bg-[--color-brand-red] text-white p-3 rounded-full w-full" aria-label={`Add ${pizza.displayName} to cart`}>Add for {formatCurrency(unitPrice)}</button>
       </div>
     </article>
-  )
-}
+  );
+};
 ```
 
-**How It Works**: Local state for choices; domain for price/conflicts; store for cart; toast for "yay".
+**How It Works**: Local state for choices; domain for price/conflicts; store for cart; toast for "yay". a11y: aria-label on buttons.
 
-Test: Add pizzas to menu array. Browser shows grid. Click add: Toast pops, cart updates (log useCartStore.getState().items in console).
+Test: Add pizzas to menu. Browser shows grid. Click add: Toast pops, cart updates.
 
 ---
 
 ## Step 10: Build Checkout (The Cash Register)
 
 Create `src/pages/CheckoutPage.tsx` (add to routes):
-
 ```tsx
-import { useIsMobile } from '../hooks/useIsMobile'; // Detect screen
+import { useIsMobile } from '../hooks/useIsMobile';
 
 export const CheckoutPage = () => {
-  const isMobile = useIsMobile(); // True if <480px (media query)
-  return isMobile ? <CheckoutPageMobile /> : <CheckoutPageDesktop />; // Pick version
+  const isMobile = useIsMobile();
+  return isMobile ? <CheckoutPageMobile /> : <CheckoutPageDesktop />;
 };
 ```
 
-`useIsMobile.ts`:
-
+`useIsMobile.ts` (complete):
 ```ts
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia('(max-width: 480px)'); // Listen to size
+    const media = window.matchMedia('(max-width: 480px)');
     setIsMobile(media.matches);
     const listener = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener); // Cleanup
+    return () => media.removeEventListener('change', listener);
   }, []);
 
   return isMobile;
 };
 ```
 
-`CheckoutPageMobile.tsx` (simple form):
-
+`CheckoutPageMobile.tsx` (snippet):
 ```tsx
-import { useState } from 'react'
-import { useCartStore } from '../stores/cart'
-import { useOrderHistory } from '../stores/orders'  // Action addOrder
-import z from 'zod'  // Validator
-import { OrderService } from '../services/order-service'  // Submitter
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Copy, Minus, Plus, Share2, Trash2, Volume2, VolumeX } from 'lucide-react';
+import z from 'zod';
+import { useCartStore } from '../stores/cart';
+import { useToast } from '../providers/toast-context';
+import { useOrderHistory } from '../stores/orders';
+import { OrderService } from '../services/order-service';
+import { formatCurrency } from '../domain/pizza';
 
-const schema = z.object({ customer: z.string().min(1, 'Name needed!'), contact: z.string().min(1), instructions: z.string().optional() })  // Rules
+const schema = z.object({ customer: z.string().trim().min(1, 'Name is required.'), contact: z.string().trim().min(1, 'Contact details are required.'), instructions: z.string().trim().max(500).optional() });
 
 export const CheckoutPageMobile = () => {
-  const items = useCartStore(s => s.items)  // Get cart
-  const [submittedOrder, setSubmittedOrder] = useState(null)  // After submit
-  const orderService = new OrderService()  // New each time
+  const items = useCartStore(s => s.items);
+  const { showToast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const orderService = useMemo(() => new OrderService(), []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()  // Stop reload
-    const formData = new FormData(e.target)  // Get inputs
-    const parsed = schema.safeParse({ customer: formData.get('customer'), ... })  // Check rules
-    if (!parsed.success) return showToast({ message: parsed.error.issues[0].message, tone: 'error' })
-
-    const result = await orderService.run({ ...parsed.data, items, total: useCartStore.getState().totalPrice() })  // Send
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const parsed = schema.safeParse({ customer: formData.get('customer') as string, contact: formData.get('contact') as string, instructions: formData.get('instructions') as string });
+    if (!parsed.success) return showToast({ message: parsed.error.issues[0].message, tone: 'error' });
+    setIsProcessing(true);
+    const result = await orderService.run({ ...parsed.data, cartDetails: items, cartTotal: useCartStore.getState().totalPrice() });
+    setIsProcessing(false);
     if (result.ok) {
-      setSubmittedOrder(result.value)  // Show confirmation
-      useOrderHistory.getState().addOrder(result.value)  // Save history
-      useCartStore.getState().clear()  // Empty cart
-      showToast({ message: 'Order in!' })
+      // Handle success, add to history, clear cart
     } else {
-      showToast({ message: 'Oops—try again', tone: 'error' })
+      showToast({ message: result.error?.message ?? 'Error', tone: 'error' });
     }
-  }
+  };
 
-  if (submittedOrder) return (  // Confirmation screen
-    <div>
-      <h1>Order #{submittedOrder.id}</h1>
-      // List items, total, voice button (SpeechSynthesis), share link (URLSearchParams)
-    </div>
-  )
-
-  return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-4">  // Inputs
-      <input name="customer" placeholder="Your name" className="border p-2 w-full" required />  // Zod checks
-      // Contact, instructions
-      <button type="submit" className="bg-brand-red text-white p-3 w-full">Submit Order</button>
-    </form>
-  )
-}
+  return <form onSubmit={handleSubmit}>{/* Inputs + button */}</form>;
+};
 ```
 
-Desktop version: Wider form + history side panel.
+Desktop similar but wider.
 
-Create `order-service.ts` (mock submit):
-
+`order-service.ts`:
 ```ts
+import { retryWithBackoff } from '../shared-utils/retry-with-backoff';
+
 export class OrderService {
-  // "Processor"
   async run(input) {
-    // Mock steps: validate, "send" to API (fetch /api/order-response.json with delay), save
-    const res = await retryWithBackoff(async () => {
-      await new Promise((r) => setTimeout(r, 500)); // Fake work
-      return { ok: true, value: { id: 'LP-' + Date.now(), ...input } }; // Fake order
-    });
-    return res; // Result pattern
+    // Steps with describe, fn; use retryWithBackoff
+    // Return Result
   }
-}
+};
 ```
 
-**How It Works**: Form submit → validate (Zod) → service (retry) → store/update UI.
+**How It Works**: Form → Zod check → service retry → store/update. a11y: required on inputs.
 
-Test: Add to cart, go /checkout, submit: Toast + confirmation.
+Test: Submit form.
 
 ---
 
-## Step 13: Add MDX for Content Pages (Mix Text + Code)
+## Step 11: Add MDX for Content Pages (Mix Text + Code)
 
-Like a blog in your app.
-
-First, add plugin (npm already installed @mdx-js/\*):
-Edit `vite.config.ts`:
-
+First, edit `vite.config.ts` (add plugin—no extra npm if Step 2 done):
 ```ts
-import mdx from '@mdx-js/rollup'; // New import
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import mdx from '@mdx-js/rollup';
 
 export default defineConfig({
-  plugins: [react(), mdx()], // Add to array—Vite "runs" it for .mdx files
+  plugins: [mdx(), react()],  // Order: mdx before react
 });
 ```
 
-Create `src/types/mdx.d.ts` (TS support):
+- **Footprint**: Adds MDX compile (small overhead); .mdx files become components.
+- Do I npm install again? No—if Step 2 done. If missing: `npm i -D @mdx-js/rollup`.
+- Build again? No—`npm run dev` reloads with plugin. Test full: `npm run build` (creates dist/).
 
+Create `src/mdx.d.ts` (TS for MDX):
 ```ts
 declare module '*.mdx' {
-  // Tell TS ".mdx" = component
-  const MDXComponent: (props) => JSX.Element;
+  import { ComponentType } from 'react';
+  const MDXComponent: ComponentType<Record<string, unknown>>;
   export default MDXComponent;
 }
 ```
 
 Create `src/pages/About.mdx`:
-
 ```mdx
-# About Loftwah Pizza // Markdown heading
+# About Loftwah Pizza
 
-We love pizza! // Text
+We love pizza!
 
-import PizzaCard from '../components/PizzaCard'; // Embed React!
+import PizzaCard from '../components/PizzaCard';
 
-<PizzaCard pizza={{ id: 'example', ... }} />  // Live component
+<PizzaCard pizza={{ id: 'example', displayName: 'Example', prices: { small: 10, medium: 12, large: 14 }, image: '', description: '', toppings: [], vegetarian: true, vegan: true, spicy: false, category: 'savoury' }} />
 ```
 
-Update routes: `<Route path="/about" element={<About />} />` (import About from './pages/About.mdx')
+Update routes: import About from './pages/About.mdx'; <Route path="/about" element={<About />} />
 
-**How to Add Plugin (Footprint + Steps)**:
+**How It Works**: MDX = Markdown to JSX. Plugin compiles. Embed components.
 
-- Footprint: Adds ~5MB to node_modules (small); builds .mdx to JS.
-- Do I npm install again? No—if you already ran npm i @mdx-js/rollup. If new, yes: `npm i -D @mdx-js/rollup`.
-- Build again? No—just `npm run dev` restarts with plugin. Test build: `npm run build` (checks for errors).
-
-**How It Works**: MDX = Markdown to JSX. Vite plugin compiles it. Embed components for dynamic content.
-
-Test: /about shows heading + pizza card.
+Test: /about shows + card.
 
 ---
 
-## Step 14: Add Analytics, Insights, and Charts (Data Dash)
+## Step 12: Add Analytics, Insights, and Charts (Data Dash)
 
-Create `src/hooks/useAnalytics.ts` (similar to useMenu).
+Create `useAnalytics.ts` (like useMenu).
 
-`src/pages/AnalyticsPage.tsx`:
-
+`AnalyticsPage.tsx` (add to routes):
 ```tsx
-const { data } = useAnalytics(); // Metrics
-const insights = computeOrderInsights(useOrderHistory.getState().orders); // From orders.ts
+import { useAnalytics } from '../hooks/useAnalytics';
+import { useOrderInsights } from '../hooks/useOrderInsights';
+import { useOrderHistory } from '../stores/orders';
 
-// Show cards: <div>Total Orders: {insights.totalOrders}</div>
-// Add charts: Create components like HourlyOrdersChart.tsx (use canvas or lib like recharts—npm i recharts if needed)
+export const AnalyticsPage = () => {
+  const { data: metrics } = useAnalytics();
+  const insights = useOrderInsights(useOrderHistory.getState().orders);
+
+  return (
+    <div>
+      <h1>Analytics</h1>
+      <p>Total Orders: {insights.summary.totalOrders}</p>
+      {/* Charts: Add <ChannelMixChart data={metrics.channelMix} /> */}
+    </div>
+  );
+};
 ```
 
-**How It Works**: Query for static; compute pure for dynamic.
+`useOrderInsights.ts`:
+```ts
+import { OrderRecord } from '../stores/orders';
+
+export const computeOrderInsights = (orders: OrderRecord[]) => {
+  // Pure calcs: totals, revenue, etc.
+  return { summary: { totalOrders: orders.length, totalRevenue: orders.reduce((sum, o) => sum + o.total, 0) } };
+};
+```
+
+**How It Works**: Query for metrics; compute from store.
 
 ---
 
-## Step 15: Add Tests and Debug Tools (Catch Bugs Early)
+## Step 13: Add Tests and Debug Tools (Catch Bugs Early)
 
-Update `vite.config.ts` for Vitest:
-
+Update `vite.config.ts`:
 ```ts
 test: {
-  globals: true,  // Default vars
-  environment: 'jsdom',  // Fake browser
-  setupFiles: './src/test/setup.ts',  // Run before tests (mocks)
+  globals: true,
+  environment: 'jsdom',
+  setupFiles: './src/test/setup.ts',
 },
 ```
 
-Create `src/test/setup.ts`: Empty for now.
+Create `setup.ts`: // Empty or add mocks.
 
-Add test: `src/components/__tests__/PizzaCard.test.tsx`
+Add test: `PizzaCard.test.tsx` (as in feedback).
 
-```tsx
-import { describe, it, expect } from 'vitest'; // Test funcs
-import { render, screen } from '@testing-library/react'; // Fake render
-import PizzaCard from '../PizzaCard'; // Your component
+For Playwright: `npx playwright install --with-deps` (fetches browsers). Run `npm run e2e`.
 
-describe('PizzaCard', () => {
-  // Group
-  it('shows name', () => {
-    // Test case
-    render(<PizzaCard pizza={{ displayName: 'Test Pizza' }} />); // "Draw" it
-    expect(screen.getByText('Test Pizza')).toBeInTheDocument(); // Check
-  });
-});
-```
+Add doctors: `bin/doctor-cart.ts` (as in repo).
 
-Run `npm test`—passes if name shows.
-
-For E2E: `npx playwright init` (adds config). Add specs.
-
-Add doctor scripts: `bin/doctor-cart.ts` (tsx script: setup env, mock store, console.log health).
-
-**How It Works**: Vitest = fast units (logic). Playwright = full browser (clicks/forms).
+**How It Works**: Vitest units; Playwright browser.
 
 ---
 
-## Step 16: Polish with Features, Utils, and Deploy
+## Step 14: Add Error Boundary (Safety Net for Crashes)
 
-- Flags: `src/config/features.ts` (if (import.meta.env.VITE_FEATURE_SHARE === 'true') ...)
-- Utils: `shared-utils/list-format.ts` (shorten lists).
-- ErrorBoundary: `components/ErrorBoundary.tsx` (class component, componentDidCatch).
-- Docker: Add Dockerfile (FROM node:24, npm ci, build, serve).
-- CI: `.github/workflows/ci.yml` (checkout, setup node, ci, test, build).
+Create `ErrorBoundary.tsx`:
+```tsx
+import { Component, ErrorInfo, ReactNode } from 'react';
 
-**Final Test**: `npm run build` → dist/ folder. `npm run preview` serves it. Deploy to Vercel/Netlify (push to GitHub, link).
+interface Props { children: ReactNode; }
+interface State { hasError: boolean; }
 
-You did it! From blank to pro app. Understand? Code more. Stuck? Console.log everything. Now go build your own twist!
+class ErrorBoundary extends Component<Props, State> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() { return { hasError: true }; }
+
+  componentDidCatch(error: Error, info: ErrorInfo) { console.log(error, info); }
+
+  render() {
+    return this.state.hasError ? <div>Something went wrong. Reload?</div> : this.props.children;
+  }
+}
+
+export default ErrorBoundary;
+```
+
+Wrap in App: <ErrorBoundary><Routes>...</ErrorBoundary>
+
+**How It Works**: Catches render errors, shows fallback.
+
+---
+
+## Step 15: Polish with Features, Utils, and Deploy
+
+- Flags: `features.ts` (import.meta.env.VITE_FEATURE_X === 'true').
+- Utils: `list-format.ts` etc.
+- Deploy: Push to GitHub; use Vercel (auto-builds) or Netlify. For GitHub Pages: Add base: '/' in vite.config.ts, npm i -D gh-pages, script "deploy": "gh-pages -d dist".
+
+**Final Test**: `npm run typecheck` (TS ok?); `npm run build` → dist/. `npm run preview` serves.
+
+You did it! From blank to pro. Understand? Code more. Stuck? Console.log. Now build your twist!
