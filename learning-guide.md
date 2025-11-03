@@ -150,6 +150,86 @@ Update `package.json` scripts (edit file):
 
 ---
 
+## Step 2.5: Add ESLint + Prettier (Code Quality & Style)
+
+Before styling, let’s make sure our code stays clean and consistent.
+ESLint catches mistakes; Prettier keeps formatting identical for everyone.
+
+### Install
+
+```bash
+npm i -D eslint prettier eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-jsx-a11y eslint-plugin-tailwindcss eslint-config-prettier @typescript-eslint/eslint-plugin @typescript-eslint/parser
+```
+
+### Create `.eslintrc.cjs`
+
+```js
+module.exports = {
+  root: true,
+  parser: '@typescript-eslint/parser',
+  parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+  env: { browser: true, es2021: true, node: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
+    'plugin:tailwindcss/recommended',
+    'prettier',
+  ],
+  plugins: [
+    'react',
+    'react-hooks',
+    '@typescript-eslint',
+    'jsx-a11y',
+    'tailwindcss',
+  ],
+  settings: {
+    react: { version: 'detect' },
+    tailwindcss: { callees: ['classnames', 'clsx'] },
+  },
+  rules: {
+    'react/react-in-jsx-scope': 'off', // Vite handles React globally
+    'tailwindcss/no-custom-classname': 'off', // Allow custom tokens/variables
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+  },
+};
+```
+
+### Create `.prettierrc`
+
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "endOfLine": "lf"
+}
+```
+
+### Update `package.json` scripts
+
+```json
+"lint": "eslint \"src/**/*.{ts,tsx}\" --fix",
+"format": "prettier --write \"src/**/*.{ts,tsx,css,mdx,md,json}\""
+```
+
+### Test
+
+```bash
+npm run lint
+npm run format
+```
+
+If you use VS Code, install the **ESLint** and **Prettier** extensions and enable _Format on Save_ — your codebase will stay consistent automatically.
+
+---
+
 ## Step 3: Style with Tailwind v4 (Make It Pretty)
 
 Tailwind = "Lego blocks" for styles: Use classes like "bg-red p-4" instead of CSS files. We're using v4 (latest as of Nov 2025—faster, no config file needed for simple apps).
